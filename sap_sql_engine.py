@@ -703,6 +703,66 @@ def sap_to_sqlite_sql(sql: str) -> str:
     return s
 
 
+def _check_pii_violation(sql: str) -> str | None:
+    """
+    Hard-coded PII enforcement.  If the SQL touches any HR / PAY / BEN
+    table WITHOUT proper aggregation, return an error message.
+    Returns None when the query is safe to execute.
+    """
+    upper = sql.upper()
+
+    # SAP HR/PAY/BEN tables that contain PII
+    PII_TABLES = [
+        "PA0001", "PA0002", "PA0006", "PA0008", "PA0014",
+        "PA0167", "PA0168", "PA0169",
+        "HRPY_RGDIR", "T511", "T512T",
+    ]
+
+    # Does the query reference any PII table?
+    touched = [t for t in PII_TABLES if t in upper]
+    if not touched:
+        return None                       # no PII tables → safe
+
+    # Require GROUP BY
+    if "GROUP BY" not in upper:
+        return (
+            "PII Protection: queries against HR / Payroll / Benefits tables "
+            f"({', '.join(touched)}) must aggregate results with GROUP BY. "
+            "Individual employee data cannot be returned. "
+            "Try an aggregate query such as headcount by org unit or "
+            "average salary by department."
+        )
+
+    # Require at least one aggregate function in the SELECT clause
+    select_part = upper.split("FROM")[0] if "FROM" in upper else upper
+    AGG_FUNCS = ["COUNT(", "SUM(", "AVG(", "MIN(", "MAX("]
+    if not any(fn in select_part for fn in AGG_FUNCS):
+        return (
+            "PII Protection: queries against HR / Payroll / Benefits tables "
+            f"({', '.join(touched)}) must use aggregate functions "
+            "(COUNT, SUM, AVG, MIN, MAX) in the SELECT clause. "
+            "Individual employee data cannot be returned."
+        )
+
+    # Block PII columns in SELECT — but allow them inside aggregate functions
+    PII_COLUMNS = ["PERNR", "ENAME", "NACHN", "VORNA", "GBDAT", "PERID"]
+    # Strip out aggregate-wrapped expressions before checking
+    import re as _pii_re
+    stripped_select = _pii_re.sub(
+        r'\b(COUNT|SUM|AVG|MIN|MAX)\s*\([^)]*\)', '', select_part
+    )
+    selected_pii = [c for c in PII_COLUMNS if c in stripped_select]
+    if selected_pii:
+        return (
+            "PII Protection: the SELECT clause includes personally identifiable "
+            f"columns ({', '.join(selected_pii)}). Queries against HR / Payroll / "
+            "Benefits tables must not return individual employee identifiers. "
+            "Use GROUP BY on organizational attributes and aggregate functions instead."
+        )
+
+    return None                           # passed all checks
+
+
 def execute_on_test_db(sql: str, max_rows: int = 200) -> dict:
     """
     Execute a SQL query against the test SQLite database.
@@ -710,6 +770,11 @@ def execute_on_test_db(sql: str, max_rows: int = 200) -> dict:
     """
     if not os.path.exists(TEST_DB_FILE):
         return {"error": "Test database not found. Place sap_test.db in the application folder."}
+
+    # ── PII gate — hard block before any execution ──
+    pii_err = _check_pii_violation(sql)
+    if pii_err:
+        return {"error": pii_err}
 
     # Convert SAP SQL to SQLite
     sqlite_sql = sap_to_sqlite_sql(sql)
