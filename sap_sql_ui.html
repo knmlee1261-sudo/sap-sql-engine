@@ -760,9 +760,8 @@ function calcTokenCost(inputTokens, outputTokens, cacheCreation, cacheRead) {
   const p = MODEL_PRICING[appState.model] || { input: 3.0, output: 15.0, cacheWrite: 3.75, cacheRead: 0.30 };
   cacheCreation = cacheCreation || 0;
   cacheRead = cacheRead || 0;
-  // Regular input tokens exclude cache tokens; cache tokens have separate pricing
-  const regularInput = inputTokens - cacheCreation - cacheRead;
-  return (regularInput / 1000000) * p.input
+  // Anthropic reports input_tokens, cache_creation, and cache_read as separate non-overlapping counts
+  return (inputTokens / 1000000) * p.input
        + (cacheCreation / 1000000) * p.cacheWrite
        + (cacheRead / 1000000) * p.cacheRead
        + (outputTokens / 1000000) * p.output;
