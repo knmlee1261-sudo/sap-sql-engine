@@ -97,9 +97,102 @@ def load_semantic_model(path: str = MODEL_FILE) -> dict:
 
 
 # ---------------------------------------------------------------------------
+# RAG-style module filtering
+# ---------------------------------------------------------------------------
+# Maps keywords/phrases in user questions to relevant SAP modules.
+# In production, a vector-based RAG retriever would replace this keyword map.
+MODULE_KEYWORDS = {
+    "FI_GL": [
+        "general ledger", "gl ", "g/l", "journal entry", "journal entries",
+        "posting", "document number", "bkpf", "bseg", "chart of accounts",
+        "account balance", "trial balance", "fb03", "fbl3n", "fiscal year",
+        "ledger", "glt0", "ska1", "skat", "skb1", "period balance",
+        "financial statement", "account group", "reconciliation",
+        "faglflext", "faglflexa", "asset", "anla", "depreciation",
+    ],
+    "FI_AP": [
+        "accounts payable", "ap ", "a/p", "vendor", "supplier",
+        "invoice", "payment", "payable", "lfa1", "bsik", "bsak",
+        "fk03", "fbl1n", "rbkp", "rseg", "aging", "overdue",
+        "procure to pay", "vendor master", "xk03",
+    ],
+    "FI_AR": [
+        "accounts receivable", "fi-ar", "a/r", "customer", "receivable",
+        "bsid", "bsad", "kna1", "knb1", "knvk", "fbl5n",
+        "customer master", "xd03", "collections", "credit memo",
+        "contact person", "customer balance",
+    ],
+    "CO": [
+        "controlling", "cost center", "cost element", "internal order",
+        "csks", "cosp", "coss", "coep", "cobk", "aufk", "cepc",
+        "ksb1", "kob1", "actual vs plan", "budget", "variance",
+        "overhead", "profit center",
+    ],
+    "MM": [
+        "material", "purchase order", "procurement", "inventory",
+        "stock", "requisition", "goods receipt", "vendor evaluation",
+        "mara", "makt", "marc", "mard", "ekko", "ekpo", "eban",
+        "me23n", "me2m", "me5a", "mb51", "mbew", "warehouse",
+        "storage location", "bom", "bill of material",
+        "three way match", "3-way match",
+    ],
+    "SD": [
+        "sales", "sales order", "delivery", "billing", "revenue",
+        "vbak", "vbap", "likp", "lips", "vbrk", "vbrp",
+        "va03", "vf03", "backlog", "order to cash",
+        "shipping", "customer sales",
+    ],
+    "PM": [
+        "maintenance", "equipment", "work order", "plant maintenance",
+        "aufk", "afih", "afko", "afvc", "afru", "equi", "eqkt",
+        "iw49n", "functional location", "breakdown", "preventive",
+        "maintenance plan", "ip03", "notification",
+    ],
+    "HR": [
+        "human resources", "employee", "headcount", "personnel",
+        "pa0001", "pa0002", "pa0006", "pa0008", "pa0014",
+        "organizational unit", "personnel area", "hire date",
+        "employee group", "employee subgroup",
+    ],
+    "PAY": [
+        "payroll", "salary", "wage", "compensation", "pay scale",
+        "hrpy_rgdir", "t511", "t512t", "earnings",
+        "payroll cost", "wage type",
+    ],
+    "BEN": [
+        "benefit", "enrollment", "health plan", "insurance",
+        "pa0167", "pa0168", "pa0169", "benefit plan",
+        "savings plan", "benefit option",
+    ],
+}
+
+
+def detect_modules(question: str) -> list[str]:
+    """
+    Detect which SAP modules are relevant to a user question.
+    Simulates production RAG retrieval by keyword matching.
+    Returns a list of module keys (e.g., ['FI_AP', 'MM']).
+    If no modules are detected, returns all module keys (fallback).
+    """
+    q_lower = question.lower()
+    scores = {}
+    for mod_key, keywords in MODULE_KEYWORDS.items():
+        hits = sum(1 for kw in keywords if kw in q_lower)
+        if hits > 0:
+            scores[mod_key] = hits
+    if not scores:
+        # No match — include all modules as fallback
+        return list(MODULE_KEYWORDS.keys())
+    # Return modules sorted by relevance (most hits first)
+    ranked = sorted(scores, key=lambda k: scores[k], reverse=True)
+    # Always include top match; also include others with at least 1 hit
+    return ranked
+
+
+# ---------------------------------------------------------------------------
 # System prompt construction
 # ---------------------------------------------------------------------------
-def build_system_prompt(model: dict) -> str:
+def build_system_prompt(model: dict, modules: list[str] | None = None) -> str:
     """
     Build the system prompt that teaches the LLM about the SAP ECC schema.
     Transforms the semantic model into effective LLM context for SQL generation.
@@ -229,8 +322,17 @@ def build_system_prompt(model: dict) -> str:
             if tbl.get("usage_notes"):
                 parts.append(f"  Usage: {tbl['usage_notes']}")
 
-    # Module objects
-    for mod_key, mod in model.get("modules", {}).items():
+    # Module objects (filtered by RAG-style module detection when available)
+    all_modules = model.get("modules", {})
+    if modules:
+        included = {k: v for k, v in all_modules.items() if k in modules}
+        excluded = [k for k in all_modules if k not in modules]
+        if excluded:
+            parts.append(f"\n\n(Modules not shown because they are not relevant to this query: {', '.join(excluded)})")
+            parts.append("If the question actually requires one of these modules, say so and the user can retry.")
+    else:
+        included = all_modules
+    for mod_key, mod in included.items():
         parts.append(f"\n\n{'='*60}")
         parts.append(f"=== MODULE: {mod['module_name']} ({mod_key}) ===")
         parts.append(f"{'='*60}")
@@ -270,9 +372,16 @@ def build_system_prompt(model: dict) -> str:
                     join_text = rel.get('join', rel.get('description', ''))
                     parts.append(f"    - {rel['from']} -> {rel['to']} ({rel['type']}): {join_text}")
 
-    # Cross-module relationships
+    # Cross-module relationships (filtered to only relevant modules)
     parts.append("\n\n=== CROSS-MODULE RELATIONSHIPS ===\n")
+    mod_set = set(modules) if modules else None
     for rel in model.get("cross_module_relationships", []):
+        # Filter: only include relationships where at least one module is relevant
+        if mod_set:
+            from_mod = rel.get("from_module", "")
+            to_mod = rel.get("to_module", "")
+            if from_mod and to_mod and from_mod not in mod_set and to_mod not in mod_set:
+                continue
         # Support both OEBS format (name, from_object, join.from/to) and SAP format (from_table, to_table, join_condition)
         if "name" in rel:
             # OEBS format
@@ -329,13 +438,18 @@ def build_system_prompt(model: dict) -> str:
             if guidelines.get("multi_org_note"):
                 parts.append(f"\nMulti-Org: {guidelines['multi_org_note']}")
 
-    # Example query patterns (few-shot)
+    # Example query patterns (few-shot, filtered to relevant modules)
     patterns = model.get("nl_query_patterns", [])
     if patterns:
         parts.append("\n\n=== EXAMPLE QUERY PATTERNS (MANDATORY — use these templates verbatim) ===")
         parts.append("\nIf the user's question matches any example below, copy the SQL template EXACTLY.")
         parts.append("Do NOT rewrite it. These templates use tested subquery aliases and column expressions.\n")
         for p in patterns:
+            # Filter patterns by module when module filtering is active
+            if mod_set:
+                pat_mod = p.get("primary_module", "")
+                if pat_mod and pat_mod not in mod_set:
+                    continue
             # Support both OEBS format and SAP format
             if "example_prompt" in p:
                 # OEBS format
@@ -864,7 +978,8 @@ def execute_on_test_db(sql: str, max_rows: int = 200) -> dict:
 class SAPHandler(BaseHTTPRequestHandler):
     """HTTP request handler for the SAP SQL Engine web UI."""
 
-    system_prompt = ""
+    system_prompt = ""       # Full system prompt (fallback)
+    semantic_model = None    # Raw model dict for per-request filtered prompts
     config = {}
 
     def _send_json(self, data, status=200):
@@ -914,13 +1029,29 @@ class SAPHandler(BaseHTTPRequestHandler):
                 return
 
             try:
+                # RAG-style module filtering: detect relevant modules and build
+                # a focused prompt containing only the schemas needed for this query.
+                # This simulates the production RAG pipeline and reduces token usage.
+                if self.semantic_model:
+                    detected = detect_modules(question)
+                    prompt = build_system_prompt(self.semantic_model, modules=detected)
+                else:
+                    detected = []
+                    prompt = self.system_prompt
+
                 api_result = generate_sql_with_api(
-                    question, self.system_prompt, api_key,
+                    question, prompt, api_key,
                     self.config.get("model", CLAUDE_MODEL),
                     conversation_history=conversation_history
                 )
-                self._send_json({"status": "ok", "result": api_result["text"],
-                                 "usage": api_result["usage"], "mode": "api"})
+                response_data = {
+                    "status": "ok", "result": api_result["text"],
+                    "usage": api_result["usage"], "mode": "api",
+                }
+                if detected:
+                    response_data["modules_used"] = detected
+                    response_data["prompt_chars"] = len(prompt)
+                self._send_json(response_data)
             except Exception as e:
                 err_msg = str(e) or f"{type(e).__name__}: {repr(e)}"
                 self._send_json({"status": "error", "error": err_msg})
@@ -1007,12 +1138,14 @@ class SAPHandler(BaseHTTPRequestHandler):
             super().log_message(format, *args)
 
 
-def run_server(system_prompt: str, config: dict, open_browser: bool = True):
+def run_server(system_prompt: str, config: dict, open_browser: bool = True,
+               semantic_model: dict = None):
     """Start the HTTP server and optionally open the browser."""
     port = int(os.environ.get("PORT", config.get("port", DEFAULT_PORT)))
     host = os.environ.get("HOST", "127.0.0.1")
 
     SAPHandler.system_prompt = system_prompt
+    SAPHandler.semantic_model = semantic_model
     SAPHandler.config = config
 
     server = HTTPServer((host, port), SAPHandler)
@@ -1048,7 +1181,7 @@ def run_server(system_prompt: str, config: dict, open_browser: bool = True):
 # ---------------------------------------------------------------------------
 # Interactive CLI
 # ---------------------------------------------------------------------------
-def run_interactive(system_prompt: str, config: dict):
+def run_interactive(system_prompt: str, config: dict, semantic_model: dict = None):
     api_key = get_api_key(config)
     has_api = bool(api_key)
 
@@ -1106,7 +1239,7 @@ def run_interactive(system_prompt: str, config: dict):
             print(f"  Exported to: {out}")
             continue
         if question.lower() == "web":
-            run_server(system_prompt, config)
+            run_server(system_prompt, config, semantic_model=semantic_model)
             break
 
         if question.isdigit() and 1 <= int(question) <= len(examples):
@@ -1188,10 +1321,11 @@ def main():
             sys.exit(1)
 
     elif args.server:
-        run_server(system_prompt, config, open_browser=not args.no_browser)
+        run_server(system_prompt, config, open_browser=not args.no_browser,
+                   semantic_model=model)
 
     else:
-        run_interactive(system_prompt, config)
+        run_interactive(system_prompt, config, semantic_model=model)
 
 
 if __name__ == "__main__":

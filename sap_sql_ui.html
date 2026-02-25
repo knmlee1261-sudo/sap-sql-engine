@@ -1155,7 +1155,7 @@ function applyInline(text) {
 }
 
 // Build the hidden SQL detail section from the full response
-function buildSQLDetail(text, sqliteInfo, usage) {
+function buildSQLDetail(text, sqliteInfo, usage, modulesUsed) {
   const parts = text.split(/(```sql[\s\S]*?```)/g);
   let html = '';
   let sqlCount = 0;
@@ -1182,6 +1182,21 @@ function buildSQLDetail(text, sqliteInfo, usage) {
   // Append SQLite translation if available
   if (sqliteInfo) {
     html += `<details class="sqlite-detail"><summary>SQLite translation used</summary><pre>${sqliteInfo.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</pre></details>`;
+  }
+
+  // Append module filtering info (RAG simulation)
+  if (modulesUsed && modulesUsed.length > 0 && modulesUsed.length < 10) {
+    const MODULE_NAMES = {
+      FI_GL: 'General Ledger', FI_AP: 'Accounts Payable', FI_AR: 'Accounts Receivable',
+      CO: 'Controlling', MM: 'Materials Mgmt', SD: 'Sales & Distribution',
+      PM: 'Plant Maintenance', HR: 'Human Resources', PAY: 'Payroll', BEN: 'Benefits'
+    };
+    const labels = modulesUsed.map(m => MODULE_NAMES[m] || m);
+    html += `<div class="token-usage" style="margin-bottom:2px;">` +
+      `<span class="token-label">Modules (RAG):</span> ` +
+      `<span class="token-value">${labels.join(', ')}</span>` +
+      ` <span class="token-value" style="color:var(--text-dim);">(${modulesUsed.length} of 10)</span>` +
+      `</div>`;
   }
 
   // Append token usage if available
@@ -1389,7 +1404,7 @@ async function sendQuestion() {
         // Build the response: results first, then hidden SQL detail
         const detailId = `detail-${Date.now()}`;
         const resultsHtml = buildResultsTable(execData);
-        const sqlDetailHtml = buildSQLDetail(fullResponse, execData.sqlite_sql || null, data.usage);
+        const sqlDetailHtml = buildSQLDetail(fullResponse, execData.sqlite_sql || null, data.usage, data.modules_used);
 
         const msgDiv = addMessage('assistant', '');
         msgDiv.querySelector('.content').innerHTML =
@@ -1417,7 +1432,7 @@ async function sendQuestion() {
         // Has SQL but no test DB — show SQL detail without execution
         removeLoading();
         const detailId = `detail-${Date.now()}`;
-        const sqlDetailHtml = buildSQLDetail(fullResponse, null, data.usage);
+        const sqlDetailHtml = buildSQLDetail(fullResponse, null, data.usage, data.modules_used);
 
         const msgDiv = addMessage('assistant', '');
         msgDiv.querySelector('.content').innerHTML = sqlDetailHtml;
