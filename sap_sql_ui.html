@@ -747,17 +747,25 @@ let appState = { has_api: false, model: '', key_preview: '', has_test_db: false 
 let conversationHistory = [];  // Tracks message history for multi-turn conversations
 
 // Session token tracking
-let sessionTokens = { input: 0, output: 0, queries: 0 };
+let sessionTokens = { input: 0, output: 0, queries: 0, cacheCreation: 0, cacheRead: 0 };
 
-// Token cost calculation — model-aware pricing
+// Token cost calculation — model-aware pricing with prompt caching support
+// Cached input tokens cost 90% less than regular input tokens
 const MODEL_PRICING = {
-  'claude-sonnet-4-5-20250929': { input: 3.0,  output: 15.0 },
-  'claude-sonnet-4-20250514':   { input: 3.0,  output: 15.0 },
-  'claude-haiku-4-20250414':    { input: 0.80, output: 4.0  },
+  'claude-sonnet-4-5-20250929': { input: 3.0,  output: 15.0, cacheWrite: 3.75, cacheRead: 0.30 },
+  'claude-sonnet-4-20250514':   { input: 3.0,  output: 15.0, cacheWrite: 3.75, cacheRead: 0.30 },
+  'claude-haiku-4-20250414':    { input: 0.80, output: 4.0,  cacheWrite: 1.00, cacheRead: 0.08 },
 };
-function calcTokenCost(inputTokens, outputTokens) {
-  const p = MODEL_PRICING[appState.model] || { input: 3.0, output: 15.0 };
-  return (inputTokens / 1000000) * p.input + (outputTokens / 1000000) * p.output;
+function calcTokenCost(inputTokens, outputTokens, cacheCreation, cacheRead) {
+  const p = MODEL_PRICING[appState.model] || { input: 3.0, output: 15.0, cacheWrite: 3.75, cacheRead: 0.30 };
+  cacheCreation = cacheCreation || 0;
+  cacheRead = cacheRead || 0;
+  // Regular input tokens exclude cache tokens; cache tokens have separate pricing
+  const regularInput = inputTokens - cacheCreation - cacheRead;
+  return (regularInput / 1000000) * p.input
+       + (cacheCreation / 1000000) * p.cacheWrite
+       + (cacheRead / 1000000) * p.cacheRead
+       + (outputTokens / 1000000) * p.output;
 }
 function formatCost(cost) {
   return cost < 0.01 ? '$' + cost.toFixed(4) : '$' + cost.toFixed(2);
@@ -767,9 +775,12 @@ function updateSessionTokens(usage) {
   if (!usage) return;
   sessionTokens.input += usage.input_tokens || 0;
   sessionTokens.output += usage.output_tokens || 0;
+  sessionTokens.cacheCreation += usage.cache_creation_input_tokens || 0;
+  sessionTokens.cacheRead += usage.cache_read_input_tokens || 0;
   sessionTokens.queries++;
   const total = sessionTokens.input + sessionTokens.output;
-  const cost = calcTokenCost(sessionTokens.input, sessionTokens.output);
+  const cost = calcTokenCost(sessionTokens.input, sessionTokens.output,
+                             sessionTokens.cacheCreation, sessionTokens.cacheRead);
   document.getElementById('sessionTokensBtn').textContent = total.toLocaleString() + ' tokens (' + formatCost(cost) + ')';
   document.getElementById('stQueries').textContent = sessionTokens.queries.toLocaleString();
   document.getElementById('stInput').textContent = sessionTokens.input.toLocaleString();
@@ -1177,7 +1188,9 @@ function buildSQLDetail(text, sqliteInfo, usage) {
   // Append token usage if available
   if (usage) {
     const total = (usage.input_tokens || 0) + (usage.output_tokens || 0);
-    const queryCost = calcTokenCost(usage.input_tokens || 0, usage.output_tokens || 0);
+    const cacheCreate = usage.cache_creation_input_tokens || 0;
+    const cacheHit = usage.cache_read_input_tokens || 0;
+    const queryCost = calcTokenCost(usage.input_tokens || 0, usage.output_tokens || 0, cacheCreate, cacheHit);
     html += `<div class="token-usage">` +
       `<span class="token-label">Tokens:</span> ` +
       `<span class="token-value">${(usage.input_tokens || 0).toLocaleString()} input</span>` +
@@ -1186,8 +1199,13 @@ function buildSQLDetail(text, sqliteInfo, usage) {
       ` &middot; ` +
       `<span class="token-value">${total.toLocaleString()} total</span>` +
       ` &middot; ` +
-      `<span class="token-value">${formatCost(queryCost)}</span>` +
-      `</div>`;
+      `<span class="token-value">${formatCost(queryCost)}</span>`;
+    if (cacheHit > 0) {
+      html += ` &middot; <span class="token-value" style="color:#4CAF50;">&#9889; ${cacheHit.toLocaleString()} cached</span>`;
+    } else if (cacheCreate > 0) {
+      html += ` &middot; <span class="token-value" style="color:#FF9800;">&#9681; cache primed</span>`;
+    }
+    html += `</div>`;
   }
 
   return html;

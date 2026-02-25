@@ -386,18 +386,34 @@ def generate_sql_with_api(question: str, system_prompt: str, api_key: str,
     else:
         messages = [{"role": "user", "content": question}]
 
+    # Use prompt caching: the system prompt is identical on every call,
+    # so mark it with cache_control to avoid re-processing on subsequent requests.
+    # First call pays full price; subsequent calls reuse cached prompt at 90% discount
+    # and significantly faster time-to-first-token.
     response = client.messages.create(
         model=model_name,
         max_tokens=MAX_TOKENS,
-        system=system_prompt,
+        system=[
+            {
+                "type": "text",
+                "text": system_prompt,
+                "cache_control": {"type": "ephemeral"}
+            }
+        ],
         messages=messages
     )
+    usage = {
+        "input_tokens": response.usage.input_tokens,
+        "output_tokens": response.usage.output_tokens,
+    }
+    # Include cache stats when available
+    if hasattr(response.usage, "cache_creation_input_tokens"):
+        usage["cache_creation_input_tokens"] = response.usage.cache_creation_input_tokens or 0
+    if hasattr(response.usage, "cache_read_input_tokens"):
+        usage["cache_read_input_tokens"] = response.usage.cache_read_input_tokens or 0
     return {
         "text": response.content[0].text,
-        "usage": {
-            "input_tokens": response.usage.input_tokens,
-            "output_tokens": response.usage.output_tokens
-        }
+        "usage": usage
     }
 
 
