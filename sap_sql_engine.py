@@ -950,6 +950,21 @@ class SAPHandler(BaseHTTPRequestHandler):
             save_config(self.config)
             self._send_json({"status": "ok"})
 
+        elif self.path == "/api/save-model":
+            model = body.get("model", "").strip()
+            ALLOWED_MODELS = {
+                "claude-sonnet-4-5-20250929",
+                "claude-sonnet-4-20250514",
+                "claude-haiku-4-20250414",
+            }
+            if model not in ALLOWED_MODELS:
+                self._send_json({"status": "error",
+                                 "error": f"Unknown model: {model}"})
+                return
+            self.config["model"] = model
+            save_config(self.config)
+            self._send_json({"status": "ok", "model": model})
+
         elif self.path == "/api/execute":
             sql = body.get("sql", "").strip()
             if not sql:

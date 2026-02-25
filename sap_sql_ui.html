@@ -725,7 +725,16 @@
     </div>
 
     <label style="margin-top:16px;">Model</label>
-    <div style="font-size:13px; color:var(--text-dim); margin-bottom:4px;" id="modelDisplay">Loading...</div>
+    <select id="modelSelect" onchange="saveModel()" style="
+      width:100%; padding:8px 10px; font-size:13px; border-radius:6px;
+      border:1px solid var(--border); background:var(--bg); color:var(--text);
+      cursor:pointer; margin-bottom:4px; outline:none;
+    ">
+      <option value="claude-sonnet-4-5-20250929">Claude Sonnet 4.5 — smartest, slower (~8-10s)</option>
+      <option value="claude-sonnet-4-20250514">Claude Sonnet 4 — fast &amp; capable (~3-5s)</option>
+      <option value="claude-haiku-4-20250414">Claude Haiku 4 — fastest, lighter (~2-3s)</option>
+    </select>
+    <div id="modelStatus" style="font-size:12px; color:var(--text-dim); margin-bottom:4px;"></div>
 
     <button class="modal-close" onclick="closeSettings()">Close</button>
   </div>
@@ -740,9 +749,15 @@ let conversationHistory = [];  // Tracks message history for multi-turn conversa
 // Session token tracking
 let sessionTokens = { input: 0, output: 0, queries: 0 };
 
-// Token cost calculation (Claude Sonnet 4.5: $3/M input, $15/M output)
+// Token cost calculation — model-aware pricing
+const MODEL_PRICING = {
+  'claude-sonnet-4-5-20250929': { input: 3.0,  output: 15.0 },
+  'claude-sonnet-4-20250514':   { input: 3.0,  output: 15.0 },
+  'claude-haiku-4-20250414':    { input: 0.80, output: 4.0  },
+};
 function calcTokenCost(inputTokens, outputTokens) {
-  return (inputTokens / 1000000) * 3.0 + (outputTokens / 1000000) * 15.0;
+  const p = MODEL_PRICING[appState.model] || { input: 3.0, output: 15.0 };
+  return (inputTokens / 1000000) * p.input + (outputTokens / 1000000) * p.output;
 }
 function formatCost(cost) {
   return cost < 0.01 ? '$' + cost.toFixed(4) : '$' + cost.toFixed(2);
@@ -798,7 +813,16 @@ async function checkStatus() {
       banner.style.display = 'block';
       updateSettingsModal(false);
     }
-    document.getElementById('modelDisplay').textContent = appState.model;
+    const modelSel = document.getElementById('modelSelect');
+    if (modelSel && appState.model) {
+      modelSel.value = appState.model;
+      // If server has a model not in our list, add it dynamically
+      if (modelSel.value !== appState.model) {
+        const opt = document.createElement('option');
+        opt.value = appState.model; opt.textContent = appState.model;
+        modelSel.appendChild(opt); modelSel.value = appState.model;
+      }
+    }
     const dbIndicator = document.getElementById('testDbIndicator');
     if (dbIndicator) {
       if (appState.has_test_db) {
@@ -904,6 +928,34 @@ function closeSettings() {
 document.getElementById('settingsModal').addEventListener('click', (e) => {
   if (e.target === e.currentTarget) closeSettings();
 });
+
+async function saveModel() {
+  const sel = document.getElementById('modelSelect');
+  const status = document.getElementById('modelStatus');
+  const model = sel.value;
+  status.textContent = 'Saving...';
+  status.style.color = 'var(--text-dim)';
+  try {
+    const res = await fetch(`${API_BASE}/api/save-model`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model })
+    });
+    const data = await res.json();
+    if (data.status === 'ok') {
+      status.textContent = `Switched to ${sel.options[sel.selectedIndex].text.split(' —')[0]}`;
+      status.style.color = '#4CAF50';
+      appState.model = model;
+    } else {
+      status.textContent = data.error || 'Failed to save';
+      status.style.color = '#e74c3c';
+    }
+  } catch (e) {
+    status.textContent = 'Connection error';
+    status.style.color = '#e74c3c';
+  }
+  setTimeout(() => { status.textContent = ''; }, 3000);
+}
 
 // ===================== Sidebar Toggle =====================
 
