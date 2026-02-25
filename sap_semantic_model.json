@@ -4693,6 +4693,11 @@
               "foreign_keys": [],
               "business_columns": [
                 {
+                  "column": "KUNNR",
+                  "type": "CHAR(10)",
+                  "description": "Customer Number - links to KNA1.KUNNR"
+                },
+                {
                   "column": "ABTNR",
                   "type": "CHAR(20)",
                   "description": "Department"
@@ -4711,6 +4716,32 @@
                   "column": "PAFKT",
                   "type": "CHAR(20)",
                   "description": "Function"
+                },
+                {
+                  "column": "PARNR",
+                  "type": "CHAR(10)",
+                  "description": "Contact person number (internal key within customer)"
+                },
+                {
+                  "column": "NAME1",
+                  "type": "CHAR(35)",
+                  "description": "Last Name of contact person"
+                },
+                {
+                  "column": "TELF1",
+                  "type": "CHAR(16)",
+                  "description": "Telephone number of contact person"
+                },
+                {
+                  "column": "SMTP_ADDR",
+                  "type": "CHAR(241)",
+                  "description": "Email address of contact person"
+                }
+              ],
+              "join_keys": [
+                {
+                  "column": "KUNNR",
+                  "references": "KNA1.KUNNR"
                 }
               ]
             }
