@@ -1,0 +1,610 @@
+{
+  "CO": {
+    "module_name": "Controlling",
+    "description": "SAP CO Controlling - cost centers, internal orders, and cost accounting",
+    "application_short_name": "CO",
+    "business_objects": {
+      "Cost_Center": {
+        "description": "Cost center master data for allocating costs",
+        "nl_aliases": [
+          "cost center",
+          "cost centre",
+          "CC",
+          "KOSTL"
+        ],
+        "business_questions": [
+          "Show me all cost centers in company 1000",
+          "What is the manager of cost center 1000?",
+          "Show me cost center hierarchy"
+        ],
+        "primary_table": "CSKS",
+        "tables": {
+          "CSKS": {
+            "schema": "SAP",
+            "description": "Cost Center Master - General data",
+            "primary_key": {
+              "column": "KOKRS, KOSTL, DATBI",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "KOKRS",
+                "type": "CHAR(4)",
+                "description": "Controlling area"
+              },
+              {
+                "column": "KOSTL",
+                "type": "CHAR(10)",
+                "description": "Cost center",
+                "nl_aliases": [
+                  "cost center"
+                ]
+              },
+              {
+                "column": "DATBI",
+                "type": "DATE",
+                "description": "Valid to date"
+              },
+              {
+                "column": "DATAB",
+                "type": "DATE",
+                "description": "Valid from date"
+              },
+              {
+                "column": "VERAK",
+                "type": "CHAR(10)",
+                "description": "Responsible person"
+              },
+              {
+                "column": "KOSAR",
+                "type": "CHAR(1)",
+                "description": "Cost center type (H=Header, S=Standard)"
+              },
+              {
+                "column": "BUKRS",
+                "type": "CHAR(4)",
+                "description": "Company code"
+              },
+              {
+                "column": "GSBER",
+                "type": "CHAR(4)",
+                "description": "Business area"
+              },
+              {
+                "column": "PRCTR",
+                "type": "CHAR(10)",
+                "description": "Profit center"
+              }
+            ]
+          },
+          "CSKT": {
+            "schema": "SAP",
+            "description": "Cost Center Description - multilingual texts",
+            "primary_key": {
+              "column": "KOKRS, KOSTL, DATBI, SPRAS",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [
+              {
+                "column": "KOKRS, KOSTL, DATBI",
+                "references": "CSKS.KOKRS, KOSTL, DATBI"
+              }
+            ],
+            "business_columns": [
+              {
+                "column": "KOKRS",
+                "type": "CHAR(4)",
+                "description": "Controlling area"
+              },
+              {
+                "column": "KOSTL",
+                "type": "CHAR(10)",
+                "description": "Cost center"
+              },
+              {
+                "column": "DATBI",
+                "type": "DATE",
+                "description": "Valid to date"
+              },
+              {
+                "column": "SPRAS",
+                "type": "CHAR(1)",
+                "description": "Language"
+              },
+              {
+                "column": "KTEXT",
+                "type": "CHAR(25)",
+                "description": "Short text",
+                "nl_aliases": [
+                  "short name"
+                ]
+              },
+              {
+                "column": "LTEXT",
+                "type": "CHAR(50)",
+                "description": "Long text",
+                "nl_aliases": [
+                  "description"
+                ]
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": [
+          {
+            "from": "CSKS",
+            "to": "CSKT",
+            "join": "CSKS.KOKRS = CSKT.KOKRS AND CSKS.KOSTL = CSKT.KOSTL AND CSKS.DATBI = CSKT.DATBI",
+            "type": "one-to-many"
+          }
+        ]
+      },
+      "Internal_Order": {
+        "description": "Internal orders for tracking costs and revenues",
+        "nl_aliases": [
+          "internal order",
+          "order",
+          "IO",
+          "AUFK"
+        ],
+        "business_questions": [
+          "Show me all active internal orders",
+          "What is the status of order 800123?",
+          "Show me orders by cost center"
+        ],
+        "primary_table": "AUFK",
+        "tables": {
+          "AUFK": {
+            "schema": "SAP",
+            "description": "Internal Order Master",
+            "primary_key": {
+              "column": "AUFNR",
+              "type": "PRIMARY"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "AUFNR",
+                "type": "CHAR(12)",
+                "description": "Internal order number",
+                "nl_aliases": [
+                  "order number",
+                  "order"
+                ]
+              },
+              {
+                "column": "AUART",
+                "type": "CHAR(2)",
+                "description": "Order type",
+                "nl_aliases": [
+                  "type"
+                ]
+              },
+              {
+                "column": "AUTYP",
+                "type": "CHAR(1)",
+                "description": "Order category (1=Project, 2=Maintenance)"
+              },
+              {
+                "column": "BUKRS",
+                "type": "CHAR(4)",
+                "description": "Company code"
+              },
+              {
+                "column": "KOKRS",
+                "type": "CHAR(4)",
+                "description": "Controlling area"
+              },
+              {
+                "column": "KOSTV",
+                "type": "CHAR(10)",
+                "description": "Cost center"
+              },
+              {
+                "column": "PRCTR",
+                "type": "CHAR(10)",
+                "description": "Profit center"
+              },
+              {
+                "column": "KTEXT",
+                "type": "CHAR(40)",
+                "description": "Order description"
+              },
+              {
+                "column": "ERDAT",
+                "type": "DATE",
+                "description": "Created date"
+              },
+              {
+                "column": "AEDAT",
+                "type": "DATE",
+                "description": "Changed date"
+              },
+              {
+                "column": "LOEKZ",
+                "type": "CHAR(1)",
+                "description": "Deletion indicator"
+              },
+              {
+                "column": "STAT0",
+                "type": "CHAR(2)",
+                "description": "Order status"
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": []
+      },
+      "Cost_Totals": {
+        "description": "Accumulated cost and revenue totals by cost object",
+        "nl_aliases": [
+          "cost totals",
+          "CO document",
+          "cost posting",
+          "actual costs"
+        ],
+        "business_questions": [
+          "Show me actual costs for cost center 1000",
+          "What is the planned vs actual for this order?",
+          "Show me costs by account"
+        ],
+        "primary_table": "COSP",
+        "tables": {
+          "COSP": {
+            "schema": "SAP",
+            "description": "Actual Cost Objects - actual costs by period",
+            "primary_key": {
+              "column": "OBJNR, GJAHR, WRTTP, VERSN",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "OBJNR",
+                "type": "CHAR(22)",
+                "description": "Cost object number",
+                "nl_aliases": [
+                  "object"
+                ]
+              },
+              {
+                "column": "GJAHR",
+                "type": "NUMC(4)",
+                "description": "Fiscal year"
+              },
+              {
+                "column": "WRTTP",
+                "type": "CHAR(2)",
+                "description": "Value type (01=Actual, 02=Plan)"
+              },
+              {
+                "column": "VERSN",
+                "type": "NUMC(3)",
+                "description": "Version"
+              },
+              {
+                "column": "KSTAR",
+                "type": "CHAR(10)",
+                "description": "Cost element"
+              },
+              {
+                "column": "HESSION",
+                "type": "NUMC(3)",
+                "description": "Allocation cycle"
+              },
+              {
+                "column": "WKG001",
+                "type": "CURR(13,2)",
+                "description": "Period 1 amount"
+              },
+              {
+                "column": "WKG002",
+                "type": "CURR(13,2)",
+                "description": "Period 2 amount"
+              },
+              {
+                "column": "WKG003",
+                "type": "CURR(13,2)",
+                "description": "Period 3 amount"
+              },
+              {
+                "column": "WKG004",
+                "type": "CURR(13,2)",
+                "description": "Period 4 amount"
+              },
+              {
+                "column": "WKG005",
+                "type": "CURR(13,2)",
+                "description": "Period 5 amount"
+              },
+              {
+                "column": "WKG006",
+                "type": "CURR(13,2)",
+                "description": "Period 6 amount"
+              },
+              {
+                "column": "WKG007",
+                "type": "CURR(13,2)",
+                "description": "Period 7 amount"
+              },
+              {
+                "column": "WKG008",
+                "type": "CURR(13,2)",
+                "description": "Period 8 amount"
+              },
+              {
+                "column": "WKG009",
+                "type": "CURR(13,2)",
+                "description": "Period 9 amount"
+              },
+              {
+                "column": "WKG010",
+                "type": "CURR(13,2)",
+                "description": "Period 10 amount"
+              },
+              {
+                "column": "WKG011",
+                "type": "CURR(13,2)",
+                "description": "Period 11 amount"
+              },
+              {
+                "column": "WKG012",
+                "type": "CURR(13,2)",
+                "description": "Period 12 amount"
+              }
+            ]
+          },
+          "COSS": {
+            "schema": "SAP",
+            "description": "Statistical Key Figures - non-financial data by period",
+            "primary_key": {
+              "column": "OBJNR, GJAHR, WRTTP, VERSN",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "OBJNR",
+                "type": "CHAR(22)",
+                "description": "Cost object number"
+              },
+              {
+                "column": "GJAHR",
+                "type": "NUMC(4)",
+                "description": "Fiscal year"
+              },
+              {
+                "column": "WRTTP",
+                "type": "CHAR(2)",
+                "description": "Value type"
+              },
+              {
+                "column": "VERSN",
+                "type": "NUMC(3)",
+                "description": "Version"
+              },
+              {
+                "column": "KSTAR",
+                "type": "CHAR(10)",
+                "description": "Cost element"
+              },
+              {
+                "column": "HESSION",
+                "type": "NUMC(3)",
+                "description": "Allocation cycle"
+              },
+              {
+                "column": "WKG001",
+                "type": "CURR(13,2)",
+                "description": "Period 1 amount"
+              },
+              {
+                "column": "WKG002",
+                "type": "CURR(13,2)",
+                "description": "Period 2 amount"
+              },
+              {
+                "column": "WKG003",
+                "type": "CURR(13,2)",
+                "description": "Period 3 amount"
+              },
+              {
+                "column": "WKG004",
+                "type": "CURR(13,2)",
+                "description": "Period 4 amount"
+              },
+              {
+                "column": "WKG005",
+                "type": "CURR(13,2)",
+                "description": "Period 5 amount"
+              },
+              {
+                "column": "WKG006",
+                "type": "CURR(13,2)",
+                "description": "Period 6 amount"
+              },
+              {
+                "column": "WKG007",
+                "type": "CURR(13,2)",
+                "description": "Period 7 amount"
+              },
+              {
+                "column": "WKG008",
+                "type": "CURR(13,2)",
+                "description": "Period 8 amount"
+              },
+              {
+                "column": "WKG009",
+                "type": "CURR(13,2)",
+                "description": "Period 9 amount"
+              },
+              {
+                "column": "WKG010",
+                "type": "CURR(13,2)",
+                "description": "Period 10 amount"
+              },
+              {
+                "column": "WKG011",
+                "type": "CURR(13,2)",
+                "description": "Period 11 amount"
+              },
+              {
+                "column": "WKG012",
+                "type": "CURR(13,2)",
+                "description": "Period 12 amount"
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": []
+      },
+      "CO_Document": {
+        "description": "Cost accounting documents (headers and line items)",
+        "nl_aliases": [
+          "CO document",
+          "cost document",
+          "allocation"
+        ],
+        "business_questions": [
+          "Show me CO documents posted this month",
+          "What documents allocated to this cost center?"
+        ],
+        "primary_table": "COBK",
+        "tables": {
+          "COBK": {
+            "schema": "SAP",
+            "description": "CO Document Header",
+            "primary_key": {
+              "column": "KOKRS, BELNR, GJAHR",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "KOKRS",
+                "type": "CHAR(4)",
+                "description": "Controlling area"
+              },
+              {
+                "column": "BELNR",
+                "type": "CHAR(10)",
+                "description": "Document number"
+              },
+              {
+                "column": "GJAHR",
+                "type": "NUMC(4)",
+                "description": "Fiscal year"
+              },
+              {
+                "column": "BLDAT",
+                "type": "DATE",
+                "description": "Document date"
+              },
+              {
+                "column": "BUDAT",
+                "type": "DATE",
+                "description": "Posting date"
+              },
+              {
+                "column": "BLTXT",
+                "type": "CHAR(50)",
+                "description": "Document text"
+              },
+              {
+                "column": "USNAM",
+                "type": "CHAR(12)",
+                "description": "User name"
+              },
+              {
+                "column": "VRGNG",
+                "type": "CHAR(10)",
+                "description": "Transaction type"
+              }
+            ]
+          },
+          "COEP": {
+            "schema": "SAP",
+            "description": "CO Document Line Items",
+            "primary_key": {
+              "column": "KOKRS, BELNR, BUZEI, GJAHR",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [
+              {
+                "column": "KOKRS, BELNR, GJAHR",
+                "references": "COBK.KOKRS, BELNR, GJAHR"
+              }
+            ],
+            "business_columns": [
+              {
+                "column": "KOKRS",
+                "type": "CHAR(4)",
+                "description": "Controlling area"
+              },
+              {
+                "column": "BELNR",
+                "type": "CHAR(10)",
+                "description": "Document number"
+              },
+              {
+                "column": "BUZEI",
+                "type": "NUMC(3)",
+                "description": "Line item"
+              },
+              {
+                "column": "GJAHR",
+                "type": "NUMC(4)",
+                "description": "Fiscal year"
+              },
+              {
+                "column": "OBJNR",
+                "type": "CHAR(22)",
+                "description": "Cost object"
+              },
+              {
+                "column": "KSTAR",
+                "type": "CHAR(10)",
+                "description": "Cost element"
+              },
+              {
+                "column": "WRTTP",
+                "type": "CHAR(2)",
+                "description": "Value type"
+              },
+              {
+                "column": "WRTMA",
+                "type": "CHAR(2)",
+                "description": "Value type for amount"
+              },
+              {
+                "column": "MEGMA",
+                "type": "CHAR(2)",
+                "description": "Quantity field"
+              },
+              {
+                "column": "PRCTR",
+                "type": "VARCHAR(10)",
+                "description": "Profit center",
+                "nl_aliases": [
+                  "profit center"
+                ]
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": [
+          {
+            "from": "COBK",
+            "to": "COEP",
+            "join": "COBK.KOKRS = COEP.KOKRS AND COBK.BELNR = COEP.BELNR AND COBK.GJAHR = COEP.GJAHR",
+            "type": "one-to-many"
+          }
+        ]
+      }
+    }
+  },
+  "module_key": "CO",
+  "module_name": "Controlling",
+  "description": "Internal control and cost accounting"
+}

@@ -1,0 +1,210 @@
+{
+  "BEN": {
+    "module_name": "Benefits",
+    "description": "SAP Benefits - health plans, insurance, and savings accounts",
+    "application_short_name": "BEN",
+    "business_objects": {
+      "Health_Plan": {
+        "description": "Health insurance plan enrollment",
+        "nl_aliases": [
+          "health plan",
+          "health insurance",
+          "medical",
+          "health coverage"
+        ],
+        "business_questions": [
+          "Show me employees enrolled in health plans",
+          "What health plan is employee 100001 enrolled in?"
+        ],
+        "primary_table": "PA0167",
+        "tables": {
+          "PA0167": {
+            "schema": "SAP",
+            "description": "Health Insurance Plan",
+            "primary_key": {
+              "column": "PERNR, BEGDA",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "PERNR",
+                "type": "NUMC(8)",
+                "description": "Employee number"
+              },
+              {
+                "column": "BEGDA",
+                "type": "DATE",
+                "description": "Valid from date"
+              },
+              {
+                "column": "ENDDA",
+                "type": "DATE",
+                "description": "Valid to date"
+              },
+              {
+                "column": "BESSION",
+                "type": "CHAR(10)",
+                "description": "Benefit plan identifier"
+              },
+              {
+                "column": "BESSION_CAT",
+                "type": "CHAR(2)",
+                "description": "Benefit category"
+              },
+              {
+                "column": "BESSION_TYPE",
+                "type": "CHAR(1)",
+                "description": "Benefit type"
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": []
+      },
+      "Insurance_Plan": {
+        "description": "Insurance plan enrollment (life, disability, etc.)",
+        "nl_aliases": [
+          "insurance plan",
+          "life insurance",
+          "disability insurance",
+          "supplemental insurance"
+        ],
+        "business_questions": [
+          "Show me employees with insurance coverage",
+          "What coverage amount for employee 100001?"
+        ],
+        "primary_table": "PA0168",
+        "tables": {
+          "PA0168": {
+            "schema": "SAP",
+            "description": "Insurance Plan",
+            "primary_key": {
+              "column": "PERNR, BEGDA",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "PERNR",
+                "type": "NUMC(8)",
+                "description": "Employee number"
+              },
+              {
+                "column": "BEGDA",
+                "type": "DATE",
+                "description": "Valid from date"
+              },
+              {
+                "column": "ENDDA",
+                "type": "DATE",
+                "description": "Valid to date"
+              },
+              {
+                "column": "BESSION",
+                "type": "CHAR(10)",
+                "description": "Benefit plan identifier"
+              },
+              {
+                "column": "BESSION_CAT",
+                "type": "CHAR(2)",
+                "description": "Benefit category"
+              },
+              {
+                "column": "BESSION_TYPE",
+                "type": "CHAR(1)",
+                "description": "Benefit type"
+              },
+              {
+                "column": "COVAM",
+                "type": "CURR(13,2)",
+                "description": "Coverage amount",
+                "nl_aliases": [
+                  "coverage"
+                ]
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": []
+      },
+      "Savings_Plan": {
+        "description": "401k/Savings plan enrollment and contributions",
+        "nl_aliases": [
+          "savings plan",
+          "401k",
+          "retirement plan",
+          "savings account"
+        ],
+        "business_questions": [
+          "Show me employees in savings plans",
+          "What is the contribution rate for employee 100001?"
+        ],
+        "primary_table": "PA0169",
+        "tables": {
+          "PA0169": {
+            "schema": "SAP",
+            "description": "Savings Plan",
+            "primary_key": {
+              "column": "PERNR, BEGDA",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "PERNR",
+                "type": "NUMC(8)",
+                "description": "Employee number"
+              },
+              {
+                "column": "BEGDA",
+                "type": "DATE",
+                "description": "Valid from date"
+              },
+              {
+                "column": "ENDDA",
+                "type": "DATE",
+                "description": "Valid to date"
+              },
+              {
+                "column": "BESSION",
+                "type": "CHAR(10)",
+                "description": "Benefit plan identifier"
+              },
+              {
+                "column": "BESSION_CAT",
+                "type": "CHAR(2)",
+                "description": "Benefit category"
+              },
+              {
+                "column": "BESSION_TYPE",
+                "type": "CHAR(1)",
+                "description": "Benefit type"
+              },
+              {
+                "column": "EECON",
+                "type": "DEC(5,2)",
+                "description": "Employee contribution %",
+                "nl_aliases": [
+                  "employee contribution"
+                ]
+              },
+              {
+                "column": "ERCON",
+                "type": "DEC(5,2)",
+                "description": "Employer contribution %",
+                "nl_aliases": [
+                  "employer contribution"
+                ]
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": []
+      }
+    }
+  },
+  "module_key": "BEN",
+  "module_name": "Benefits Management",
+  "description": "Benefits and entitlement management for employees"
+}

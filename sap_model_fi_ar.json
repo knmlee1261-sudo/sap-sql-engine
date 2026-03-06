@@ -1,0 +1,545 @@
+{
+  "FI_AR": {
+    "module_name": "Accounts Receivable",
+    "description": "SAP FI Accounts Receivable - customer master, invoices, and payment tracking",
+    "application_short_name": "FI-AR",
+    "business_objects": {
+      "Customer": {
+        "description": "Customer master data with company code specific details",
+        "nl_aliases": [
+          "customer",
+          "client",
+          "customer master",
+          "KNA1"
+        ],
+        "business_questions": [
+          "Show me all customers in company code 1000",
+          "What is the payment terms for customer C100000?",
+          "Which customers have active sales orders?",
+          "Show me top customers by revenue"
+        ],
+        "primary_table": "KNA1",
+        "tables": {
+          "KNA1": {
+            "schema": "SAP",
+            "description": "Customer Master - General data",
+            "primary_key": {
+              "column": "KUNNR",
+              "type": "PRIMARY"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "KUNNR",
+                "type": "CHAR(10)",
+                "description": "Customer number",
+                "nl_aliases": [
+                  "customer",
+                  "customer number",
+                  "customer ID"
+                ]
+              },
+              {
+                "column": "NAME1",
+                "type": "CHAR(35)",
+                "description": "Customer name",
+                "nl_aliases": [
+                  "customer name",
+                  "name"
+                ]
+              },
+              {
+                "column": "NAME2",
+                "type": "CHAR(35)",
+                "description": "Customer name line 2"
+              },
+              {
+                "column": "LAND1",
+                "type": "CHAR(3)",
+                "description": "Country code",
+                "nl_aliases": [
+                  "country"
+                ]
+              },
+              {
+                "column": "ORT01",
+                "type": "CHAR(25)",
+                "description": "City",
+                "nl_aliases": [
+                  "city"
+                ]
+              },
+              {
+                "column": "PSTLZ",
+                "type": "CHAR(10)",
+                "description": "Postal code",
+                "nl_aliases": [
+                  "zip",
+                  "postcode"
+                ]
+              },
+              {
+                "column": "STRAS",
+                "type": "CHAR(35)",
+                "description": "Street address",
+                "nl_aliases": [
+                  "address"
+                ]
+              },
+              {
+                "column": "TELF1",
+                "type": "CHAR(16)",
+                "description": "Phone number",
+                "nl_aliases": [
+                  "phone"
+                ]
+              },
+              {
+                "column": "STCD1",
+                "type": "CHAR(16)",
+                "description": "Tax ID",
+                "nl_aliases": [
+                  "tax ID"
+                ]
+              },
+              {
+                "column": "KTOKD",
+                "type": "CHAR(4)",
+                "description": "Customer account group",
+                "nl_aliases": [
+                  "account group"
+                ]
+              },
+              {
+                "column": "LOEVM",
+                "type": "CHAR(1)",
+                "description": "Deletion indicator"
+              },
+              {
+                "column": "SPERR",
+                "type": "CHAR(1)",
+                "description": "Block indicator",
+                "nl_aliases": [
+                  "blocked"
+                ]
+              },
+              {
+                "column": "ERDAT",
+                "type": "DATE",
+                "description": "Date created",
+                "nl_aliases": [
+                  "created date"
+                ]
+              }
+            ]
+          },
+          "KNB1": {
+            "schema": "SAP",
+            "description": "Customer Master - Company Code data",
+            "primary_key": {
+              "column": "KUNNR, BUKRS",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [
+              {
+                "column": "KUNNR",
+                "references": "KNA1.KUNNR"
+              }
+            ],
+            "business_columns": [
+              {
+                "column": "KUNNR",
+                "type": "CHAR(10)",
+                "description": "Customer number"
+              },
+              {
+                "column": "BUKRS",
+                "type": "CHAR(4)",
+                "description": "Company code"
+              },
+              {
+                "column": "AKONT",
+                "type": "CHAR(10)",
+                "description": "Reconciliation GL account"
+              },
+              {
+                "column": "ZTERM",
+                "type": "CHAR(4)",
+                "description": "Payment terms"
+              },
+              {
+                "column": "ZWELS",
+                "type": "CHAR(3)",
+                "description": "Payment method"
+              },
+              {
+                "column": "FDGRV",
+                "type": "CHAR(4)",
+                "description": "Responsible customer group"
+              },
+              {
+                "column": "SPERR",
+                "type": "CHAR(1)",
+                "description": "Block indicator"
+              },
+              {
+                "column": "LOEVM",
+                "type": "CHAR(1)",
+                "description": "Deletion indicator"
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": [
+          {
+            "from": "KNA1",
+            "to": "KNB1",
+            "join": "KNA1.KUNNR = KNB1.KUNNR",
+            "type": "one-to-many"
+          }
+        ]
+      },
+      "Customer_Open_Items": {
+        "description": "Open (unpaid) customer invoices",
+        "nl_aliases": [
+          "open AR items",
+          "outstanding receivables",
+          "unpaid AR",
+          "open customer items"
+        ],
+        "business_questions": [
+          "Show me open invoices for customer C100000",
+          "What is our total open AR?",
+          "Show me invoices due within 30 days"
+        ],
+        "primary_table": "BSID",
+        "tables": {
+          "BSID": {
+            "schema": "SAP",
+            "description": "Customer Open Items - unpaid invoices",
+            "primary_key": {
+              "column": "BUKRS, KUNNR, BELNR, GJAHR, BUZEI",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "BUKRS",
+                "type": "CHAR(4)",
+                "description": "Company code"
+              },
+              {
+                "column": "KUNNR",
+                "type": "CHAR(10)",
+                "description": "Customer number"
+              },
+              {
+                "column": "AUGDT",
+                "type": "DATE",
+                "description": "Clearing date"
+              },
+              {
+                "column": "AUGBL",
+                "type": "CHAR(10)",
+                "description": "Clearing document"
+              },
+              {
+                "column": "GJAHR",
+                "type": "NUMC(4)",
+                "description": "Fiscal year"
+              },
+              {
+                "column": "BELNR",
+                "type": "CHAR(10)",
+                "description": "Document number"
+              },
+              {
+                "column": "BUZEI",
+                "type": "NUMC(3)",
+                "description": "Line item"
+              },
+              {
+                "column": "BUDAT",
+                "type": "DATE",
+                "description": "Posting date"
+              },
+              {
+                "column": "BLDAT",
+                "type": "DATE",
+                "description": "Document date"
+              },
+              {
+                "column": "SHKZG",
+                "type": "CHAR(1)",
+                "description": "Debit/Credit (S=Debit, H=Credit)"
+              },
+              {
+                "column": "DMBTR",
+                "type": "CURR(13,2)",
+                "description": "Amount in local currency"
+              },
+              {
+                "column": "WRBTR",
+                "type": "CURR(13,2)",
+                "description": "Amount in document currency"
+              },
+              {
+                "column": "WAERS",
+                "type": "CHAR(5)",
+                "description": "Currency"
+              },
+              {
+                "column": "BSCHL",
+                "type": "CHAR(2)",
+                "description": "Posting key"
+              },
+              {
+                "column": "ZFBDT",
+                "type": "DATE",
+                "description": "Due date"
+              },
+              {
+                "column": "SGTXT",
+                "type": "CHAR(50)",
+                "description": "Text"
+              },
+              {
+                "column": "HKONT",
+                "type": "CHAR(10)",
+                "description": "GL account"
+              },
+              {
+                "column": "ZUONR",
+                "type": "CHAR(18)",
+                "description": "Assignment"
+              },
+              {
+                "column": "REBZG",
+                "type": "CHAR(1)",
+                "description": "Rebate group"
+              },
+              {
+                "column": "LOEKZ",
+                "type": "VARCHAR(1)",
+                "description": "Deletion indicator",
+                "nl_aliases": [
+                  "deleted",
+                  "deletion flag"
+                ],
+                "common_values": [
+                  "",
+                  "X"
+                ]
+              },
+              {
+                "column": "BLART",
+                "type": "VARCHAR(2)",
+                "description": "Document type",
+                "nl_aliases": [
+                  "doc type"
+                ],
+                "common_values": [
+                  "DR",
+                  "DG",
+                  "DZ"
+                ]
+              },
+              {
+                "column": "KOART",
+                "type": "VARCHAR(1)",
+                "description": "Account type",
+                "nl_aliases": [
+                  "account type"
+                ],
+                "common_values": [
+                  "D"
+                ]
+              },
+              {
+                "column": "XBLNR",
+                "type": "VARCHAR(16)",
+                "description": "Reference document number",
+                "nl_aliases": [
+                  "reference",
+                  "invoice reference"
+                ]
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": []
+      },
+      "Customer_Cleared_Items": {
+        "description": "Cleared (paid) customer invoices",
+        "nl_aliases": [
+          "cleared AR items",
+          "paid invoices",
+          "cleared customer items"
+        ],
+        "business_questions": [
+          "Show me cleared invoices for customer C100000",
+          "What was collected on invoice I5000123456?"
+        ],
+        "primary_table": "BSAD",
+        "tables": {
+          "BSAD": {
+            "schema": "SAP",
+            "description": "Customer Cleared Items - paid invoices archive",
+            "primary_key": {
+              "column": "BUKRS, KUNNR, BELNR, GJAHR, BUZEI, AUGBL",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "BUKRS",
+                "type": "CHAR(4)",
+                "description": "Company code"
+              },
+              {
+                "column": "KUNNR",
+                "type": "CHAR(10)",
+                "description": "Customer number"
+              },
+              {
+                "column": "AUGDT",
+                "type": "DATE",
+                "description": "Clearing date"
+              },
+              {
+                "column": "AUGBL",
+                "type": "CHAR(10)",
+                "description": "Clearing document"
+              },
+              {
+                "column": "GJAHR",
+                "type": "NUMC(4)",
+                "description": "Fiscal year"
+              },
+              {
+                "column": "BELNR",
+                "type": "CHAR(10)",
+                "description": "Document number"
+              },
+              {
+                "column": "BUZEI",
+                "type": "NUMC(3)",
+                "description": "Line item"
+              },
+              {
+                "column": "BUDAT",
+                "type": "DATE",
+                "description": "Posting date"
+              },
+              {
+                "column": "BLDAT",
+                "type": "DATE",
+                "description": "Document date"
+              },
+              {
+                "column": "SHKZG",
+                "type": "CHAR(1)",
+                "description": "Debit/Credit"
+              },
+              {
+                "column": "DMBTR",
+                "type": "CURR(13,2)",
+                "description": "Amount in local currency"
+              },
+              {
+                "column": "WRBTR",
+                "type": "CURR(13,2)",
+                "description": "Amount in document currency"
+              },
+              {
+                "column": "WAERS",
+                "type": "CHAR(5)",
+                "description": "Currency"
+              },
+              {
+                "column": "BSCHL",
+                "type": "CHAR(2)",
+                "description": "Posting key"
+              },
+              {
+                "column": "ZFBDT",
+                "type": "DATE",
+                "description": "Due date"
+              },
+              {
+                "column": "SGTXT",
+                "type": "CHAR(50)",
+                "description": "Text"
+              },
+              {
+                "column": "HKONT",
+                "type": "CHAR(10)",
+                "description": "GL account"
+              },
+              {
+                "column": "ZUONR",
+                "type": "CHAR(18)",
+                "description": "Assignment"
+              },
+              {
+                "column": "REBZG",
+                "type": "CHAR(1)",
+                "description": "Rebate group"
+              },
+              {
+                "column": "LOEKZ",
+                "type": "VARCHAR(1)",
+                "description": "Deletion indicator",
+                "nl_aliases": [
+                  "deleted",
+                  "deletion flag"
+                ],
+                "common_values": [
+                  "",
+                  "X"
+                ]
+              },
+              {
+                "column": "BLART",
+                "type": "VARCHAR(2)",
+                "description": "Document type",
+                "nl_aliases": [
+                  "doc type"
+                ],
+                "common_values": [
+                  "DR",
+                  "DG",
+                  "DZ"
+                ]
+              },
+              {
+                "column": "KOART",
+                "type": "VARCHAR(1)",
+                "description": "Account type",
+                "nl_aliases": [
+                  "account type"
+                ],
+                "common_values": [
+                  "D"
+                ]
+              },
+              {
+                "column": "XBLNR",
+                "type": "VARCHAR(16)",
+                "description": "Reference document number",
+                "nl_aliases": [
+                  "reference",
+                  "invoice reference"
+                ]
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": []
+      }
+    }
+  },
+  "module_key": "FI_AR",
+  "module_name": "Financial Accounting - Accounts Receivable",
+  "description": "Accounts receivable and customer management"
+}

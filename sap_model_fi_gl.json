@@ -1,0 +1,782 @@
+{
+  "FI_GL": {
+    "module_name": "General Ledger",
+    "description": "SAP FI General Ledger accounting - journal entries, GL account masters, and period balances",
+    "application_short_name": "FI-GL",
+    "business_objects": {
+      "Journal_Entry": {
+        "description": "Accounting documents consisting of header (BKPF) and line items (BSEG)",
+        "nl_aliases": [
+          "journal entry",
+          "accounting document",
+          "FI document",
+          "posting",
+          "journal",
+          "GL entry"
+        ],
+        "business_questions": [
+          "What journal entries were posted this month?",
+          "Show me all postings to account 400000",
+          "What documents were posted by user SMITH?"
+        ],
+        "primary_table": "BKPF",
+        "tables": {
+          "BKPF": {
+            "schema": "SAP",
+            "description": "Accounting Document Header - stores metadata for all financial transactions",
+            "primary_key": {
+              "column": "BUKRS, BELNR, GJAHR",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "BUKRS",
+                "type": "CHAR(4)",
+                "description": "Company code",
+                "nl_aliases": [
+                  "company code",
+                  "company"
+                ]
+              },
+              {
+                "column": "BELNR",
+                "type": "CHAR(10)",
+                "description": "Accounting document number",
+                "nl_aliases": [
+                  "document number",
+                  "doc number"
+                ]
+              },
+              {
+                "column": "GJAHR",
+                "type": "NUMC(4)",
+                "description": "Fiscal year",
+                "nl_aliases": [
+                  "fiscal year",
+                  "year"
+                ]
+              },
+              {
+                "column": "BLART",
+                "type": "CHAR(2)",
+                "description": "Document type (SA=GL, KR=Vendor Invoice, DR=Customer Invoice, etc.)",
+                "nl_aliases": [
+                  "document type",
+                  "doc type"
+                ]
+              },
+              {
+                "column": "BLDAT",
+                "type": "DATE",
+                "description": "Document date",
+                "nl_aliases": [
+                  "document date"
+                ]
+              },
+              {
+                "column": "BUDAT",
+                "type": "DATE",
+                "description": "Posting date",
+                "nl_aliases": [
+                  "posting date"
+                ]
+              },
+              {
+                "column": "MONAT",
+                "type": "NUMC(2)",
+                "description": "Fiscal period (01-16)",
+                "nl_aliases": [
+                  "period",
+                  "fiscal period",
+                  "posting period"
+                ]
+              },
+              {
+                "column": "XBLNR",
+                "type": "CHAR(16)",
+                "description": "Reference document number",
+                "nl_aliases": [
+                  "reference",
+                  "reference number",
+                  "external reference"
+                ]
+              },
+              {
+                "column": "BKTXT",
+                "type": "CHAR(25)",
+                "description": "Document header text",
+                "nl_aliases": [
+                  "header text",
+                  "description"
+                ]
+              },
+              {
+                "column": "WAERS",
+                "type": "CHAR(5)",
+                "description": "Document currency",
+                "nl_aliases": [
+                  "currency"
+                ]
+              },
+              {
+                "column": "USNAM",
+                "type": "CHAR(12)",
+                "description": "User who created the document",
+                "nl_aliases": [
+                  "created by",
+                  "user",
+                  "posted by"
+                ]
+              },
+              {
+                "column": "TCODE",
+                "type": "CHAR(20)",
+                "description": "Transaction code used to create document",
+                "nl_aliases": [
+                  "transaction code",
+                  "tcode"
+                ]
+              },
+              {
+                "column": "CPUDT",
+                "type": "DATE",
+                "description": "Entry date (when entered into system)",
+                "nl_aliases": [
+                  "entry date",
+                  "creation date"
+                ]
+              },
+              {
+                "column": "STBLG",
+                "type": "CHAR(10)",
+                "description": "Reversal document number",
+                "nl_aliases": [
+                  "reversal document",
+                  "reversal"
+                ]
+              },
+              {
+                "column": "STJAH",
+                "type": "NUMC(4)",
+                "description": "Reversal fiscal year",
+                "nl_aliases": [
+                  "reversal year"
+                ]
+              },
+              {
+                "column": "ERDAT",
+                "type": "VARCHAR(8)",
+                "description": "Created date",
+                "nl_aliases": [
+                  "creation date"
+                ]
+              },
+              {
+                "column": "ERNAM",
+                "type": "VARCHAR(12)",
+                "description": "Created by",
+                "nl_aliases": [
+                  "created by"
+                ]
+              }
+            ]
+          },
+          "BSEG": {
+            "schema": "SAP",
+            "description": "Accounting Document Line Items - individual debit/credit postings within a document",
+            "primary_key": {
+              "column": "BUKRS, BELNR, GJAHR, BUZEI",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [
+              {
+                "column": "BUKRS, BELNR, GJAHR",
+                "references": "BKPF.BUKRS, BELNR, GJAHR"
+              }
+            ],
+            "business_columns": [
+              {
+                "column": "BUKRS",
+                "type": "CHAR(4)",
+                "description": "Company code"
+              },
+              {
+                "column": "BELNR",
+                "type": "CHAR(10)",
+                "description": "Accounting document number"
+              },
+              {
+                "column": "GJAHR",
+                "type": "NUMC(4)",
+                "description": "Fiscal year"
+              },
+              {
+                "column": "BUZEI",
+                "type": "NUMC(3)",
+                "description": "Line item number",
+                "nl_aliases": [
+                  "line item",
+                  "line number"
+                ]
+              },
+              {
+                "column": "BSCHL",
+                "type": "CHAR(2)",
+                "description": "Posting key (40=GL Debit, 50=GL Credit, 21=Vendor Credit, 31=Vendor Invoice, etc.)",
+                "nl_aliases": [
+                  "posting key"
+                ]
+              },
+              {
+                "column": "KOART",
+                "type": "CHAR(1)",
+                "description": "Account type (S=GL, D=Customer, K=Vendor, M=Material, A=Asset)",
+                "nl_aliases": [
+                  "account type"
+                ]
+              },
+              {
+                "column": "SHKZG",
+                "type": "CHAR(1)",
+                "description": "Debit/credit indicator (S=Debit, H=Credit)",
+                "nl_aliases": [
+                  "debit credit",
+                  "debit/credit"
+                ]
+              },
+              {
+                "column": "DMBTR",
+                "type": "CURR(13,2)",
+                "description": "Amount in local currency (always positive, use SHKZG for sign)",
+                "nl_aliases": [
+                  "local amount",
+                  "amount"
+                ]
+              },
+              {
+                "column": "WRBTR",
+                "type": "CURR(13,2)",
+                "description": "Amount in document currency",
+                "nl_aliases": [
+                  "document amount",
+                  "foreign amount"
+                ]
+              },
+              {
+                "column": "HKONT",
+                "type": "CHAR(10)",
+                "description": "GL account number",
+                "nl_aliases": [
+                  "GL account",
+                  "account",
+                  "account number"
+                ]
+              },
+              {
+                "column": "KOSTL",
+                "type": "CHAR(10)",
+                "description": "Cost center",
+                "nl_aliases": [
+                  "cost center"
+                ]
+              },
+              {
+                "column": "AUFNR",
+                "type": "CHAR(12)",
+                "description": "Internal order number",
+                "nl_aliases": [
+                  "order",
+                  "internal order"
+                ]
+              },
+              {
+                "column": "PRCTR",
+                "type": "CHAR(10)",
+                "description": "Profit center",
+                "nl_aliases": [
+                  "profit center"
+                ]
+              },
+              {
+                "column": "SGTXT",
+                "type": "CHAR(50)",
+                "description": "Line item text",
+                "nl_aliases": [
+                  "text",
+                  "line text",
+                  "item text"
+                ]
+              },
+              {
+                "column": "ZUONR",
+                "type": "CHAR(18)",
+                "description": "Assignment number",
+                "nl_aliases": [
+                  "assignment",
+                  "assignment number"
+                ]
+              },
+              {
+                "column": "MWSKZ",
+                "type": "CHAR(2)",
+                "description": "Tax code",
+                "nl_aliases": [
+                  "tax code",
+                  "tax"
+                ]
+              },
+              {
+                "column": "LIFNR",
+                "type": "CHAR(10)",
+                "description": "Vendor number (for vendor line items)",
+                "nl_aliases": [
+                  "vendor",
+                  "vendor number"
+                ]
+              },
+              {
+                "column": "KUNNR",
+                "type": "CHAR(10)",
+                "description": "Customer number (for customer line items)",
+                "nl_aliases": [
+                  "customer",
+                  "customer number"
+                ]
+              },
+              {
+                "column": "LOEKZ",
+                "type": "VARCHAR(1)",
+                "description": "Deletion indicator",
+                "nl_aliases": [
+                  "deleted"
+                ],
+                "common_values": [
+                  "",
+                  "X"
+                ]
+              },
+              {
+                "column": "BLART",
+                "type": "VARCHAR(2)",
+                "description": "Document type",
+                "nl_aliases": [
+                  "doc type"
+                ],
+                "common_values": [
+                  "SA",
+                  "KR",
+                  "DR",
+                  "AB"
+                ]
+              },
+              {
+                "column": "GSBER",
+                "type": "VARCHAR(4)",
+                "description": "Business area",
+                "nl_aliases": [
+                  "business area"
+                ]
+              },
+              {
+                "column": "SAKNR",
+                "type": "VARCHAR(10)",
+                "description": "GL account number (alternate key)",
+                "nl_aliases": [
+                  "GL account",
+                  "account number"
+                ]
+              },
+              {
+                "column": "STBLG",
+                "type": "VARCHAR(10)",
+                "description": "Reversal document number",
+                "nl_aliases": [
+                  "reversal document",
+                  "reversal"
+                ]
+              },
+              {
+                "column": "STJAH",
+                "type": "VARCHAR(4)",
+                "description": "Reversal fiscal year",
+                "nl_aliases": [
+                  "reversal year"
+                ]
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": [
+          {
+            "from": "BKPF",
+            "to": "BSEG",
+            "join": "BKPF.BUKRS = BSEG.BUKRS AND BKPF.BELNR = BSEG.BELNR AND BKPF.GJAHR = BSEG.GJAHR",
+            "type": "one-to-many"
+          }
+        ]
+      },
+      "GL_Account": {
+        "description": "General Ledger account master data with chart of accounts and company code details",
+        "nl_aliases": [
+          "GL account",
+          "account",
+          "chart of accounts",
+          "COA",
+          "ledger account"
+        ],
+        "business_questions": [
+          "What GL accounts are in our chart of accounts?",
+          "Show me the description for account 400000",
+          "What is the reconciliation account for this vendor?"
+        ],
+        "primary_table": "SKA1",
+        "tables": {
+          "SKA1": {
+            "schema": "SAP",
+            "description": "GL Account Master - Chart of Accounts level",
+            "primary_key": {
+              "column": "KTOPL, SAKNR",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "KTOPL",
+                "type": "CHAR(4)",
+                "description": "Chart of accounts",
+                "nl_aliases": [
+                  "chart of accounts",
+                  "COA"
+                ]
+              },
+              {
+                "column": "SAKNR",
+                "type": "CHAR(10)",
+                "description": "GL account number",
+                "nl_aliases": [
+                  "account number",
+                  "GL account"
+                ]
+              },
+              {
+                "column": "KTOKS",
+                "type": "CHAR(4)",
+                "description": "GL account group",
+                "nl_aliases": [
+                  "account group"
+                ]
+              },
+              {
+                "column": "GESSION",
+                "type": "CHAR(10)",
+                "description": "Group account number",
+                "nl_aliases": [
+                  "group account"
+                ]
+              },
+              {
+                "column": "XBILK",
+                "type": "CHAR(1)",
+                "description": "Balance sheet account indicator",
+                "nl_aliases": [
+                  "balance sheet indicator"
+                ]
+              }
+            ]
+          },
+          "SKAT": {
+            "schema": "SAP",
+            "description": "GL Account Descriptions - multilingual account texts",
+            "primary_key": {
+              "column": "KTOPL, SAKNR, SPRAS",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [
+              {
+                "column": "KTOPL, SAKNR",
+                "references": "SKA1.KTOPL, SAKNR"
+              }
+            ],
+            "business_columns": [
+              {
+                "column": "KTOPL",
+                "type": "CHAR(4)",
+                "description": "Chart of accounts"
+              },
+              {
+                "column": "SAKNR",
+                "type": "CHAR(10)",
+                "description": "GL account number"
+              },
+              {
+                "column": "SPRAS",
+                "type": "CHAR(1)",
+                "description": "Language key (E=English)",
+                "nl_aliases": [
+                  "language"
+                ]
+              },
+              {
+                "column": "TXT20",
+                "type": "CHAR(20)",
+                "description": "Short text for GL account",
+                "nl_aliases": [
+                  "short description",
+                  "short text"
+                ]
+              },
+              {
+                "column": "TXT50",
+                "type": "CHAR(50)",
+                "description": "Long text for GL account",
+                "nl_aliases": [
+                  "description",
+                  "long text",
+                  "account name"
+                ]
+              }
+            ]
+          },
+          "SKB1": {
+            "schema": "SAP",
+            "description": "GL Account Master - Company Code level details",
+            "primary_key": {
+              "column": "BUKRS, SAKNR",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [
+              {
+                "column": "SAKNR",
+                "references": "SKA1.SAKNR"
+              }
+            ],
+            "business_columns": [
+              {
+                "column": "BUKRS",
+                "type": "CHAR(4)",
+                "description": "Company code"
+              },
+              {
+                "column": "SAKNR",
+                "type": "CHAR(10)",
+                "description": "GL account number"
+              },
+              {
+                "column": "WAERS",
+                "type": "CHAR(5)",
+                "description": "Account currency",
+                "nl_aliases": [
+                  "currency"
+                ]
+              },
+              {
+                "column": "XOPVW",
+                "type": "CHAR(1)",
+                "description": "Open item management indicator",
+                "nl_aliases": [
+                  "open item managed"
+                ]
+              },
+              {
+                "column": "MITKZ",
+                "type": "CHAR(1)",
+                "description": "Reconciliation account type (for subledger)",
+                "nl_aliases": [
+                  "reconciliation account type"
+                ]
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": [
+          {
+            "from": "SKA1",
+            "to": "SKAT",
+            "join": "SKA1.KTOPL = SKAT.KTOPL AND SKA1.SAKNR = SKAT.SAKNR",
+            "type": "one-to-many"
+          },
+          {
+            "from": "SKA1",
+            "to": "SKB1",
+            "join": "SKA1.SAKNR = SKB1.SAKNR",
+            "type": "one-to-many"
+          }
+        ]
+      },
+      "GL_Balance": {
+        "description": "GL account period balances and transaction figures",
+        "nl_aliases": [
+          "GL balance",
+          "account balance",
+          "trial balance",
+          "period balance"
+        ],
+        "business_questions": [
+          "Show me the trial balance for period 1",
+          "What is the balance for account 400000?",
+          "Show me period-over-period balances"
+        ],
+        "primary_table": "GLT0",
+        "tables": {
+          "GLT0": {
+            "schema": "SAP",
+            "description": "GL Account Balances - period transaction figures",
+            "primary_key": {
+              "column": "RLDNR, BUKRS, RACCT, GJAHR, DRCRK",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [
+              {
+                "column": "RACCT",
+                "references": "SKA1.SAKNR"
+              }
+            ],
+            "business_columns": [
+              {
+                "column": "RLDNR",
+                "type": "CHAR(2)",
+                "description": "Ledger (00=Leading ledger)",
+                "nl_aliases": [
+                  "ledger"
+                ]
+              },
+              {
+                "column": "BUKRS",
+                "type": "CHAR(4)",
+                "description": "Company code"
+              },
+              {
+                "column": "RACCT",
+                "type": "CHAR(10)",
+                "description": "GL account number",
+                "nl_aliases": [
+                  "account",
+                  "GL account"
+                ]
+              },
+              {
+                "column": "GJAHR",
+                "type": "NUMC(4)",
+                "description": "Fiscal year"
+              },
+              {
+                "column": "DRCRK",
+                "type": "CHAR(1)",
+                "description": "Debit/Credit indicator (S=Debit, H=Credit)",
+                "nl_aliases": [
+                  "debit/credit"
+                ]
+              },
+              {
+                "column": "HSLVT",
+                "type": "CURR(13,2)",
+                "description": "Carry-forward balance in local currency",
+                "nl_aliases": [
+                  "opening balance",
+                  "carry forward"
+                ]
+              },
+              {
+                "column": "HSL01",
+                "type": "CURR(13,2)",
+                "description": "Period 1 balance in local currency",
+                "nl_aliases": [
+                  "period 1"
+                ]
+              },
+              {
+                "column": "HSL02",
+                "type": "CURR(13,2)",
+                "description": "Period 2 balance in local currency",
+                "nl_aliases": [
+                  "period 2"
+                ]
+              },
+              {
+                "column": "HSL03",
+                "type": "CURR(13,2)",
+                "description": "Period 3 balance in local currency",
+                "nl_aliases": [
+                  "period 3"
+                ]
+              },
+              {
+                "column": "HSL04",
+                "type": "CURR(13,2)",
+                "description": "Period 4 balance in local currency"
+              },
+              {
+                "column": "HSL05",
+                "type": "CURR(13,2)",
+                "description": "Period 5 balance in local currency"
+              },
+              {
+                "column": "HSL06",
+                "type": "CURR(13,2)",
+                "description": "Period 6 balance in local currency"
+              },
+              {
+                "column": "HSL07",
+                "type": "CURR(13,2)",
+                "description": "Period 7 balance in local currency"
+              },
+              {
+                "column": "HSL08",
+                "type": "CURR(13,2)",
+                "description": "Period 8 balance in local currency"
+              },
+              {
+                "column": "HSL09",
+                "type": "CURR(13,2)",
+                "description": "Period 9 balance in local currency"
+              },
+              {
+                "column": "HSL10",
+                "type": "CURR(13,2)",
+                "description": "Period 10 balance in local currency"
+              },
+              {
+                "column": "HSL11",
+                "type": "CURR(13,2)",
+                "description": "Period 11 balance in local currency"
+              },
+              {
+                "column": "HSL12",
+                "type": "CURR(13,2)",
+                "description": "Period 12 balance in local currency"
+              },
+              {
+                "column": "HSL13",
+                "type": "CURR(13,2)",
+                "description": "Period 13 (special period) balance",
+                "nl_aliases": [
+                  "special period 1"
+                ]
+              },
+              {
+                "column": "HSL14",
+                "type": "CURR(13,2)",
+                "description": "Period 14 (special period) balance"
+              },
+              {
+                "column": "HSL15",
+                "type": "CURR(13,2)",
+                "description": "Period 15 (special period) balance"
+              },
+              {
+                "column": "HSL16",
+                "type": "CURR(13,2)",
+                "description": "Period 16 (special period) balance"
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": []
+      }
+    }
+  },
+  "module_key": "FI_GL",
+  "module_name": "Financial Accounting - General Ledger",
+  "description": "General ledger and financial reporting"
+}

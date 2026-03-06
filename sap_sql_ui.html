@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SAP ECC 6.0 — Solix Intelligent Data Access</title>
+<title>Intelligent Data Access for SAP ECC 6.0</title>
 <style>
   :root {
     --bg: #0f1117;
@@ -173,6 +173,263 @@
   }
   .sidebar .section { margin-bottom: 24px; }
 
+  /* Sidebar tabs */
+  .sidebar-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-tab {
+    flex: 1;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-dim);
+    padding: 8px 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .sidebar-tab:hover { color: var(--text); }
+  .sidebar-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .sidebar-tab-content { display: none; }
+  .sidebar-tab-content.active { display: block; }
+
+  /* History items */
+  .history-empty {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 12px;
+    padding: 24px 8px;
+    line-height: 1.5;
+  }
+  .history-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 8px 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .history-item:hover { border-color: var(--accent); background: rgba(99,102,241,0.08); }
+  .history-item .hi-text {
+    flex: 1;
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--text);
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .history-item .hi-meta {
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+  .history-item .hi-star {
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px;
+    line-height: 1;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .history-item .hi-star:hover { color: var(--orange); }
+  .history-item .hi-star.favorited { color: var(--orange); }
+  .history-badge {
+    display: inline-block;
+    font-size: 9px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-right: 4px;
+    vertical-align: middle;
+  }
+  .history-badge.high { background: rgba(34,197,94,0.15); color: var(--green); }
+  .history-badge.exploratory { background: rgba(245,158,11,0.15); color: var(--orange); }
+  .history-section-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-dim);
+    margin: 12px 0 6px;
+    padding-left: 2px;
+    font-weight: 600;
+  }
+  .history-clear-btn {
+    display: block;
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-dim);
+    padding: 6px;
+    font-size: 11px;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: all 0.15s;
+  }
+  .history-clear-btn:hover { border-color: var(--red); color: var(--red); }
+
+  /* Developer Mode Panel */
+  .dev-panel {
+    width: 0;
+    overflow: hidden;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    transition: width 0.3s ease;
+  }
+  .dev-panel.open {
+    width: 480px;
+  }
+  .dev-panel-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .dev-panel-header h3 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .dev-panel-header .dev-badge {
+    font-size: 9px;
+    background: var(--accent);
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .dev-panel-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .dev-panel-tab {
+    flex: 1;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-dim);
+    padding: 8px 4px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .dev-panel-tab:hover { color: var(--text); }
+  .dev-panel-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .dev-tab-content { display: none; flex: 1; overflow: hidden; flex-direction: column; }
+  .dev-tab-content.active { display: flex; }
+  .dev-sql-editor {
+    flex: 1;
+    background: var(--sql-bg);
+    color: var(--text);
+    border: none;
+    padding: 12px 16px;
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    resize: none;
+    outline: none;
+    overflow-y: auto;
+    tab-size: 2;
+  }
+  .dev-sql-editor::placeholder { color: var(--text-dim); opacity: 0.5; }
+  .dev-toolbar {
+    display: flex;
+    gap: 8px;
+    padding: 10px 16px;
+    border-top: 1px solid var(--border);
+    background: var(--surface2);
+    flex-shrink: 0;
+    align-items: center;
+  }
+  .dev-run-btn {
+    background: var(--green);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .dev-run-btn:hover { filter: brightness(1.1); }
+  .dev-run-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .dev-secondary-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-dim);
+    padding: 6px 12px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .dev-secondary-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .dev-results-area {
+    flex: 1;
+    overflow: auto;
+    padding: 0;
+    font-size: 12px;
+  }
+  .dev-status {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-left: auto;
+    font-family: 'SF Mono', monospace;
+  }
+  .dev-log-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 16px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 11px;
+    line-height: 1.6;
+    color: var(--text-dim);
+    background: var(--sql-bg);
+  }
+  .dev-log-entry {
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(46,49,68,0.3);
+  }
+  .dev-log-entry .log-time { color: var(--text-dim); opacity: 0.6; }
+  .dev-log-entry .log-type { font-weight: 600; }
+  .dev-log-entry .log-type.ok { color: var(--green); }
+  .dev-log-entry .log-type.err { color: var(--red); }
+  .dev-log-entry .log-sql { color: var(--accent); display: block; margin-top: 4px; white-space: pre-wrap; }
+
   /* Chat area */
   .chat-area { flex: 1; display: flex; flex-direction: column; min-width: 0; }
   .messages { flex: 1; overflow-y: auto; padding: 24px; }
@@ -258,6 +515,136 @@
     color: var(--text-dim);
     font-size: 13px;
     text-align: center;
+  }
+
+  /* Export toolbar */
+  .export-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-top: 1px solid var(--border);
+    background: rgba(26, 29, 39, 0.5);
+  }
+  .export-toolbar .export-label {
+    color: var(--text-dim);
+    font-size: 11px;
+    margin-right: 4px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .export-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-dim);
+    padding: 5px 12px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .export-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(99,102,241,0.08); }
+  .export-btn.copied { border-color: var(--green); color: var(--green); }
+  .export-btn svg { width: 14px; height: 14px; }
+  .export-meta {
+    margin-left: auto;
+    color: var(--text-dim);
+    font-size: 11px;
+    opacity: 0.6;
+  }
+
+  /* Chart visualization */
+  .chart-container {
+    padding: 16px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    position: relative;
+  }
+  .chart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .chart-header .chart-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .chart-type-selector {
+    display: flex;
+    gap: 4px;
+  }
+  .chart-type-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-dim);
+    padding: 3px 10px;
+    cursor: pointer;
+    font-size: 11px;
+    transition: all 0.15s;
+  }
+  .chart-type-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .chart-type-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .chart-canvas-wrap {
+    position: relative;
+    height: 300px;
+    width: 100%;
+  }
+  .chart-close-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-dim);
+    padding: 2px 8px;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    transition: all 0.15s;
+  }
+  .chart-close-btn:hover { color: var(--red); border-color: var(--red); }
+
+  /* Column selector chips */
+  .chart-col-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 10px;
+    align-items: center;
+  }
+  .chart-col-selector .chart-col-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-right: 4px;
+  }
+  .chart-col-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text-dim);
+    padding: 3px 10px;
+    cursor: pointer;
+    font-size: 11px;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .chart-col-chip:hover { border-color: var(--accent); color: var(--accent); }
+  .chart-col-chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .chart-col-chip .chip-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
   }
 
   /* Show SQL toggle */
@@ -532,17 +919,674 @@
     .messages { padding: 16px; }
     .input-area { padding: 12px 16px; }
   }
+
+  /* ── Conversational Disambiguation Pipeline Styles ── */
+  .suggestion-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: rgba(99, 102, 241, 0.08);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin: 6px 0;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 0.9em;
+    line-height: 1.4;
+    transition: all 0.15s ease;
+  }
+  .suggestion-btn:hover {
+    background: rgba(99, 102, 241, 0.18);
+    border-color: rgba(99, 102, 241, 0.5);
+    transform: translateX(3px);
+  }
+  .suggestion-btn .suggestion-module {
+    display: inline-block;
+    font-size: 0.75em;
+    font-weight: 700;
+    color: var(--accent);
+    background: rgba(99, 102, 241, 0.15);
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .suggestion-btn .suggestion-validated {
+    float: right;
+    font-size: 0.75em;
+    color: #22c55e;
+    font-weight: 600;
+  }
+  .confirm-bar {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+  .confirm-btn {
+    padding: 8px 20px;
+    border-radius: 6px;
+    border: 1px solid;
+    cursor: pointer;
+    font-size: 0.88em;
+    font-weight: 600;
+    transition: all 0.15s ease;
+  }
+  .confirm-btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+  .confirm-btn.primary:hover { opacity: 0.85; }
+  .confirm-btn.secondary {
+    background: transparent;
+    border-color: var(--border);
+    color: var(--text-muted);
+  }
+  .confirm-btn.secondary:hover {
+    border-color: var(--text-muted);
+    color: var(--text);
+  }
+  .slot-option-btn {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 12px;
+    margin: 3px 4px;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 0.85em;
+    transition: all 0.15s ease;
+  }
+  .slot-option-btn:hover {
+    background: rgba(99, 102, 241, 0.12);
+    border-color: var(--accent);
+  }
+  .pipeline-badge {
+    display: inline-block;
+    font-size: 0.7em;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .pipeline-badge.classify { background: rgba(99, 102, 241, 0.15); color: #818cf8; }
+  .pipeline-badge.confirm { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+  .pipeline-badge.disambiguate { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+
+  /* ── Feature 1: Confidence / Accuracy Badge ── */
+  .confidence-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 12px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .confidence-badge.high {
+    background: rgba(34, 197, 94, 0.12);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.25);
+  }
+  .confidence-badge.medium {
+    background: rgba(251, 191, 36, 0.12);
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.25);
+  }
+  .confidence-badge.low {
+    background: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+  }
+  .confidence-badge .conf-icon { font-size: 13px; }
+  .bokg-validated-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    margin-left: 6px;
+    letter-spacing: 0.3px;
+  }
+
+  /* ── Feature 2: Why this SQL explainability ── */
+  .why-sql-panel {
+    background: rgba(99, 102, 241, 0.05);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-top: 8px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .why-sql-panel h4 {
+    font-size: 12px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .why-sql-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    color: var(--accent);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 0;
+    margin-top: 6px;
+    transition: opacity 0.15s;
+  }
+  .why-sql-toggle:hover { opacity: 0.8; }
+  .why-sql-toggle .arrow { font-size: 10px; transition: transform 0.2s; }
+
+  /* ── Feature 3: Governance / Guardrails ── */
+  .governance-block {
+    background: rgba(239, 68, 68, 0.06);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 8px;
+  }
+  .governance-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ef4444;
+  }
+  .governance-header .shield-icon { font-size: 18px; }
+  .governance-body { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
+  .governance-body strong { color: var(--text); }
+  .governance-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* ── Feature 4: Conversation Context Tracker ── */
+  .context-tracker {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin: 0 0 12px;
+    font-size: 12px;
+  }
+  .context-tracker h4 {
+    font-size: 10px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .context-slot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3px 0;
+  }
+  .context-slot .slot-label { color: var(--text-dim); }
+  .context-slot .slot-value { color: var(--accent); font-weight: 500; }
+  .context-slot .slot-value.empty { color: var(--text-dim); font-style: italic; opacity: 0.5; }
+  .context-modules {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+  .context-modules .ctx-mod {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: rgba(99, 102, 241, 0.12);
+    color: var(--accent);
+  }
+
+  /* ── Feature 5: Query Catalog ── */
+  .catalog-panel {
+    display: none;
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--bg);
+    z-index: 50;
+    overflow-y: auto;
+    padding: 24px;
+  }
+  .catalog-panel.visible { display: block; }
+  .catalog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .catalog-header h2 { font-size: 18px; font-weight: 600; }
+  .catalog-close {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    padding: 6px 14px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .catalog-close:hover { border-color: var(--accent); }
+  .catalog-stats {
+    display: flex; gap: 16px; margin-bottom: 20px;
+  }
+  .catalog-stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    text-align: center;
+    flex: 1;
+  }
+  .catalog-stat .stat-num { font-size: 24px; font-weight: 700; color: var(--accent); }
+  .catalog-stat .stat-label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+  .catalog-module {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .catalog-module-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    cursor: pointer;
+    background: var(--surface2);
+    transition: background 0.15s;
+  }
+  .catalog-module-header:hover { background: rgba(99, 102, 241, 0.08); }
+  .catalog-module-header h3 { font-size: 14px; font-weight: 600; }
+  .catalog-module-header .mod-count {
+    font-size: 11px; color: var(--text-dim);
+    background: rgba(99, 102, 241, 0.1);
+    padding: 2px 8px; border-radius: 10px;
+  }
+  .catalog-module-body { display: none; padding: 8px 16px 12px; }
+  .catalog-module-body.open { display: block; }
+  .catalog-question {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    margin: 4px 0;
+    background: rgba(255,255,255,0.02);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 13px;
+    gap: 8px;
+  }
+  .catalog-question:hover {
+    background: rgba(99, 102, 241, 0.08);
+    transform: translateX(3px);
+  }
+  .catalog-question .cq-icon { color: var(--accent); font-size: 11px; flex-shrink: 0; }
+  .catalog-question .cq-validated {
+    font-size: 10px; color: #22c55e; font-weight: 600;
+    margin-left: auto; flex-shrink: 0;
+  }
+  .catalog-filter {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .catalog-filter-btn {
+    padding: 5px 12px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.15s;
+  }
+  .catalog-filter-btn:hover, .catalog-filter-btn.active {
+    background: rgba(99, 102, 241, 0.12);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ── Feature 6: Multi-step chain indicator ── */
+  .chain-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text-dim);
+    padding: 4px 0;
+    margin-bottom: 4px;
+  }
+  .chain-step {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+  }
+  .chain-step.complete { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+  .chain-step.active { background: rgba(99, 102, 241, 0.12); color: var(--accent); }
+  .chain-step.pending { background: rgba(255,255,255,0.04); color: var(--text-dim); }
+  .chain-arrow { color: var(--text-dim); font-size: 10px; }
+  .followup-prompt {
+    background: rgba(99, 102, 241, 0.06);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .followup-prompt strong { color: var(--text); }
+  .followup-btn {
+    display: inline-block;
+    background: rgba(99, 102, 241, 0.08);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    border-radius: 6px;
+    padding: 6px 14px;
+    margin: 4px 4px 0 0;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.15s;
+  }
+  .followup-btn:hover {
+    background: rgba(99, 102, 241, 0.18);
+    border-color: rgba(99, 102, 241, 0.5);
+  }
+
+  /* ── Knowledge Graph Explorer ── */
+  .kg-panel {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--bg);
+    z-index: 200;
+    flex-direction: column;
+  }
+  .kg-panel.visible { display: flex; }
+  .kg-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .kg-header h2 { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .kg-header .kg-badge {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #fff;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .kg-header-right { display: flex; align-items: center; gap: 10px; }
+  .kg-close {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    padding: 6px 14px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .kg-close:hover { border-color: var(--accent); }
+
+  .kg-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+  .kg-toolbar label {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .kg-filter-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    color: var(--text-dim);
+    padding: 4px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .kg-filter-btn:hover { border-color: var(--accent); color: var(--text); }
+  .kg-filter-btn.active { border-color: var(--accent); color: #fff; background: var(--accent); }
+  .kg-filter-sep {
+    width: 1px; height: 20px; background: var(--border); margin: 0 4px;
+  }
+  .kg-search-input {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    padding: 5px 10px;
+    font-size: 12px;
+    width: 200px;
+    outline: none;
+  }
+  .kg-search-input:focus { border-color: var(--accent); }
+  .kg-search-input::placeholder { color: var(--text-dim); }
+  .kg-stats-bar {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--text-dim);
+    display: flex;
+    gap: 12px;
+  }
+  .kg-stats-bar span { white-space: nowrap; }
+  .kg-stats-bar .kg-stat-val { color: var(--accent); font-weight: 600; }
+
+  .kg-body {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+  }
+  .kg-canvas-wrap {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+  .kg-canvas-wrap svg { width: 100%; height: 100%; display: block; }
+
+  /* Legend overlay */
+  .kg-legend {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    background: rgba(26, 29, 39, 0.92);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 11px;
+    z-index: 10;
+    max-width: 260px;
+  }
+  .kg-legend h4 { font-size: 11px; color: var(--text-dim); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .kg-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 3px;
+    color: var(--text-dim);
+  }
+  .kg-legend-dot {
+    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  }
+  .kg-legend-sq {
+    width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0;
+    transform: rotate(45deg);
+  }
+
+  /* Detail sidebar */
+  .kg-detail {
+    width: 320px;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 16px;
+    flex-shrink: 0;
+    display: none;
+  }
+  .kg-detail.visible { display: block; }
+  .kg-detail-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .kg-detail-title {
+    font-size: 14px;
+    font-weight: 600;
+    word-break: break-word;
+  }
+  .kg-detail-type {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 9px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .kg-detail-section {
+    margin-bottom: 14px;
+  }
+  .kg-detail-section h5 {
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .kg-detail-section p {
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .kg-detail-rel {
+    font-size: 12px;
+    padding: 6px 8px;
+    background: var(--surface2);
+    border-radius: 6px;
+    margin-bottom: 4px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .kg-detail-rel:hover { background: rgba(99, 102, 241, 0.15); }
+  .kg-detail-rel .rel-type {
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+  .kg-detail-close {
+    background: none; border: none; color: var(--text-dim);
+    cursor: pointer; font-size: 16px; padding: 2px 6px;
+  }
+  .kg-detail-close:hover { color: var(--text); }
+  .kg-zoom-controls {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 10;
+  }
+  .kg-zoom-btn {
+    background: rgba(26, 29, 39, 0.92);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-dim);
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+    width: 34px;
+    line-height: 1;
+  }
+  .kg-zoom-btn:hover { border-color: var(--accent); color: var(--text); }
+
+  /* Tooltip */
+  .kg-tooltip {
+    position: absolute;
+    pointer-events: none;
+    background: rgba(15, 17, 23, 0.95);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: var(--text);
+    z-index: 300;
+    max-width: 280px;
+    display: none;
+  }
+  .kg-tooltip.visible { display: block; }
+  .kg-tooltip .tt-label { font-weight: 600; margin-bottom: 2px; }
+  .kg-tooltip .tt-type { font-size: 10px; color: var(--text-dim); }
+  .kg-tooltip .tt-desc { font-size: 11px; color: var(--text-dim); margin-top: 3px; }
 </style>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
 </head>
 <body>
 
 <header>
-  <button class="sidebar-toggle-btn" id="sidebarToggle" onclick="toggleSidebar()" title="Toggle examples panel">
+  <button class="sidebar-toggle-btn" id="sidebarToggle" onclick="toggleSidebar()" title="Toggle sidebar">
     <span class="sidebar-toggle-icon" id="sidebarToggleIcon">&#9664;</span>
-    <span class="sidebar-toggle-label">Examples</span>
+    <span class="sidebar-toggle-label">Panel</span>
   </button>
   <img class="header-logo" src="https://bec49d6c.delivery.rocketcdn.me/wp-content/themes/vantage-child/images/solix-logo-white.svg" alt="Solix Technologies">
-  <h1>SAP ECC 6.0 Intelligent Data Access</h1>
+  <h1>Intelligent Data Access for SAP ECC 6.0</h1>
   <div class="subtitle">
     <span>
       <span class="status-dot" id="statusDot"></span>
@@ -575,73 +1619,124 @@
         </div>
       </div>
     </div>
+    <button class="settings-btn" onclick="openCatalog()" title="Query Catalog — Browse pre-built BOKG questions">&#128218;</button>
+    <button class="settings-btn" id="kgBtn" onclick="openKnowledgeGraph()" title="Knowledge Graph Explorer">&#127760;</button>
+    <button class="settings-btn" id="devModeBtn" onclick="toggleDevMode()" title="Toggle Developer Mode">&#128296;</button>
     <button class="settings-btn" onclick="openSettings()" title="API Key Settings">&#9881;</button>
   </div>
 </header>
 
+<!-- Query Catalog Panel (Feature 5) -->
+<div class="catalog-panel" id="catalogPanel">
+  <div class="catalog-header">
+    <h2>Query Catalog <span style="font-size:12px; color:var(--text-dim); font-weight:400;">BOKG-Powered Questions</span></h2>
+    <button class="catalog-close" onclick="closeCatalog()">Close</button>
+  </div>
+  <div class="catalog-stats" id="catalogStats"></div>
+  <div class="catalog-filter" id="catalogFilter"></div>
+  <div id="catalogModules"></div>
+</div>
+
+<!-- Knowledge Graph Explorer Panel -->
+<div class="kg-panel" id="kgPanel">
+  <div class="kg-header">
+    <h2>&#127760; Knowledge Graph Explorer <span class="kg-badge">BETA</span></h2>
+    <div class="kg-header-right">
+      <button class="kg-close" onclick="closeKnowledgeGraph()">Close</button>
+    </div>
+  </div>
+  <div class="kg-toolbar" id="kgToolbar">
+    <label>Filter:</label>
+    <button class="kg-filter-btn active" data-kg-filter="all" onclick="kgFilterModule('all', this)">All</button>
+    <div class="kg-filter-sep"></div>
+    <div id="kgModuleFilters"></div>
+    <div class="kg-filter-sep"></div>
+    <label>View:</label>
+    <button class="kg-filter-btn active" data-kg-view="tables" onclick="kgSwitchView('tables', this)">Tables &amp; Joins</button>
+    <button class="kg-filter-btn" data-kg-view="concepts" onclick="kgSwitchView('concepts', this)">Business Concepts</button>
+    <button class="kg-filter-btn" data-kg-view="full" onclick="kgSwitchView('full', this)">Full Graph</button>
+    <div class="kg-filter-sep"></div>
+    <input class="kg-search-input" id="kgSearch" type="text" placeholder="Search nodes..." oninput="kgSearchNodes(this.value)">
+    <div class="kg-stats-bar" id="kgStatsBar"></div>
+  </div>
+  <div class="kg-body">
+    <div class="kg-canvas-wrap" id="kgCanvasWrap">
+      <svg id="kgSvg"></svg>
+      <div class="kg-zoom-controls">
+        <button class="kg-zoom-btn" onclick="kgZoomIn()" title="Zoom in">+</button>
+        <button class="kg-zoom-btn" onclick="kgZoomOut()" title="Zoom out">&minus;</button>
+        <button class="kg-zoom-btn" onclick="kgZoomFit()" title="Fit to screen" style="font-size:12px;">&#8982;</button>
+      </div>
+      <div class="kg-legend" id="kgLegend"></div>
+      <div class="kg-tooltip" id="kgTooltip"></div>
+    </div>
+    <div class="kg-detail" id="kgDetail"></div>
+  </div>
+</div>
+
 <div class="main">
   <aside class="sidebar" id="sidebar">
+    <div class="sidebar-tabs">
+      <button class="sidebar-tab active" onclick="switchSidebarTab('history', this)">History</button>
+      <button class="sidebar-tab" onclick="switchSidebarTab('examples', this)">Examples</button>
+      <button class="sidebar-tab" onclick="switchSidebarTab('modules', this)">Modules</button>
+    </div>
+
+    <!-- History Tab -->
+    <div class="sidebar-tab-content active" id="sidebarTab_history">
+      <div id="historyList">
+        <div class="history-empty">No queries yet. Your prompt history will appear here as you ask questions.</div>
+      </div>
+    </div>
+
+    <!-- Examples Tab -->
+    <div class="sidebar-tab-content" id="sidebarTab_examples">
     <div class="section">
       <h3>Example Questions</h3>
-
-      <p style="color:#888;font-size:11px;margin:0 0 6px;">FI-AP &mdash; Accounts Payable</p>
+      <p style="color:#888;font-size:11px;margin:0 0 6px;">FI_GL</p>
+      <button class="example-btn" onclick="askExample(this)">What is the trial balance for company code 1000?</button>
+      <button class="example-btn" onclick="askExample(this)">Show journal entries posted in March 2026</button>
+      <p style="color:#888;font-size:11px;margin:12px 0 6px;">FI_AP</p>
       <button class="example-btn" onclick="askExample(this)">Who are our top 10 vendors by total spend?</button>
-      <button class="example-btn" onclick="askExample(this)">Show me unpaid vendor invoices for Acme Corp</button>
-      <button class="example-btn" onclick="askExample(this)">Show vendor line items for company 1000 (FBL1N)</button>
-      <button class="example-btn" onclick="askExample(this)">Display vendor master details (FK03)</button>
-
-      <p style="color:#888;font-size:11px;margin:12px 0 6px;">FI-AR &mdash; Accounts Receivable</p>
-      <button class="example-btn" onclick="askExample(this)">Show me customer open items by aging bucket</button>
-      <button class="example-btn" onclick="askExample(this)">Show customer line items with payment status (FBL5N)</button>
-      <button class="example-btn" onclick="askExample(this)">Display customer master with contact details (XD03)</button>
-
-      <p style="color:#888;font-size:11px;margin:12px 0 6px;">FI-GL &mdash; General Ledger</p>
-      <button class="example-btn" onclick="askExample(this)">What is the GL trial balance for company 1000?</button>
-      <button class="example-btn" onclick="askExample(this)">What journal entries posted to account 400000?</button>
-      <button class="example-btn" onclick="askExample(this)">Show me the trial balance for fiscal year 2025</button>
-      <button class="example-btn" onclick="askExample(this)">Display accounting document 5100000001 (FB03)</button>
-      <button class="example-btn" onclick="askExample(this)">Show GL line items for account 400000 (FBL3N)</button>
-
-      <p style="color:#888;font-size:11px;margin:12px 0 6px;">CO &mdash; Controlling</p>
-      <button class="example-btn" onclick="askExample(this)">Show me cost center actual vs plan for 2025</button>
-      <button class="example-btn" onclick="askExample(this)">List cost center line items for cost center 1000 (KSB1)</button>
-      <button class="example-btn" onclick="askExample(this)">What are the internal orders and their costs? (KOB1)</button>
-
-      <p style="color:#888;font-size:11px;margin:12px 0 6px;">MM &mdash; Materials Management</p>
-      <button class="example-btn" onclick="askExample(this)">Show me all POs over $50,000</button>
-      <button class="example-btn" onclick="askExample(this)">Display purchase order details with GR history (ME23N)</button>
-      <button class="example-btn" onclick="askExample(this)">Show material document list for plant 1000 (MB51)</button>
-      <button class="example-btn" onclick="askExample(this)">What are the open purchase requisitions? (ME5A)</button>
-
-      <p style="color:#888;font-size:11px;margin:12px 0 6px;">SD &mdash; Sales & Distribution</p>
-      <button class="example-btn" onclick="askExample(this)">What sales orders were created in Q1 2025?</button>
-      <button class="example-btn" onclick="askExample(this)">Display sales order details with items (VA03)</button>
-      <button class="example-btn" onclick="askExample(this)">Show billing documents for this month (VF03)</button>
-      <button class="example-btn" onclick="askExample(this)">What deliveries are pending shipment? (VL03)</button>
-
-      <p style="color:#888;font-size:11px;margin:12px 0 6px;">PM &mdash; Plant Maintenance</p>
-      <button class="example-btn" onclick="askExample(this)">Show all maintenance orders and their status (IW33)</button>
-      <button class="example-btn" onclick="askExample(this)">List equipment with functional locations (IE03)</button>
-      <button class="example-btn" onclick="askExample(this)">What maintenance plans are scheduled? (IP03)</button>
-      <button class="example-btn" onclick="askExample(this)">Show quality inspection lots and results (QA03)</button>
-
-      <p style="color:#888;font-size:11px;margin:12px 0 6px;">HR &mdash; Human Resources</p>
-      <button class="example-btn" onclick="askExample(this)">What is the headcount by organizational unit?</button>
-      <button class="example-btn" onclick="askExample(this)">How many employees are in each personnel area and subarea?</button>
-
-      <p style="color:#888;font-size:11px;margin:12px 0 6px;">PAY &mdash; Payroll</p>
-      <button class="example-btn" onclick="askExample(this)">What are the total payroll costs by organizational unit?</button>
-      <button class="example-btn" onclick="askExample(this)">What is the average salary by department?</button>
-
-      <p style="color:#888;font-size:11px;margin:12px 0 6px;">BEN &mdash; Benefits</p>
+      <button class="example-btn" onclick="askExample(this)">Show all open vendor items (unpaid invoices)</button>
+      <p style="color:#888;font-size:11px;margin:12px 0 6px;">FI_AR</p>
+      <button class="example-btn" onclick="askExample(this)">Show customer open items with aging buckets</button>
+      <button class="example-btn" onclick="askExample(this)">Which customers have overdue invoices?</button>
+      <button class="example-btn" onclick="askExample(this)">What is the total outstanding receivables by customer?</button>
+      <p style="color:#888;font-size:11px;margin:12px 0 6px;">CO</p>
+      <button class="example-btn" onclick="askExample(this)">Show cost center actual vs plan variance</button>
+      <button class="example-btn" onclick="askExample(this)">What are the actual line items for cost center 1000?</button>
+      <button class="example-btn" onclick="askExample(this)">Show cost center spending by cost element</button>
+      <p style="color:#888;font-size:11px;margin:12px 0 6px;">MM</p>
+      <button class="example-btn" onclick="askExample(this)">Show purchase orders over $50,000 that are still open</button>
+      <button class="example-btn" onclick="askExample(this)">What materials are below reorder point?</button>
+      <p style="color:#888;font-size:11px;margin:12px 0 6px;">SD</p>
+      <button class="example-btn" onclick="askExample(this)">What sales orders were created in Q1 2026?</button>
+      <button class="example-btn" onclick="askExample(this)">Show the order-to-cash pipeline status</button>
+      <button class="example-btn" onclick="askExample(this)">Trace the O2C cycle for a sales order</button>
+      <p style="color:#888;font-size:11px;margin:12px 0 6px;">PM</p>
+      <button class="example-btn" onclick="askExample(this)">Show cancelled maintenance operations</button>
+      <button class="example-btn" onclick="askExample(this)">Which work orders have cancelled operations?</button>
+      <button class="example-btn" onclick="askExample(this)">Show equipment maintenance history</button>
+      <p style="color:#888;font-size:11px;margin:12px 0 6px;">HR / Payroll / Benefits</p>
+      <button class="example-btn" onclick="askExample(this)">Show headcount by organizational unit</button>
+      <button class="example-btn" onclick="askExample(this)">What is the total payroll cost by cost center?</button>
       <button class="example-btn" onclick="askExample(this)">Show benefit enrollment counts by plan type</button>
-      <button class="example-btn" onclick="askExample(this)">How many employees are enrolled in each benefit option?</button>
+      <p style="color:#888;font-size:11px;margin:12px 0 6px;">Value Chains</p>
+      <button class="example-btn" onclick="askExample(this)">Show the procure-to-pay pipeline</button>
+      <button class="example-btn" onclick="askExample(this)">What is our order-to-cash cycle time?</button>
+      <button class="example-btn" onclick="askExample(this)">Show the month-end close status</button>
+
     </div>
+    </div><!-- end sidebarTab_examples -->
+
+    <!-- Modules Tab -->
+    <div class="sidebar-tab-content" id="sidebarTab_modules">
     <div class="section">
       <h3>Modules Loaded</h3>
-      <div class="module-badge">FI-GL &mdash; General Ledger</div>
-      <div class="module-badge" style="margin-top:8px;">FI-AP &mdash; Accounts Payable</div>
-      <div class="module-badge" style="margin-top:8px;">FI-AR &mdash; Accounts Receivable</div>
+      <div class="module-badge">FI_GL &mdash; General Ledger</div>
+      <div class="module-badge" style="margin-top:8px;">FI_AP &mdash; Accounts Payable</div>
+      <div class="module-badge" style="margin-top:8px;">FI_AR &mdash; Accounts Receivable</div>
       <div class="module-badge" style="margin-top:8px;">CO &mdash; Controlling</div>
       <div class="module-badge" style="margin-top:8px;">MM &mdash; Materials Management</div>
       <div class="module-badge" style="margin-top:8px;">SD &mdash; Sales & Distribution</div>
@@ -649,7 +1744,8 @@
       <div class="module-badge" style="margin-top:8px;">HR &mdash; Human Resources</div>
       <div class="module-badge" style="margin-top:8px;">PAY &mdash; Payroll</div>
       <div class="module-badge" style="margin-top:8px;">BEN &mdash; Benefits</div>
-    </div>
+
+    </div><!-- end sidebarTab_modules -->
   </aside>
 
   <div class="chat-area">
@@ -658,9 +1754,9 @@
         <h2>Ask a business question</h2>
         <p>Type a question in plain English about your SAP ECC data and get answers back instantly.</p>
         <div class="modules" style="flex-wrap:wrap;">
-          <div class="module-badge">FI-GL</div>
-          <div class="module-badge">FI-AP</div>
-          <div class="module-badge">FI-AR</div>
+          <div class="module-badge">FI_GL</div>
+          <div class="module-badge">FI_AP</div>
+          <div class="module-badge">FI_AR</div>
           <div class="module-badge">CO</div>
           <div class="module-badge">MM</div>
           <div class="module-badge">SD</div>
@@ -694,10 +1790,54 @@
 
     <div class="input-area">
       <div class="input-row">
-        <textarea id="questionInput" rows="1" placeholder="e.g., Show me unpaid vendor invoices in company code 1000..."
+        <textarea id="questionInput" rows="1" placeholder="Ask a business question about your SAP ECC data..."
           onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendQuestion()}"
           oninput="autoResize(this)"></textarea>
         <button class="send-btn" id="sendBtn" onclick="sendQuestion()">&#8594;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Developer Mode Panel -->
+  <div class="dev-panel" id="devPanel">
+    <div class="dev-panel-header">
+      <h3>&#128296; Developer Mode <span class="dev-badge">DEV</span></h3>
+      <button class="dev-secondary-btn" onclick="toggleDevMode()">Close</button>
+    </div>
+    <div class="dev-panel-tabs">
+      <button class="dev-panel-tab active" onclick="switchDevTab('sql', this)">SQL Editor</button>
+      <button class="dev-panel-tab" onclick="switchDevTab('results', this)">Results</button>
+      <button class="dev-panel-tab" onclick="switchDevTab('log', this)">Log</button>
+    </div>
+
+    <!-- SQL Editor Tab -->
+    <div class="dev-tab-content active" id="devTab_sql" style="display:flex;">
+      <textarea class="dev-sql-editor" id="devSqlEditor" placeholder="-- Enter or edit SQL here&#10;-- SQL from queries will auto-populate&#10;-- Ctrl+Enter to run&#10;&#10;SELECT * FROM ..."
+        onkeydown="if(event.ctrlKey&&event.key==='Enter'){event.preventDefault();devRunSQL()}"></textarea>
+      <div class="dev-toolbar">
+        <button class="dev-run-btn" id="devRunBtn" onclick="devRunSQL()">&#9654; Run</button>
+        <button class="dev-secondary-btn" onclick="devFormatSQL()">Format</button>
+        <button class="dev-secondary-btn" onclick="devCopySQL()">Copy</button>
+        <button class="dev-secondary-btn" onclick="devClearEditor()">Clear</button>
+        <span class="dev-status" id="devStatus"></span>
+      </div>
+    </div>
+
+    <!-- Results Tab -->
+    <div class="dev-tab-content" id="devTab_results">
+      <div class="dev-results-area" id="devResultsArea">
+        <div style="padding:24px;text-align:center;color:var(--text-dim);font-size:12px;">
+          Run a query to see results here.
+        </div>
+      </div>
+    </div>
+
+    <!-- Log Tab -->
+    <div class="dev-tab-content" id="devTab_log">
+      <div class="dev-log-area" id="devLogArea">
+        <div class="dev-log-entry">
+          <span class="log-time">[init]</span> <span class="log-type ok">Developer mode ready</span>
+        </div>
       </div>
     </div>
   </div>
@@ -745,12 +1885,20 @@ const API_BASE = window.location.origin;
 let isGenerating = false;
 let appState = { has_api: false, model: '', key_preview: '', has_test_db: false };
 let conversationHistory = [];  // Tracks message history for multi-turn conversations
+let lastClassification = null; // Last classification result from disambiguation pipeline
+let pipelineMode = 'classify'; // 'classify' = send to classifier first, 'generate' = direct SQL generation
+let catalogData = null;        // Cached BOKG catalog data
+let conversationContext = { modules: [], slots: {} }; // Feature 4: accumulated context
+let lastSuccessfulQuery = null; // Tracks the last successfully executed question + SQL for follow-ups
+let pendingSlotSelections = {}; // Tracks slot selections during disambiguation (slot_name → value)
+let disambiguationOriginalQuery = ''; // The original vague query that triggered disambiguation
+let queryResultStore = {};       // Stores raw query results keyed by resultId for export
+let queryResultCounter = 0;      // Monotonic counter for result IDs
 
 // Session token tracking
 let sessionTokens = { input: 0, output: 0, queries: 0, cacheCreation: 0, cacheRead: 0 };
 
 // Token cost calculation — model-aware pricing with prompt caching support
-// Cached input tokens cost 90% less than regular input tokens
 const MODEL_PRICING = {
   'claude-sonnet-4-5-20250929': { input: 3.0,  output: 15.0, cacheWrite: 3.75, cacheRead: 0.30 },
   'claude-sonnet-4-20250514':   { input: 3.0,  output: 15.0, cacheWrite: 3.75, cacheRead: 0.30 },
@@ -842,6 +1990,14 @@ async function checkStatus() {
         dbIndicator.style.display = 'none';
       }
     }
+    // KG button always visible — explorer shows status message if KG unavailable
+    const kgBtn = document.getElementById('kgBtn');
+    if (kgBtn) {
+      kgBtn.style.display = 'inline-block';
+      kgBtn.title = appState.has_knowledge_graph
+        ? 'Knowledge Graph Explorer'
+        : 'Knowledge Graph Explorer (KG loading...)';
+    }
   } catch {
     dot.className = 'status-dot disconnected';
     text.textContent = 'Server not running';
@@ -927,17 +2083,7 @@ async function removeKey() {
   } catch {}
 }
 
-// ===================== Settings Modal =====================
-
-function openSettings() {
-  document.getElementById('settingsModal').classList.add('active');
-}
-function closeSettings() {
-  document.getElementById('settingsModal').classList.remove('active');
-}
-document.getElementById('settingsModal').addEventListener('click', (e) => {
-  if (e.target === e.currentTarget) closeSettings();
-});
+// ===================== Model Selection =====================
 
 async function saveModel() {
   const sel = document.getElementById('modelSelect');
@@ -966,6 +2112,18 @@ async function saveModel() {
   }
   setTimeout(() => { status.textContent = ''; }, 3000);
 }
+
+// ===================== Settings Modal =====================
+
+function openSettings() {
+  document.getElementById('settingsModal').classList.add('active');
+}
+function closeSettings() {
+  document.getElementById('settingsModal').classList.remove('active');
+}
+document.getElementById('settingsModal').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) closeSettings();
+});
 
 // ===================== Sidebar Toggle =====================
 
@@ -1046,11 +2204,11 @@ function highlightSQL(sql) {
     'ELSE', 'END', 'EXISTS', 'BETWEEN', 'LIKE', 'DESC', 'ASC', 'FETCH', 'FIRST',
     'ROWS', 'ONLY', 'WITH', 'INSERT', 'INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE',
     'CREATE', 'TABLE', 'INDEX', 'VIEW', 'OUTER'];
-  const funcs = ['SUM', 'COUNT', 'AVG', 'MAX', 'MIN', 'NVL', 'UPPER', 'LOWER',
-    'TRUNC', 'TO_CHAR', 'TO_DATE', 'TO_NUMBER', 'ROUND', 'COALESCE', 'DECODE',
-    'ADD_MONTHS', 'SYSDATE', 'MONTHS_BETWEEN', 'SUBSTR', 'INSTR', 'REPLACE',
-    'TRIM', 'LPAD', 'RPAD', 'LENGTH', 'FLOOR', 'CEIL', 'ABS', 'GREATEST', 'LEAST',
-    'LISTAGG', 'ROW_NUMBER', 'RANK', 'DENSE_RANK', 'OVER', 'PARTITION BY'];
+  const funcs = ['SUM', 'COUNT', 'AVG', 'MAX', 'MIN', 'UPPER', 'LOWER',
+    'ROUND', 'COALESCE', 'CONCAT', 'LPAD', 'SUBSTRING', 'EXTRACT',
+    'ADD_DAYS', 'ADD_MONTHS', 'DATEDIFF', 'DAYS_BETWEEN', 'MONTHS_BETWEEN', 'TO_VARCHAR',
+    'TO_DATE', 'TO_NUMBER', 'TRIM', 'LENGTH', 'FLOOR', 'CEIL', 'ABS', 'GREATEST', 'LEAST',
+    'ROW_NUMBER', 'RANK', 'DENSE_RANK', 'OVER', 'PARTITION BY'];
 
   let r = sql.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   r = r.replace(/(--.*$)/gm, '<span class="cm">$1</span>');
@@ -1169,7 +2327,7 @@ function buildSQLDetail(text, sqliteInfo, usage, modulesUsed) {
       html += `
         <div class="sql-block">
           <div class="sql-header">
-            <span>SAP SQL</span>
+            <span>Oracle SQL</span>
             <button class="copy-btn" onclick="copySQL('${sqlId}', this)">Copy</button>
           </div>
           <div class="sql-code" id="${sqlId}">${highlightSQL(sqlCode)}</div>
@@ -1187,9 +2345,9 @@ function buildSQLDetail(text, sqliteInfo, usage, modulesUsed) {
   // Append module filtering info (RAG simulation)
   if (modulesUsed && modulesUsed.length > 0 && modulesUsed.length < 10) {
     const MODULE_NAMES = {
-      FI_GL: 'General Ledger', FI_AP: 'Accounts Payable', FI_AR: 'Accounts Receivable',
-      CO: 'Controlling', MM: 'Materials Mgmt', SD: 'Sales & Distribution',
-      PM: 'Plant Maintenance', HR: 'Human Resources', PAY: 'Payroll', BEN: 'Benefits'
+      AP: 'Accounts Payable', PO: 'Purchasing', GL: 'General Ledger',
+      AR: 'Accounts Receivable', INV: 'Inventory', OM: 'Order Management',
+      CE: 'Cash Management', HR: 'Human Resources', PAY: 'Payroll', BEN: 'Benefits'
     };
     const labels = modulesUsed.map(m => MODULE_NAMES[m] || m);
     html += `<div class="token-usage" style="margin-bottom:2px;">` +
@@ -1280,8 +2438,18 @@ function formatCellValue(val, colType) {
   return String(val).replace(/&/g,'&amp;').replace(/</g,'&lt;');
 }
 
-function buildResultsTable(data) {
+function buildResultsTable(data, questionText) {
   if (data.status === 'ok' && data.columns && data.columns.length > 0 && data.row_count > 0) {
+    // Store raw data for export
+    const resultId = 'qr_' + (++queryResultCounter);
+    queryResultStore[resultId] = {
+      columns: data.columns,
+      rows: data.rows,
+      row_count: data.row_count,
+      question: questionText || '',
+      timestamp: new Date().toISOString()
+    };
+
     const colTypes = data.column_types || data.columns.map(() => 'str');
 
     // Classify numeric columns as 'currency' or 'number' based on column name
@@ -1325,13 +2493,49 @@ function buildResultsTable(data) {
       }
       h += '</tr>';
     }
-    h += '</tbody></table></div></div>';
+    h += '</tbody></table></div>';
+
+    // Export toolbar
+    h += `<div class="export-toolbar">`;
+    h += `<span class="export-label">Export</span>`;
+    h += `<button class="export-btn" onclick="exportCSV('${resultId}')" title="Download as CSV">` +
+         `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>` +
+         `CSV</button>`;
+    h += `<button class="export-btn" onclick="exportExcel('${resultId}')" title="Download as Excel">` +
+         `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>` +
+         `Excel</button>`;
+    h += `<button class="export-btn" id="copyBtn_${resultId}" onclick="copyResultsToClipboard('${resultId}', this)" title="Copy table to clipboard">` +
+         `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>` +
+         `Copy</button>`;
+    h += `<button class="export-btn" onclick="toggleChart('${resultId}')" title="Visualize results">` +
+         `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="12" width="4" height="9"/><rect x="10" y="8" width="4" height="13"/><rect x="17" y="3" width="4" height="18"/></svg>` +
+         `Chart</button>`;
+    h += `<span class="export-meta">${data.row_count} row${data.row_count !== 1 ? 's' : ''}</span>`;
+    h += `</div>`;
+
+    // Chart container (hidden by default)
+    h += `<div class="chart-container" id="chartArea_${resultId}" style="display:none;">`;
+    h += `<div class="chart-header">`;
+    h += `<span class="chart-title" id="chartTitle_${resultId}">Chart</span>`;
+    h += `<div style="display:flex;gap:8px;align-items:center;">`;
+    h += `<div class="chart-type-selector" id="chartTypes_${resultId}"></div>`;
+    h += `<button class="chart-close-btn" onclick="closeChart('${resultId}')" title="Close chart">&times;</button>`;
+    h += `</div></div>`;
+    h += `<div class="chart-col-selector" id="chartColSel_${resultId}" style="display:none;"></div>`;
+    h += `<div class="chart-canvas-wrap"><canvas id="chartCanvas_${resultId}"></canvas></div>`;
+    h += `</div>`;
+
+    h += '</div>';
     return h;
   } else if (data.status === 'ok') {
     return '<div class="results-container"><div class="results-none">Query executed successfully but returned no rows.</div></div>';
   } else {
     let h = '<div class="results-container"><div class="results-error">';
     h += `Error running query: ${(data.error || 'Unknown error').replace(/&/g,'&amp;').replace(/</g,'&lt;')}`;
+    if (data.sqlite_sql) {
+      h += `<details style="margin-top:8px;font-size:0.85em;"><summary style="cursor:pointer;color:#666;">Show converted SQL (debug)</summary>`;
+      h += `<pre style="margin-top:4px;white-space:pre-wrap;background:#f8f8f8;padding:8px;border-radius:4px;max-height:200px;overflow:auto;">${data.sqlite_sql.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</pre></details>`;
+    }
     h += '</div></div>';
     return h;
   }
@@ -1358,6 +2562,1258 @@ function copySQL(id, btn) {
   });
 }
 
+// ===================== Export Functions =====================
+
+function getExportFilename(resultId, ext) {
+  const result = queryResultStore[resultId];
+  if (!result) return `query_results.${ext}`;
+  // Create a short filename from the question
+  let name = (result.question || 'query_results')
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, '')
+    .trim()
+    .replace(/\s+/g, '_')
+    .substring(0, 40);
+  const ts = new Date(result.timestamp).toISOString().slice(0, 10);
+  return `${name}_${ts}.${ext}`;
+}
+
+function exportCSV(resultId) {
+  const result = queryResultStore[resultId];
+  if (!result) return;
+
+  const rows = [];
+  // Header metadata as comment rows
+  rows.push(`# Query: ${result.question}`);
+  rows.push(`# Exported: ${new Date().toLocaleString()}`);
+  rows.push(`# Rows: ${result.row_count}`);
+
+  // Column headers
+  rows.push(result.columns.map(c => `"${c.replace(/"/g, '""')}"`).join(','));
+
+  // Data rows
+  for (const row of result.rows) {
+    const cells = row.map(val => {
+      if (val === null) return '';
+      const s = String(val);
+      if (s.includes(',') || s.includes('"') || s.includes('\n')) {
+        return `"${s.replace(/"/g, '""')}"`;
+      }
+      return s;
+    });
+    rows.push(cells.join(','));
+  }
+
+  const csv = rows.join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  downloadBlob(blob, getExportFilename(resultId, 'csv'));
+}
+
+function exportExcel(resultId) {
+  const result = queryResultStore[resultId];
+  if (!result) return;
+
+  if (typeof XLSX === 'undefined') {
+    alert('Excel library is still loading. Please try again in a moment.');
+    return;
+  }
+
+  const wb = XLSX.utils.book_new();
+
+  // Build data array: header + rows
+  const wsData = [result.columns, ...result.rows.map(row => row.map(v => v === null ? '' : v))];
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+  // Auto-size columns (approximate)
+  const colWidths = result.columns.map((col, ci) => {
+    let maxLen = col.length;
+    for (const row of result.rows) {
+      const cellLen = row[ci] !== null ? String(row[ci]).length : 0;
+      if (cellLen > maxLen) maxLen = cellLen;
+    }
+    return { wch: Math.min(maxLen + 2, 50) };
+  });
+  ws['!cols'] = colWidths;
+
+  // Add metadata as a second sheet
+  const metaData = [
+    ['Query', result.question],
+    ['Exported', new Date().toLocaleString()],
+    ['Rows', result.row_count],
+    ['Source', 'IDA - Intelligent Data Analyst']
+  ];
+  const metaWs = XLSX.utils.aoa_to_sheet(metaData);
+  metaWs['!cols'] = [{ wch: 12 }, { wch: 60 }];
+
+  XLSX.utils.book_append_sheet(wb, ws, 'Results');
+  XLSX.utils.book_append_sheet(wb, metaWs, 'Metadata');
+
+  XLSX.writeFile(wb, getExportFilename(resultId, 'xlsx'));
+}
+
+function copyResultsToClipboard(resultId, btn) {
+  const result = queryResultStore[resultId];
+  if (!result) return;
+
+  // Build tab-separated text (pastes nicely into Excel/Sheets/Slack)
+  const lines = [];
+  lines.push(result.columns.join('\t'));
+  for (const row of result.rows) {
+    lines.push(row.map(v => v === null ? '' : String(v)).join('\t'));
+  }
+
+  navigator.clipboard.writeText(lines.join('\n')).then(() => {
+    const origText = btn.innerHTML;
+    btn.innerHTML = btn.innerHTML.replace('Copy', 'Copied!');
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.innerHTML = origText;
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// ===================== Chart Visualization =====================
+
+const chartInstances = {}; // Track active Chart.js instances
+const chartColumnState = {}; // Track which columns are enabled per result
+
+// Color palette for charts (dark theme friendly)
+const CHART_COLORS = [
+  '#6366f1', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6',
+  '#06b6d4', '#ec4899', '#14b8a6', '#f97316', '#a855f7',
+  '#3b82f6', '#10b981', '#eab308', '#e11d48', '#7c3aed'
+];
+
+function analyzeDataForChart(resultId) {
+  const result = queryResultStore[resultId];
+  if (!result) return null;
+
+  const { columns, rows } = result;
+  const colCount = columns.length;
+
+  // Classify each column
+  const colInfo = columns.map((name, ci) => {
+    let numericCount = 0;
+    let stringCount = 0;
+    let dateCount = 0;
+    const uniqueVals = new Set();
+
+    for (const row of rows) {
+      const v = row[ci];
+      if (v === null) continue;
+      uniqueVals.add(String(v));
+      const sv = String(v).trim();
+      // Check date patterns FIRST — "2025-03" must be date, not numeric
+      if (/^\d{4}[-/]\d{1,2}([-/]\d{1,2})?$/.test(sv) || /^\d{1,2}[-/]\d{1,2}[-/]\d{2,4}$/.test(sv) || /Q[1-4]\s*\d{4}/.test(sv) || /^\d{4}\s*Q[1-4]/.test(sv) || /^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)/i.test(sv)) {
+        dateCount++;
+      } else if (typeof v === 'number' || (typeof v === 'string' && !isNaN(parseFloat(v)) && /^[\d,.\-+$]+$/.test(sv))) {
+        numericCount++;
+      } else {
+        stringCount++;
+      }
+    }
+
+    const total = rows.length;
+    const type = numericCount > total * 0.7 ? 'numeric' :
+                 dateCount > total * 0.5 ? 'date' : 'string';
+
+    return { name, index: ci, type, uniqueCount: uniqueVals.size };
+  });
+
+  // Find label columns (string/date) and value columns (numeric)
+  const labelCols = colInfo.filter(c => c.type === 'string' || c.type === 'date');
+  const valueCols = colInfo.filter(c => c.type === 'numeric');
+
+  if (valueCols.length === 0) return null; // Can't chart without numbers
+
+  // Smart label column selection — prefer time/period columns for x-axis
+  // Priority: 1) date-typed, 2) name suggests time, 3) most unique values (better axis spread)
+  let labelCol = null;
+  if (labelCols.length > 0) {
+    const timePattern = /year|month|quarter|week|date|period|day|time|yr|mth|qtr|fy|fiscal/i;
+    const dateCols = labelCols.filter(c => c.type === 'date');
+    const timeNamedCols = labelCols.filter(c => timePattern.test(c.name));
+    if (dateCols.length > 0) {
+      labelCol = dateCols[0];
+    } else if (timeNamedCols.length > 0) {
+      labelCol = timeNamedCols[0];
+    } else {
+      // Pick the column with the most unique values (better x-axis distribution)
+      labelCol = labelCols.reduce((best, c) => c.uniqueCount > best.uniqueCount ? c : best, labelCols[0]);
+    }
+  }
+  const hasTimeLabels = labelCol && (labelCol.type === 'date' || /year|month|quarter|week|date|period/i.test(labelCol.name));
+  const fewCategories = labelCol && labelCol.uniqueCount <= 8;
+  const manyCategories = labelCol && labelCol.uniqueCount > 15;
+
+  let suggestedTypes = [];
+
+  if (hasTimeLabels) {
+    suggestedTypes = ['line', 'bar'];
+  } else if (fewCategories && valueCols.length === 1) {
+    suggestedTypes = ['bar', 'pie', 'doughnut'];
+  } else if (manyCategories) {
+    suggestedTypes = ['bar', 'line'];
+  } else {
+    suggestedTypes = ['bar', 'line', 'pie'];
+  }
+
+  // If only 1 value column and few rows, pie is good
+  if (valueCols.length === 1 && rows.length <= 10 && rows.length >= 2) {
+    if (!suggestedTypes.includes('pie')) suggestedTypes.push('pie');
+  }
+
+  // Multiple value columns → grouped bar or line
+  if (valueCols.length > 1) {
+    suggestedTypes = ['bar', 'line'];
+  }
+
+  return {
+    labelCol,
+    valueCols,
+    suggestedTypes,
+    defaultType: suggestedTypes[0] || 'bar'
+  };
+}
+
+function toggleChart(resultId) {
+  const area = document.getElementById(`chartArea_${resultId}`);
+  if (!area) return;
+
+  if (area.style.display === 'none') {
+    area.style.display = 'block';
+    const analysis = analyzeDataForChart(resultId);
+    if (!analysis) {
+      area.innerHTML = '<div style="padding:20px;color:var(--text-dim);text-align:center;">No numeric data available to visualize.</div>';
+      return;
+    }
+    // Build chart type selector
+    const typesDiv = document.getElementById(`chartTypes_${resultId}`);
+    typesDiv.innerHTML = analysis.suggestedTypes.map(t =>
+      `<button class="chart-type-btn ${t === analysis.defaultType ? 'active' : ''}" onclick="switchChartType('${resultId}', '${t}', this)">${t.charAt(0).toUpperCase() + t.slice(1)}</button>`
+    ).join('');
+
+    // Build column selector chips (only when multiple value columns)
+    const colSelDiv = document.getElementById(`chartColSel_${resultId}`);
+    if (analysis.valueCols.length > 1) {
+      // Initialize column state — all ON by default
+      if (!chartColumnState[resultId]) {
+        chartColumnState[resultId] = {};
+        analysis.valueCols.forEach(vc => { chartColumnState[resultId][vc.index] = true; });
+      }
+      colSelDiv.style.display = 'flex';
+      colSelDiv.innerHTML = `<span class="chart-col-label">Columns:</span>` +
+        analysis.valueCols.map((vc, vi) => {
+          const isActive = chartColumnState[resultId][vc.index];
+          const color = CHART_COLORS[vi % CHART_COLORS.length];
+          return `<button class="chart-col-chip ${isActive ? 'active' : ''}" `
+            + `style="${isActive ? `background:${color};border-color:${color};` : ''}" `
+            + `onclick="toggleChartColumn('${resultId}', ${vc.index}, ${vi}, this)" `
+            + `title="${isActive ? 'Click to hide' : 'Click to show'}">`
+            + `<span class="chip-dot" style="background:${color}"></span>${vc.name}</button>`;
+        }).join('');
+    } else {
+      colSelDiv.style.display = 'none';
+    }
+
+    renderChart(resultId, analysis.defaultType, analysis);
+  } else {
+    closeChart(resultId);
+  }
+}
+
+function closeChart(resultId) {
+  const area = document.getElementById(`chartArea_${resultId}`);
+  if (area) area.style.display = 'none';
+  if (chartInstances[resultId]) {
+    chartInstances[resultId].destroy();
+    delete chartInstances[resultId];
+  }
+  delete chartColumnState[resultId];
+}
+
+function switchChartType(resultId, chartType, btn) {
+  // Update active button
+  const parent = btn.parentElement;
+  parent.querySelectorAll('.chart-type-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const analysis = analyzeDataForChart(resultId);
+  if (analysis) renderChart(resultId, chartType, analysis);
+}
+
+function toggleChartColumn(resultId, colIndex, colorIndex, btn) {
+  if (!chartColumnState[resultId]) return;
+
+  // Don't allow deselecting the last column
+  const activeCount = Object.values(chartColumnState[resultId]).filter(v => v).length;
+  if (activeCount <= 1 && chartColumnState[resultId][colIndex]) return;
+
+  // Toggle the column
+  chartColumnState[resultId][colIndex] = !chartColumnState[resultId][colIndex];
+  const isActive = chartColumnState[resultId][colIndex];
+  const color = CHART_COLORS[colorIndex % CHART_COLORS.length];
+
+  // Update chip appearance
+  btn.classList.toggle('active', isActive);
+  btn.style.background = isActive ? color : '';
+  btn.style.borderColor = isActive ? color : '';
+  btn.title = isActive ? 'Click to hide' : 'Click to show';
+
+  // Re-render chart with current type
+  const activeTypeBtn = document.querySelector(`#chartTypes_${resultId} .chart-type-btn.active`);
+  const chartType = activeTypeBtn ? activeTypeBtn.textContent.toLowerCase() : 'bar';
+  const analysis = analyzeDataForChart(resultId);
+  if (analysis) renderChart(resultId, chartType, analysis);
+}
+
+function renderChart(resultId, chartType, analysis) {
+  const result = queryResultStore[resultId];
+  if (!result || !analysis) return;
+
+  // Destroy existing chart
+  if (chartInstances[resultId]) {
+    chartInstances[resultId].destroy();
+  }
+
+  const canvas = document.getElementById(`chartCanvas_${resultId}`);
+  const ctx = canvas.getContext('2d');
+
+  const { rows } = result;
+  const { labelCol, valueCols } = analysis;
+
+  // Filter to only selected columns
+  const activeValueCols = chartColumnState[resultId]
+    ? valueCols.filter(vc => chartColumnState[resultId][vc.index])
+    : valueCols;
+  // Fall back to all columns if somehow none selected
+  const displayCols = activeValueCols.length > 0 ? activeValueCols : valueCols;
+
+  // Extract labels
+  const labels = labelCol
+    ? rows.map(r => r[labelCol.index] !== null ? String(r[labelCol.index]) : '')
+    : rows.map((_, i) => `Row ${i + 1}`);
+
+  // Truncate labels if too long
+  const displayLabels = labels.map(l => l.length > 25 ? l.substring(0, 22) + '...' : l);
+
+  // Build datasets
+  const isPie = chartType === 'pie' || chartType === 'doughnut';
+  const datasets = [];
+
+  if (isPie && displayCols.length === 1) {
+    // Single dataset with per-segment colors
+    const vc = displayCols[0];
+    datasets.push({
+      label: vc.name,
+      data: rows.map(r => {
+        const v = r[vc.index];
+        return v !== null ? (typeof v === 'number' ? v : parseFloat(String(v).replace(/[,$]/g, '')) || 0) : 0;
+      }),
+      backgroundColor: CHART_COLORS.slice(0, rows.length),
+      borderColor: '#1a1d27',
+      borderWidth: 2
+    });
+  } else {
+    // One dataset per value column (filtered to selected)
+    displayCols.forEach((vc) => {
+      // Use original position in valueCols for consistent color assignment
+      const origIdx = analysis.valueCols.findIndex(v => v.index === vc.index);
+      const ci = origIdx >= 0 ? origIdx : 0;
+      datasets.push({
+        label: vc.name,
+        data: rows.map(r => {
+          const v = r[vc.index];
+          return v !== null ? (typeof v === 'number' ? v : parseFloat(String(v).replace(/[,$]/g, '')) || 0) : 0;
+        }),
+        backgroundColor: isPie ? CHART_COLORS.slice(0, rows.length) : CHART_COLORS[ci % CHART_COLORS.length] + '88',
+        borderColor: CHART_COLORS[ci % CHART_COLORS.length],
+        borderWidth: isPie ? 2 : 2,
+        tension: 0.3,
+        fill: chartType === 'line' ? false : undefined
+      });
+    });
+  }
+
+  // Update chart title
+  const titleEl = document.getElementById(`chartTitle_${resultId}`);
+  if (titleEl) {
+    const valueNames = displayCols.map(v => v.name).join(', ');
+    const byLabel = labelCol ? ` by ${labelCol.name}` : '';
+    titleEl.textContent = `${valueNames}${byLabel}`;
+  }
+
+  // Detect if values are currency
+  const isCurrency = displayCols.some(vc => {
+    const tokens = vc.name.toLowerCase().split(/[_\s]+/);
+    return tokens.some(t => CURRENCY_TOKENS.has(t)) ||
+           (tokens.some(t => WEAK_CURRENCY_TOKENS.has(t)) && !tokens.some(t => NON_CURRENCY_TOKENS.has(t)));
+  });
+
+  chartInstances[resultId] = new Chart(ctx, {
+    type: chartType,
+    data: { labels: displayLabels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: datasets.length > 1 || isPie,
+          position: isPie ? 'right' : 'top',
+          labels: { color: '#9294a0', font: { size: 11 }, padding: 12 }
+        },
+        tooltip: {
+          backgroundColor: '#242736',
+          borderColor: '#2e3144',
+          borderWidth: 1,
+          titleColor: '#e4e4e7',
+          bodyColor: '#e4e4e7',
+          padding: 10,
+          callbacks: {
+            label: function(ctx) {
+              let val = ctx.parsed.y !== undefined ? ctx.parsed.y : ctx.parsed;
+              if (isCurrency && typeof val === 'number') {
+                val = val.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+              } else if (typeof val === 'number') {
+                val = val.toLocaleString();
+              }
+              return `${ctx.dataset.label}: ${val}`;
+            }
+          }
+        }
+      },
+      scales: isPie ? {} : {
+        x: {
+          ticks: { color: '#9294a0', font: { size: 10 }, maxRotation: 45 },
+          grid: { color: 'rgba(46,49,68,0.4)' }
+        },
+        y: {
+          ticks: {
+            color: '#9294a0',
+            font: { size: 10 },
+            callback: function(val) {
+              if (isCurrency) return '$' + val.toLocaleString();
+              return val.toLocaleString();
+            }
+          },
+          grid: { color: 'rgba(46,49,68,0.4)' },
+          beginAtZero: true
+        }
+      }
+    }
+  });
+}
+
+// ===================== Prompt History =====================
+
+let promptHistory = JSON.parse(localStorage.getItem('ida_prompt_history') || '[]');
+let favoritePrompts = new Set(JSON.parse(localStorage.getItem('ida_favorite_prompts') || '[]'));
+
+function addToHistory(question, confidence, modules) {
+  // Don't add duplicates of the most recent entry
+  if (promptHistory.length > 0 && promptHistory[0].question === question) return;
+
+  const entry = {
+    question,
+    confidence: confidence || 'exploratory',
+    modules: modules || [],
+    timestamp: new Date().toISOString(),
+    id: 'h_' + Date.now()
+  };
+
+  promptHistory.unshift(entry);
+  // Keep last 50 entries
+  if (promptHistory.length > 50) promptHistory = promptHistory.slice(0, 50);
+  localStorage.setItem('ida_prompt_history', JSON.stringify(promptHistory));
+  renderHistory();
+}
+
+function toggleFavorite(historyId, event) {
+  event.stopPropagation();
+  if (favoritePrompts.has(historyId)) {
+    favoritePrompts.delete(historyId);
+  } else {
+    favoritePrompts.add(historyId);
+  }
+  localStorage.setItem('ida_favorite_prompts', JSON.stringify([...favoritePrompts]));
+  renderHistory();
+}
+
+function replayHistoryItem(question) {
+  const input = document.getElementById('questionInput');
+  input.value = question;
+  conversationHistory = [];
+  lastClassification = null;
+  pipelineMode = 'classify';
+  sendQuestion();
+}
+
+function clearHistory() {
+  promptHistory = [];
+  favoritePrompts.clear();
+  localStorage.removeItem('ida_prompt_history');
+  localStorage.removeItem('ida_favorite_prompts');
+  renderHistory();
+}
+
+function renderHistory() {
+  const container = document.getElementById('historyList');
+  if (!container) return;
+
+  if (promptHistory.length === 0) {
+    container.innerHTML = '<div class="history-empty">No queries yet. Your prompt history will appear here as you ask questions.</div>';
+    return;
+  }
+
+  // Split into favorites and recent
+  const favorites = promptHistory.filter(h => favoritePrompts.has(h.id));
+  const recent = promptHistory.filter(h => !favoritePrompts.has(h.id));
+
+  let html = '';
+
+  if (favorites.length > 0) {
+    html += '<div class="history-section-label">Favorites</div>';
+    for (const item of favorites) {
+      html += buildHistoryItem(item, true);
+    }
+  }
+
+  if (recent.length > 0) {
+    if (favorites.length > 0) html += '<div class="history-section-label">Recent</div>';
+    for (const item of recent) {
+      html += buildHistoryItem(item, false);
+    }
+  }
+
+  html += '<button class="history-clear-btn" onclick="clearHistory()">Clear History</button>';
+  container.innerHTML = html;
+}
+
+function buildHistoryItem(item, isFav) {
+  const timeAgo = getTimeAgo(new Date(item.timestamp));
+  const badgeClass = item.confidence === 'high' ? 'high' : 'exploratory';
+  const badgeLabel = item.confidence === 'high' ? 'BOKG' : 'AI';
+  const starClass = isFav ? 'favorited' : '';
+  const starChar = isFav ? '&#9733;' : '&#9734;';
+  const escapedQ = item.question.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+
+  return `<div class="history-item" onclick="replayHistoryItem('${escapedQ}')">` +
+    `<div style="flex:1;min-width:0;">` +
+    `<div class="hi-text"><span class="history-badge ${badgeClass}">${badgeLabel}</span>${item.question.replace(/</g,'&lt;')}</div>` +
+    `<div class="hi-meta">${timeAgo}${item.modules.length > 0 ? ' · ' + item.modules.join(', ') : ''}</div>` +
+    `</div>` +
+    `<button class="hi-star ${starClass}" onclick="toggleFavorite('${item.id}', event)" title="${isFav ? 'Remove from favorites' : 'Add to favorites'}">${starChar}</button>` +
+    `</div>`;
+}
+
+function getTimeAgo(date) {
+  const now = new Date();
+  const diffMs = now - date;
+  const diffMins = Math.floor(diffMs / 60000);
+  if (diffMins < 1) return 'Just now';
+  if (diffMins < 60) return `${diffMins}m ago`;
+  const diffHrs = Math.floor(diffMins / 60);
+  if (diffHrs < 24) return `${diffHrs}h ago`;
+  const diffDays = Math.floor(diffHrs / 24);
+  if (diffDays < 7) return `${diffDays}d ago`;
+  return date.toLocaleDateString();
+}
+
+function switchSidebarTab(tabName, btn) {
+  // Update tab buttons
+  document.querySelectorAll('.sidebar-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  // Show/hide content
+  document.querySelectorAll('.sidebar-tab-content').forEach(c => c.classList.remove('active'));
+  const target = document.getElementById(`sidebarTab_${tabName}`);
+  if (target) target.classList.add('active');
+}
+
+// Render history on load
+renderHistory();
+
+// ===================== Developer Mode =====================
+
+let devModeActive = false;
+let devLogEntries = [];
+
+function toggleDevMode() {
+  devModeActive = !devModeActive;
+  const panel = document.getElementById('devPanel');
+  const btn = document.getElementById('devModeBtn');
+
+  if (devModeActive) {
+    panel.classList.add('open');
+    btn.style.background = 'var(--accent)';
+    btn.style.color = '#fff';
+    btn.style.borderColor = 'var(--accent)';
+    devLog('info', 'Developer mode activated');
+  } else {
+    panel.classList.remove('open');
+    btn.style.background = '';
+    btn.style.color = '';
+    btn.style.borderColor = '';
+  }
+}
+
+function switchDevTab(tabName, btn) {
+  document.querySelectorAll('.dev-panel-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.dev-tab-content').forEach(c => {
+    c.classList.remove('active');
+    c.style.display = 'none';
+  });
+  const target = document.getElementById(`devTab_${tabName}`);
+  if (target) {
+    target.classList.add('active');
+    target.style.display = 'flex';
+  }
+}
+
+function devLog(type, message, sql) {
+  const time = new Date().toLocaleTimeString();
+  const entry = { time, type, message, sql };
+  devLogEntries.push(entry);
+
+  const logArea = document.getElementById('devLogArea');
+  if (logArea) {
+    const typeClass = type === 'error' ? 'err' : 'ok';
+    let html = `<div class="dev-log-entry">`;
+    html += `<span class="log-time">[${time}]</span> <span class="log-type ${typeClass}">${message}</span>`;
+    if (sql) html += `<span class="log-sql">${sql.replace(/</g, '&lt;')}</span>`;
+    html += `</div>`;
+    logArea.insertAdjacentHTML('beforeend', html);
+    logArea.scrollTop = logArea.scrollHeight;
+  }
+}
+
+// Auto-populate dev editor when SQL is generated
+function devPopulateSQL(sql) {
+  if (!devModeActive) return;
+  const editor = document.getElementById('devSqlEditor');
+  if (editor) {
+    editor.value = sql;
+    devLog('info', 'SQL auto-populated from query');
+  }
+}
+
+async function devRunSQL() {
+  const editor = document.getElementById('devSqlEditor');
+  const sql = editor.value.trim();
+  if (!sql) return;
+
+  const status = document.getElementById('devStatus');
+  const runBtn = document.getElementById('devRunBtn');
+  runBtn.disabled = true;
+  status.textContent = 'Running...';
+
+  const startTime = performance.now();
+
+  try {
+    const res = await fetch(`${API_BASE}/api/execute`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sql })
+    });
+    const data = await res.json();
+    const elapsed = ((performance.now() - startTime) / 1000).toFixed(2);
+
+    if (data.status === 'ok' && data.columns && data.row_count > 0) {
+      status.textContent = `${data.row_count} rows · ${elapsed}s`;
+      status.style.color = 'var(--green)';
+      devLog('info', `Query OK: ${data.row_count} rows in ${elapsed}s`, sql);
+
+      // Render results in dev results tab
+      const resultsArea = document.getElementById('devResultsArea');
+      resultsArea.innerHTML = buildResultsTable(data, 'Developer SQL');
+
+      // Auto-switch to results tab
+      const resultsTab = document.querySelector('.dev-panel-tab:nth-child(2)');
+      if (resultsTab) switchDevTab('results', resultsTab);
+    } else if (data.status === 'ok') {
+      status.textContent = `0 rows · ${elapsed}s`;
+      status.style.color = 'var(--orange)';
+      devLog('info', `Query OK but 0 rows in ${elapsed}s`, sql);
+      const resultsArea = document.getElementById('devResultsArea');
+      resultsArea.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text-dim);">Query returned no results.</div>';
+    } else {
+      status.textContent = 'Error';
+      status.style.color = 'var(--red)';
+      devLog('error', `Query error: ${data.error || 'Unknown'}`, sql);
+      const resultsArea = document.getElementById('devResultsArea');
+      resultsArea.innerHTML = `<div style="padding:16px;color:var(--red);font-family:monospace;font-size:12px;white-space:pre-wrap;">${(data.error || 'Unknown error').replace(/</g, '&lt;')}</div>`;
+      const resultsTab = document.querySelector('.dev-panel-tab:nth-child(2)');
+      if (resultsTab) switchDevTab('results', resultsTab);
+    }
+  } catch (err) {
+    status.textContent = 'Connection error';
+    status.style.color = 'var(--red)';
+    devLog('error', `Connection error: ${err.message}`);
+  }
+
+  runBtn.disabled = false;
+  setTimeout(() => { status.style.color = 'var(--text-dim)'; }, 5000);
+}
+
+function devFormatSQL() {
+  const editor = document.getElementById('devSqlEditor');
+  let sql = editor.value.trim();
+  if (!sql) return;
+
+  // Basic SQL formatting: uppercase keywords, add newlines
+  const keywords = ['SELECT', 'FROM', 'WHERE', 'AND', 'OR', 'JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN',
+    'OUTER JOIN', 'ON', 'GROUP BY', 'ORDER BY', 'HAVING', 'LIMIT', 'UNION', 'INSERT', 'UPDATE', 'DELETE',
+    'SET', 'VALUES', 'INTO', 'CREATE', 'ALTER', 'DROP', 'AS', 'CASE', 'WHEN', 'THEN', 'ELSE', 'END',
+    'BETWEEN', 'IN', 'NOT', 'NULL', 'IS', 'LIKE', 'EXISTS', 'DISTINCT', 'WITH'];
+
+  // Uppercase keywords
+  for (const kw of keywords) {
+    const regex = new RegExp(`\\b${kw}\\b`, 'gi');
+    sql = sql.replace(regex, kw);
+  }
+
+  // Add newlines before major clauses
+  const newlineKeywords = ['SELECT', 'FROM', 'WHERE', 'GROUP BY', 'ORDER BY', 'HAVING', 'LIMIT',
+    'LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN', 'JOIN', 'UNION', 'WITH'];
+  for (const kw of newlineKeywords) {
+    const regex = new RegExp(`\\s+${kw}\\b`, 'g');
+    sql = sql.replace(regex, `\n${kw}`);
+  }
+
+  editor.value = sql;
+}
+
+function devCopySQL() {
+  const editor = document.getElementById('devSqlEditor');
+  navigator.clipboard.writeText(editor.value).then(() => {
+    devLog('info', 'SQL copied to clipboard');
+  });
+}
+
+function devClearEditor() {
+  document.getElementById('devSqlEditor').value = '';
+}
+
+// ===================== Send Question =====================
+
+// ── Suggestion click handler ──
+function handleSuggestionClick(promptText) {
+  // User clicked a BOKG suggestion — submit as a fresh query through classification
+  // This ensures the query gets BOKG pattern matching and HIGH ACCURACY badge
+  const input = document.getElementById('questionInput');
+  input.value = promptText;
+  // Reset conversation state so this goes through classification
+  conversationHistory = [];
+  lastClassification = null;
+  pipelineMode = 'classify';
+  sendQuestion();
+}
+
+// ── Slot option click handler ──
+function handleSlotOptionClick(slotName, value) {
+  // User picked a slot value — accumulate it and compose a full question
+  pendingSlotSelections[slotName] = value;
+
+  // Visually highlight the selected button and dim others in same slot group
+  document.querySelectorAll(`.slot-option-btn[data-slot="${slotName}"]`).forEach(btn => {
+    btn.style.opacity = btn.getAttribute('data-value') === value ? '1' : '0.4';
+    btn.style.borderColor = btn.getAttribute('data-value') === value ? 'var(--accent)' : '';
+    btn.style.background = btn.getAttribute('data-value') === value ? 'var(--accent)' : '';
+    btn.style.color = btn.getAttribute('data-value') === value ? '#fff' : '';
+  });
+
+  // Compose the full question from original query + all slot selections
+  const composed = composeQuestionFromSlots();
+  const input = document.getElementById('questionInput');
+  input.value = composed;
+
+  // Update the "Run Query" button to show it's ready
+  const runBtn = document.getElementById('slotRunQueryBtn');
+  if (runBtn) {
+    runBtn.style.opacity = '1';
+    runBtn.style.pointerEvents = 'auto';
+    const slotCount = Object.keys(pendingSlotSelections).length;
+    runBtn.textContent = `Run Query (${slotCount} selection${slotCount > 1 ? 's' : ''})`;
+  }
+}
+
+// ── Compose a natural language question from original query + slot selections ──
+function composeQuestionFromSlots() {
+  const parts = [];
+  // Start with a base like "Show me" or use the original query context
+  const base = disambiguationOriginalQuery || 'Show me';
+
+  // Build a readable query from selections
+  const selections = Object.entries(pendingSlotSelections);
+  if (selections.length === 0) return base;
+
+  // Compose: "Show me [metric] for [time period] grouped [grouping]"
+  let metric = '';
+  let timePeriod = '';
+  let grouping = '';
+  let scope = '';
+
+  for (const [slot, val] of selections) {
+    const lowerSlot = slot.toLowerCase();
+    // Extract just the core value (strip parenthetical descriptions)
+    const coreVal = val.replace(/\s*\([^)]*\)\s*/g, '').trim();
+    if (lowerSlot.includes('type') || lowerSlot.includes('metric') || lowerSlot.includes('aspect') || lowerSlot.includes('what')) {
+      metric = coreVal;
+    } else if (lowerSlot.includes('time') || lowerSlot.includes('period') || lowerSlot.includes('when')) {
+      timePeriod = coreVal;
+    } else if (lowerSlot.includes('group') || lowerSlot.includes('dimension') || lowerSlot.includes('how')) {
+      grouping = coreVal;
+    } else if (lowerSlot.includes('scope') || lowerSlot.includes('specific') || lowerSlot.includes('interest')) {
+      scope = coreVal;
+    } else {
+      // Generic fallback — add to metric
+      if (!metric) metric = coreVal;
+      else parts.push(coreVal);
+    }
+  }
+
+  // Build the composed question
+  let q = 'Show me';
+  if (metric) q += ` ${metric.toLowerCase()}`;
+  else q += ` ${base.replace(/^show\s+me\s*/i, '').trim() || 'data'}`;
+  if (scope) q += ` for ${scope.toLowerCase()}`;
+  if (timePeriod) q += ` for ${timePeriod.toLowerCase()}`;
+  if (grouping) q += ` ${grouping.toLowerCase()}`;
+  if (parts.length > 0) q += ` (${parts.join(', ')})`;
+
+  return q;
+}
+
+// ── Submit the composed slot query ──
+function handleSlotRunQuery() {
+  const input = document.getElementById('questionInput');
+  const composed = input.value.trim() || composeQuestionFromSlots();
+  if (!composed) return;
+  input.value = composed;
+  // Reset state and submit through classification
+  conversationHistory = [];
+  lastClassification = null;
+  pendingSlotSelections = {};
+  disambiguationOriginalQuery = '';
+  pipelineMode = 'classify';
+  sendQuestion();
+}
+
+// ── Confirmation handler ──
+function handleConfirmGenerate() {
+  // User confirmed — proceed to SQL generation with the classified modules
+  if (!lastClassification) return;
+  const interpretation = lastClassification.interpretation || '';
+  pipelineMode = 'generate';
+  // Use the original question from the last user message in history
+  const lastUserMsg = conversationHistory.filter(m => m.role === 'user').pop();
+  const question = lastUserMsg ? lastUserMsg.content : interpretation;
+  const input = document.getElementById('questionInput');
+  input.value = question;
+  sendQuestion();
+}
+
+// ── Build suggestion buttons HTML ──
+function buildSuggestionButtons(suggestions) {
+  if (!suggestions || !suggestions.length) return '';
+  let html = '';
+  for (const s of suggestions.slice(0, 4)) {
+    const mod = s.module ? `<span class="suggestion-module">${s.module}</span>` : '';
+    const validated = s.match_quality === 'exact' ? '<span class="suggestion-validated">✓ validated</span>' : '';
+    const escaped = s.prompt.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    html += `<button class="suggestion-btn" onclick="handleSuggestionClick('${escaped}')">${mod}${s.prompt}${validated}</button>`;
+  }
+  return html;
+}
+
+// ── Build slot question HTML with clickable options ──
+function buildSlotQuestions(slotQuestions) {
+  if (!slotQuestions || !slotQuestions.length) return '';
+  let html = '';
+  for (const sq of slotQuestions) {
+    html += `<p style="margin:10px 0 4px;font-weight:600">${sq.question}</p>`;
+    if (sq.options) {
+      html += '<div style="margin:4px 0">';
+      for (const opt of sq.options) {
+        const escaped = opt.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        const slotEscaped = (sq.slot || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        html += `<button class="slot-option-btn" data-slot="${slotEscaped}" data-value="${escaped}" onclick="handleSlotOptionClick('${slotEscaped}','${escaped}')">${opt}</button>`;
+      }
+      html += '</div>';
+    }
+  }
+  // Add "Run Query" button
+  html += `<div style="margin-top:14px;">`;
+  html += `<button id="slotRunQueryBtn" onclick="handleSlotRunQuery()" style="background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px 24px;font-size:14px;font-weight:600;cursor:pointer;opacity:0.4;pointer-events:none;transition:all 0.2s;">Run Query (select options above)</button>`;
+  html += `</div>`;
+  return html;
+}
+
+// ── Build confirmation panel HTML ──
+function buildConfirmPanel(classification, message) {
+  let html = '<div class="pipeline-badge confirm">Ready to query</div>';
+  html += renderMarkdown(message);
+  html += '<div class="confirm-bar">';
+  html += '<button class="confirm-btn primary" onclick="handleConfirmGenerate()">Generate SQL</button>';
+  html += '<button class="confirm-btn secondary" onclick="document.getElementById(\'questionInput\').focus()">Refine question</button>';
+  html += '</div>';
+  // Show suggestions as alternative options
+  const suggestions = classification.suggestions || [];
+  if (suggestions.length > 0) {
+    const alternatives = suggestions.filter(s => s.match_quality !== 'exact');
+    if (alternatives.length > 0) {
+      html += '<div style="margin-top:12px;font-size:0.85em;color:var(--text-muted)">Or try one of these related queries:</div>';
+      html += buildSuggestionButtons(alternatives);
+    }
+  }
+  return html;
+}
+
+// ── Build disambiguation panel HTML ──
+function buildDisambiguationPanel(classification, message) {
+  const conf = classification.confidence || 'low';
+  const badge = conf === 'medium' ? 'disambiguate' : 'classify';
+  const badgeText = conf === 'medium' ? 'Needs clarification' : 'Help me understand';
+  let html = `<div class="pipeline-badge ${badge}">${badgeText}</div>`;
+
+  // Render the interpretation and reason
+  let interp = classification.interpretation || '';
+  const reason = classification.disambiguation_reason || '';
+  // Clean up LLM meta-language from interpretation (e.g., "The user has specified...", "User wants to see...")
+  interp = interp.replace(/^(The\s+)?user\s+(has\s+)?(specified|wants?\s+to|is\s+asking|asked)\s*/i, '').trim();
+  // Capitalize first letter after cleanup
+  if (interp) interp = interp.charAt(0).toUpperCase() + interp.slice(1);
+  if (interp) html += `<p style="margin:6px 0"><strong>${interp}</strong></p>`;
+  if (reason) html += `<p style="margin:4px 0;color:var(--text-muted)">${reason}</p>`;
+
+  // Slot questions with clickable options
+  html += buildSlotQuestions(classification.slot_questions || []);
+
+  // BOKG-grounded suggestions
+  const suggestions = classification.suggestions || [];
+  if (suggestions.length > 0) {
+    html += '<div style="margin-top:14px;font-weight:600;margin-bottom:6px">Questions I can answer with high accuracy (BOKG-powered):</div>';
+    html += buildSuggestionButtons(suggestions);
+  }
+
+  html += '<p style="margin-top:10px;font-size:0.85em;color:var(--text-muted)">Pick a suggestion, answer the questions above, or rephrase your question.</p>';
+  return html;
+}
+
+// ===================== New Feature Functions =====================
+
+// ── Feature 1: Confidence Badge ──
+function buildConfidenceBadge(confidence, matchedPattern) {
+  if (!confidence) return '';
+  const icons = { high: '&#9679;', medium: '&#9681;', low: '&#9675;' };
+  const labels = { high: 'High Accuracy', medium: 'Medium Confidence', low: 'Exploratory' };
+  let html = `<div style="margin-bottom:8px;">`;
+  html += `<span class="confidence-badge ${confidence}">`;
+  html += `<span class="conf-icon">${icons[confidence] || ''}</span> ${labels[confidence] || confidence}`;
+  html += `</span>`;
+  if (matchedPattern) {
+    html += `<span class="bokg-validated-tag">&#10003; BOKG Validated Pattern</span>`;
+  }
+  html += `</div>`;
+  return html;
+}
+
+// ── Feature 2: Why this SQL Panel ──
+function buildWhySQLPanel(fullResponse, id) {
+  // Extract the "### Why this SQL" section from the LLM response
+  const whyMatch = fullResponse.match(/###\s*Why this SQL([\s\S]*?)(?=###|$)/i);
+  if (!whyMatch) return '';
+  const content = whyMatch[1].trim();
+  if (!content) return '';
+  return `
+    <div style="margin-top:8px;">
+      <button class="why-sql-toggle" onclick="toggleWhySQL('${id}')">
+        <span class="arrow" id="${id}-arrow">&#9654;</span> Why this SQL
+      </button>
+      <div class="why-sql-panel" id="${id}" style="display:none;">
+        <h4>&#128270; Query Explainability</h4>
+        ${renderMarkdown(content)}
+      </div>
+    </div>`;
+}
+
+function toggleWhySQL(id) {
+  const el = document.getElementById(id);
+  const arrow = document.getElementById(id + '-arrow');
+  if (el.style.display === 'none') {
+    el.style.display = 'block';
+    arrow.innerHTML = '&#9660;';
+  } else {
+    el.style.display = 'none';
+    arrow.innerHTML = '&#9654;';
+  }
+}
+
+// ── Feature 3: Governance Block ──
+function buildGovernanceBlock(execData) {
+  const govType = execData.governance_type || 'Data Governance';
+  const govMessage = execData.governance_message || execData.error || 'This query was blocked by a governance policy.';
+  return `
+    <div class="governance-block">
+      <div class="governance-header">
+        <span class="shield-icon">&#128737;</span>
+        <span>${govType}</span>
+        <span class="governance-tag">BLOCKED</span>
+      </div>
+      <div class="governance-body">
+        <p>${govMessage}</p>
+        <p style="margin-top:10px;">
+          <strong>What you can do instead:</strong> Try asking for aggregate data — for example,
+          "average salary by department" or "headcount by organization." These queries comply with
+          data governance policies while still providing valuable insights.
+        </p>
+      </div>
+    </div>`;
+}
+
+// ── Feature 4: Context Tracker ──
+function updateContextTracker(classification) {
+  const section = document.getElementById('contextTrackerSection');
+  const slotsDiv = document.getElementById('contextSlots');
+  const modsDiv = document.getElementById('contextModules');
+
+  // Guard: if the context tracker HTML elements have been removed, just update state
+  if (!section || !slotsDiv || !modsDiv) {
+    if (!classification) {
+      conversationContext = { modules: [], slots: {} };
+    }
+    return;
+  }
+
+  if (!classification) {
+    section.style.display = 'none';
+    conversationContext = { modules: [], slots: {} };
+    return;
+  }
+
+  section.style.display = 'block';
+
+  // Merge slots
+  const slots = classification.slots || {};
+  for (const [name, info] of Object.entries(slots)) {
+    if (info && info.status === 'filled' && info.value) {
+      conversationContext.slots[name] = info.value;
+    }
+  }
+
+  // Merge modules
+  const mods = classification.modules || [];
+  for (const m of mods) {
+    if (!conversationContext.modules.includes(m)) {
+      conversationContext.modules.push(m);
+    }
+  }
+
+  // Render slots
+  const slotNames = { metric: 'Metric', entity: 'Entity', time_period: 'Time Period', scope: 'Scope', output_format: 'Format' };
+  let slotsHtml = '';
+  for (const [key, label] of Object.entries(slotNames)) {
+    const val = conversationContext.slots[key];
+    slotsHtml += `<div class="context-slot">
+      <span class="slot-label">${label}</span>
+      <span class="slot-value ${val ? '' : 'empty'}">${val || '—'}</span>
+    </div>`;
+  }
+  slotsDiv.innerHTML = slotsHtml;
+
+  // Render modules
+  modsDiv.innerHTML = conversationContext.modules.map(m =>
+    `<span class="ctx-mod">${m}</span>`
+  ).join('');
+}
+
+// ── Feature 5: Query Catalog ──
+async function openCatalog() {
+  const panel = document.getElementById('catalogPanel');
+  panel.classList.add('visible');
+
+  if (catalogData) {
+    renderCatalog(catalogData);
+    return;
+  }
+
+  // Fetch catalog from server
+  try {
+    const res = await fetch(`${API_BASE}/api/catalog`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: '{}'
+    });
+    const data = await res.json();
+    if (data.status === 'ok') {
+      catalogData = data.catalog;
+      renderCatalog(catalogData);
+    }
+  } catch (err) {
+    document.getElementById('catalogModules').innerHTML =
+      '<p style="color:var(--red)">Could not load catalog.</p>';
+  }
+}
+
+function closeCatalog() {
+  document.getElementById('catalogPanel').classList.remove('visible');
+}
+
+function renderCatalog(catalog, filterModule) {
+  const MODULE_NAMES = {
+    FI_GL: 'Financial Accounting – General Ledger', FI_AP: 'Financial Accounting – Accounts Payable',
+    FI_AR: 'Financial Accounting – Accounts Receivable', CO: 'Controlling', MM: 'Materials Management',
+    SD: 'Sales & Distribution', PM: 'Plant Maintenance', HR: 'Human Resources', PAY: 'Payroll', BEN: 'Benefits'
+  };
+
+  // Stats
+  const s = catalog.summary || {};
+  document.getElementById('catalogStats').innerHTML = `
+    <div class="catalog-stat"><div class="stat-num">${s.total_modules || 0}</div><div class="stat-label">Modules</div></div>
+    <div class="catalog-stat"><div class="stat-num">${s.total_questions || 0}</div><div class="stat-label">Business Questions</div></div>
+    <div class="catalog-stat"><div class="stat-num">${s.total_patterns || 0}</div><div class="stat-label">Validated Patterns</div></div>
+  `;
+
+  // Filter buttons
+  const mods = Object.keys(catalog.modules || {});
+  let filterHtml = `<button class="catalog-filter-btn ${!filterModule ? 'active' : ''}" onclick="renderCatalog(catalogData)">All</button>`;
+  for (const m of mods) {
+    filterHtml += `<button class="catalog-filter-btn ${filterModule === m ? 'active' : ''}" onclick="renderCatalog(catalogData, '${m}')">${m}</button>`;
+  }
+  document.getElementById('catalogFilter').innerHTML = filterHtml;
+
+  // Module cards
+  let html = '';
+  for (const [modKey, modInfo] of Object.entries(catalog.modules || {})) {
+    if (filterModule && modKey !== filterModule) continue;
+    const questions = modInfo.questions || [];
+    const patterns = modInfo.patterns || [];
+    const total = questions.length + patterns.length;
+    html += `<div class="catalog-module">
+      <div class="catalog-module-header" onclick="this.nextElementSibling.classList.toggle('open')">
+        <h3>${modKey} — ${MODULE_NAMES[modKey] || modInfo.name || modKey}</h3>
+        <span class="mod-count">${total} questions</span>
+      </div>
+      <div class="catalog-module-body ${filterModule ? 'open' : ''}">`;
+    // Validated patterns first
+    for (const p of patterns) {
+      const escaped = p.prompt.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      html += `<div class="catalog-question" onclick="useCatalogQuestion('${escaped}')">
+        <span class="cq-icon">&#9654;</span>
+        <span>${p.prompt}</span>
+        <span class="cq-validated">&#10003; validated</span>
+      </div>`;
+    }
+    // Then business questions
+    for (const q of questions) {
+      const escaped = q.question.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      html += `<div class="catalog-question" onclick="useCatalogQuestion('${escaped}')">
+        <span class="cq-icon">&#9654;</span>
+        <span>${q.question}</span>
+      </div>`;
+    }
+    html += `</div></div>`;
+  }
+  document.getElementById('catalogModules').innerHTML = html;
+}
+
+function useCatalogQuestion(question) {
+  closeCatalog();
+  const input = document.getElementById('questionInput');
+  input.value = question;
+  input.focus();
+  // Go through classification pipeline for the BOKG question
+  pipelineMode = 'classify';
+  sendQuestion();
+}
+
+// ── Feature 6: Follow-up Suggestions ──
+function buildFollowupSuggestions(modulesUsed, originalQuestion) {
+  if (!modulesUsed || modulesUsed.length === 0) return '';
+
+  // Generate contextual follow-up suggestions based on modules used
+  const followups = {
+    FI_GL: [
+      'Show me the month-over-month variance',
+      'Break this down by cost center',
+      'What are the top 10 accounts by balance?'
+    ],
+    FI_AP: [
+      'Show the aging breakdown by bucket (30/60/90/120+ days)',
+      'Which vendors have the highest outstanding balance?',
+      'Show me the payment terms distribution'
+    ],
+    FI_AR: [
+      'Show the aging breakdown by bucket (30/60/90/120+ days)',
+      'Which customers have the highest overdue balance?',
+      'What is the DSO trend over the last 6 months?'
+    ],
+    CO: [
+      'Show actual vs plan variance breakdown',
+      'Which cost centers are over budget?',
+      'Break this down by cost element'
+    ],
+    MM: [
+      'Show items below their reorder point',
+      'What is the inventory turnover rate?',
+      'Break this down by warehouse'
+    ],
+    SD: [
+      'Show the backlog by customer',
+      'What is the average order-to-ship time?',
+      'Which orders are partially shipped?'
+    ],
+    PM: [
+      'Show planned vs actual maintenance costs',
+      'Which equipment has the longest maintenance cycle?',
+      'Show mean time between failures by asset'
+    ],
+    HR: [
+      'Break this down by location',
+      'Show the trend over the last 4 quarters',
+      'Compare across departments'
+    ],
+  };
+
+  const primaryModule = modulesUsed[0];
+  const suggestions = followups[primaryModule] || [];
+  if (suggestions.length === 0) return '';
+
+  let html = '<div class="followup-prompt">';
+  html += '<strong>Suggested follow-ups:</strong> ';
+  for (const s of suggestions.slice(0, 3)) {
+    const escaped = s.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    html += `<button class="followup-btn" onclick="askFollowup('${escaped}')">${s}</button>`;
+  }
+  html += '</div>';
+  return html;
+}
+
+function askFollowup(followupText) {
+  // Compose a self-contained question by combining the follow-up with the original query context
+  let fullQuestion = followupText;
+  if (lastSuccessfulQuery) {
+    fullQuestion = `Based on my previous question "${lastSuccessfulQuery}", ${followupText.charAt(0).toLowerCase() + followupText.slice(1)}`;
+  }
+  const input = document.getElementById('questionInput');
+  input.value = fullQuestion;
+  // Follow-ups skip classification and go straight to SQL generation
+  pipelineMode = 'generate';
+  sendQuestion();
+}
+
 // ===================== Send Question =====================
 
 async function sendQuestion() {
@@ -1372,14 +3828,107 @@ async function sendQuestion() {
   document.getElementById('sendBtn').disabled = true;
 
   addMessage('user', question.replace(/</g, '&lt;').replace(/>/g, '&gt;'));
+
+  // ── Determine pipeline path ──
+  // If pipelineMode is 'generate', skip classification (user confirmed or picked a follow-up)
+  // If pipelineMode is 'classify', always classify (even if conversationHistory has content from disambiguation)
+  // This ensures that refined questions after disambiguation get properly classified
+  const shouldClassify = pipelineMode === 'classify';
+  if (shouldClassify) {
+    // Reset disambiguation/conversation state for fresh classification
+    conversationHistory = [];
+    lastClassification = null;
+  }
+  pipelineMode = 'classify'; // Reset for next question
+
+  if (shouldClassify) {
+    // ── STEP 1: Intent Classification ──
+    addLoading('Analyzing your question...');
+
+    try {
+      const classRes = await fetch(`${API_BASE}/api/classify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question, history: conversationHistory })
+      });
+      const classData = await classRes.json();
+
+      if (classData.status === 'ok') {
+        const classification = classData.classification;
+        lastClassification = classification;
+        updateSessionTokens(classData.usage);
+
+        // Feature 4: Update conversation context tracker
+        updateContextTracker(classification);
+
+        // Treat anything that's not high confidence as needing disambiguation
+        const needsDisambiguation = classification.disambiguation_needed ||
+          (classification.confidence && classification.confidence !== 'high');
+
+        if (needsDisambiguation) {
+          // ── DISAMBIGUATION: Show suggestions and slot questions ──
+          removeLoading();
+
+          // Initialize slot accumulation state
+          disambiguationOriginalQuery = question;
+          pendingSlotSelections = {};
+
+          const msgDiv = addMessage('assistant', '');
+          msgDiv.querySelector('.content').innerHTML = buildDisambiguationPanel(classification, classData.message);
+
+          // Save to conversation history for follow-up context
+          conversationHistory.push({ role: 'user', content: question });
+          conversationHistory.push({ role: 'assistant', content: classData.message });
+
+          isGenerating = false;
+          document.getElementById('sendBtn').disabled = false;
+          input.focus();
+          return;
+
+        } else {
+          // ── HIGH CONFIDENCE: Skip confirmation, go straight to SQL generation ──
+          // Show a brief interpretation message but don't stop the flow
+          const interp = classification.interpretation || '';
+          if (interp) {
+            removeLoading();
+            const briefMsg = addMessage('assistant', '');
+            briefMsg.querySelector('.content').innerHTML =
+              `<div style="color:#555;font-size:0.9em;margin-bottom:4px;">Generating SQL for: <em>${interp.replace(/</g,'&lt;')}</em></div>`;
+            addLoading('Generating query...');
+          }
+          // Save to history and fall through to generation
+          conversationHistory.push({ role: 'user', content: question });
+          conversationHistory.push({ role: 'assistant', content: classData.message });
+        }
+      }
+      // If classification failed, fall through to direct generation
+      removeLoading();
+    } catch (err) {
+      removeLoading();
+      // Classification failed — fall through to direct generation
+    }
+  }
+
+  // ── STEP 2: SQL Generation (direct or after confirmation) ──
   addLoading(conversationHistory.length > 0 ? 'Processing your response...' : 'Generating query...');
 
   try {
-    // Step 1: Generate SQL (include conversation history for follow-ups)
+    // Include modules and confidence from classification if available
+    const generateBody = { question, history: conversationHistory };
+    if (lastClassification && lastClassification.modules) {
+      generateBody.modules = lastClassification.modules;
+    }
+    if (lastClassification && lastClassification.confidence) {
+      generateBody.confidence = lastClassification.confidence;
+      // Check if any suggestion was an exact match
+      const suggestions = lastClassification.suggestions || [];
+      generateBody.matched_pattern = suggestions.some(s => s.match_quality === 'exact');
+    }
+
     const res = await fetch(`${API_BASE}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question, history: conversationHistory })
+      body: JSON.stringify(generateBody)
     });
     const data = await res.json();
 
@@ -1387,6 +3936,9 @@ async function sendQuestion() {
       const fullResponse = data.result;
       updateSessionTokens(data.usage);
       const mainSQL = extractMainSQL(fullResponse);
+
+      // Auto-populate developer mode SQL editor
+      if (mainSQL) devPopulateSQL(mainSQL);
 
       if (mainSQL && appState.has_test_db) {
         // Got SQL — run the query
@@ -1401,30 +3953,52 @@ async function sendQuestion() {
 
         removeLoading();
 
-        // Build the response: results first, then hidden SQL detail
-        const detailId = `detail-${Date.now()}`;
-        const resultsHtml = buildResultsTable(execData);
-        const sqlDetailHtml = buildSQLDetail(fullResponse, execData.sqlite_sql || null, data.usage, data.modules_used);
+        // ── Feature 3: Check for governance block ──
+        if (execData.governance_block) {
+          const msgDiv = addMessage('assistant', '');
+          msgDiv.querySelector('.content').innerHTML = buildGovernanceBlock(execData);
+          conversationHistory = [];
+          lastClassification = null;
+          updateContextTracker(null); // Reset context
+        } else {
+          // Build the response: confidence badge + results + Why this SQL + follow-ups
+          const detailId = `detail-${Date.now()}`;
+          const whyId = `why-${Date.now()}`;
+          const resultsHtml = buildResultsTable(execData, question);
+          const sqlDetailHtml = buildSQLDetail(fullResponse, execData.sqlite_sql || null, data.usage, data.modules_used);
 
-        const msgDiv = addMessage('assistant', '');
-        msgDiv.querySelector('.content').innerHTML =
-          resultsHtml +
-          `<button class="sql-toggle" data-toggle="${detailId}" onclick="toggleSQLDetail('${detailId}')">` +
-            `<span class="arrow">&#9654;</span> Show SQL &amp; details` +
-          `</button>` +
-          `<div class="sql-detail" id="${detailId}">${sqlDetailHtml}</div>`;
+          // ── Feature 1: Confidence badge ──
+          const confidenceBadge = buildConfidenceBadge(data.confidence, data.matched_pattern);
 
-        // SQL was generated and executed — conversation is complete, reset history
-        conversationHistory = [];
+          // ── Feature 2: Why this SQL panel ──
+          const whySqlHtml = buildWhySQLPanel(fullResponse, whyId);
+
+          // ── Feature 6: Follow-up suggestions ──
+          const followupHtml = buildFollowupSuggestions(data.modules_used, question);
+
+          const msgDiv = addMessage('assistant', '');
+          msgDiv.querySelector('.content').innerHTML =
+            confidenceBadge +
+            resultsHtml +
+            `<button class="sql-toggle" data-toggle="${detailId}" onclick="toggleSQLDetail('${detailId}')">` +
+              `<span class="arrow">&#9654;</span> Show SQL &amp; details` +
+            `</button>` +
+            `<div class="sql-detail" id="${detailId}">${sqlDetailHtml}${whySqlHtml}</div>` +
+            followupHtml;
+
+          // SQL was generated and executed — save context for follow-ups, then reset pipeline state
+          lastSuccessfulQuery = question;
+          // Add to prompt history
+          addToHistory(question, data.confidence || 'exploratory', data.modules_used || []);
+          conversationHistory = [];
+          lastClassification = null;
+          // Don't reset context tracker — keep it visible to show accumulated modules
+        }
 
       } else if (!mainSQL) {
         // No SQL found — this is a clarification question from the LLM
         removeLoading();
-
-        // Format the response as a conversational message with markdown
         addMessage('assistant', renderMarkdown(fullResponse));
-
-        // Save conversation history so the user's follow-up has context
         conversationHistory.push({ role: 'user', content: question });
         conversationHistory.push({ role: 'assistant', content: fullResponse });
 
@@ -1433,10 +4007,10 @@ async function sendQuestion() {
         removeLoading();
         const detailId = `detail-${Date.now()}`;
         const sqlDetailHtml = buildSQLDetail(fullResponse, null, data.usage, data.modules_used);
-
         const msgDiv = addMessage('assistant', '');
         msgDiv.querySelector('.content').innerHTML = sqlDetailHtml;
         conversationHistory = [];
+        lastClassification = null;
       }
     } else {
       removeLoading();
@@ -1454,6 +4028,586 @@ async function sendQuestion() {
   isGenerating = false;
   document.getElementById('sendBtn').disabled = false;
   input.focus();
+}
+
+// ===================== Knowledge Graph Explorer =====================
+
+const KG_MODULE_COLORS = {
+  FI_GL: '#6366f1', FI_AP: '#ec4899', FI_AR: '#f59e0b', CO: '#10b981',
+  MM: '#3b82f6', SD: '#8b5cf6', PM: '#ef4444', HR: '#14b8a6',
+  PAY: '#f97316', BEN: '#06b6d4'
+};
+const KG_MODULE_NAMES = {
+  FI_GL: 'Financial Accounting – General Ledger', FI_AP: 'Financial Accounting – Accounts Payable',
+  FI_AR: 'Financial Accounting – Accounts Receivable', CO: 'Controlling', MM: 'Materials Management',
+  SD: 'Sales & Distribution', PM: 'Plant Maintenance', HR: 'Human Resources', PAY: 'Payroll', BEN: 'Benefits'
+};
+
+let kgData = null;          // Raw graph data from server
+let kgSimulation = null;    // D3 force simulation
+let kgSvgGroup = null;      // Main SVG group (transformed by zoom)
+let kgZoomBehavior = null;  // D3 zoom behavior
+let kgActiveFilter = 'all'; // Current module filter
+let kgActiveView = 'tables'; // Current view mode
+let kgSelectedNode = null;  // Currently selected node
+let kgSearchTerm = '';      // Current search filter
+
+function openKnowledgeGraph() {
+  const panel = document.getElementById('kgPanel');
+  panel.classList.add('visible');
+  if (!kgData) {
+    loadKnowledgeGraphData();
+  } else {
+    renderKnowledgeGraph();
+  }
+}
+
+function closeKnowledgeGraph() {
+  document.getElementById('kgPanel').classList.remove('visible');
+  if (kgSimulation) kgSimulation.stop();
+}
+
+async function loadKnowledgeGraphData() {
+  const statsBar = document.getElementById('kgStatsBar');
+  statsBar.innerHTML = '<span>Loading graph data...</span>';
+
+  try {
+    const resp = await fetch(`${API_BASE}/api/kg/graph`);
+    if (!resp.ok) throw new Error('KG endpoint not available');
+    kgData = await resp.json();
+
+    // Build module filter buttons
+    const modules = [...new Set(kgData.nodes.filter(n => n.type === 'MODULE').map(n => n.module || n.id.replace('mod:','')))];
+    const filterDiv = document.getElementById('kgModuleFilters');
+    filterDiv.innerHTML = modules.map(m => {
+      const color = KG_MODULE_COLORS[m] || '#666';
+      return `<button class="kg-filter-btn" data-kg-filter="${m}" onclick="kgFilterModule('${m}', this)"
+                style="border-color: ${color}44">
+                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${color};margin-right:4px;vertical-align:middle;"></span>
+                ${m}</button>`;
+    }).join('');
+
+    // Show stats
+    const stats = kgData.stats || {};
+    statsBar.innerHTML = `
+      <span>Nodes: <span class="kg-stat-val">${kgData.nodes.length}</span></span>
+      <span>Edges: <span class="kg-stat-val">${kgData.links.length}</span></span>
+      <span>Modules: <span class="kg-stat-val">${stats.modules || modules.length}</span></span>
+      <span>Tables: <span class="kg-stat-val">${stats.tables || '—'}</span></span>
+      <span>Concepts: <span class="kg-stat-val">${stats.concepts || '—'}</span></span>
+    `;
+
+    buildKgLegend();
+    renderKnowledgeGraph();
+
+  } catch (err) {
+    statsBar.innerHTML = `<span style="color:var(--red)">Knowledge Graph not available. Start the engine with KG enabled.</span>`;
+  }
+}
+
+function buildKgLegend() {
+  const legend = document.getElementById('kgLegend');
+  let html = '<h4>Legend</h4>';
+
+  // Node types
+  html += '<div class="kg-legend-item"><span class="kg-legend-dot" style="background:#6366f1;width:14px;height:14px;"></span> Module</div>';
+  html += '<div class="kg-legend-item"><span class="kg-legend-dot" style="background:#4488cc;"></span> Table</div>';
+  html += '<div class="kg-legend-item"><span class="kg-legend-sq" style="background:#f59e0b;"></span> Business Concept</div>';
+  html += '<div style="margin-top:6px;border-top:1px solid var(--border);padding-top:6px;">';
+  html += '<div class="kg-legend-item" style="margin-bottom:1px;"><svg width="24" height="8"><line x1="0" y1="4" x2="24" y2="4" stroke="#555" stroke-width="1.5"/></svg> Join / FK</div>';
+  html += '<div class="kg-legend-item"><svg width="24" height="8"><line x1="0" y1="4" x2="24" y2="4" stroke="#f59e0b" stroke-width="1" stroke-dasharray="3,2"/></svg> Concept link</div>';
+  html += '</div>';
+  legend.innerHTML = html;
+}
+
+function getFilteredData() {
+  if (!kgData) return { nodes: [], links: [] };
+
+  let nodes = kgData.nodes;
+  let links = kgData.links;
+
+  // View filter
+  if (kgActiveView === 'tables') {
+    nodes = nodes.filter(n => n.type === 'MODULE' || n.type === 'TABLE');
+  } else if (kgActiveView === 'concepts') {
+    nodes = nodes.filter(n => n.type === 'MODULE' || n.type === 'CONCEPT' || n.type === 'TABLE');
+  }
+  // full = everything
+
+  // Module filter
+  if (kgActiveFilter !== 'all') {
+    const modId = `mod:${kgActiveFilter}`;
+    nodes = nodes.filter(n => {
+      if (n.type === 'MODULE') return n.id === modId;
+      if (n.type === 'CONCEPT') return true;  // Keep concepts visible
+      return n.group === kgActiveFilter || n.module === kgActiveFilter;
+    });
+  }
+
+  // Search filter
+  if (kgSearchTerm) {
+    const term = kgSearchTerm.toLowerCase();
+    const matchedIds = new Set();
+    nodes.forEach(n => {
+      if ((n.label || '').toLowerCase().includes(term) ||
+          (n.id || '').toLowerCase().includes(term) ||
+          (n.description || '').toLowerCase().includes(term)) {
+        matchedIds.add(n.id);
+      }
+    });
+    // Include neighbors of matched nodes
+    links.forEach(l => {
+      const src = typeof l.source === 'object' ? l.source.id : l.source;
+      const tgt = typeof l.target === 'object' ? l.target.id : l.target;
+      if (matchedIds.has(src)) matchedIds.add(tgt);
+      if (matchedIds.has(tgt)) matchedIds.add(src);
+    });
+    nodes = nodes.filter(n => matchedIds.has(n.id));
+  }
+
+  // Filter links to only include those between visible nodes
+  const nodeIds = new Set(nodes.map(n => n.id));
+  links = links.filter(l => {
+    const src = typeof l.source === 'object' ? l.source.id : l.source;
+    const tgt = typeof l.target === 'object' ? l.target.id : l.target;
+    return nodeIds.has(src) && nodeIds.has(tgt);
+  });
+
+  return { nodes: nodes.map(n => ({...n})), links: links.map(l => ({...l})) };
+}
+
+function renderKnowledgeGraph() {
+  if (!kgData) return;
+
+  const container = document.getElementById('kgCanvasWrap');
+  const svg = d3.select('#kgSvg');
+  svg.selectAll('*').remove();
+
+  const width = container.clientWidth;
+  const height = container.clientHeight;
+
+  svg.attr('viewBox', [0, 0, width, height]);
+
+  // Zoom
+  kgZoomBehavior = d3.zoom()
+    .scaleExtent([0.1, 5])
+    .on('zoom', (event) => {
+      kgSvgGroup.attr('transform', event.transform);
+    });
+  svg.call(kgZoomBehavior);
+
+  kgSvgGroup = svg.append('g');
+
+  // Arrow markers
+  const defs = svg.append('defs');
+  defs.append('marker')
+    .attr('id', 'kg-arrow')
+    .attr('viewBox', '0 -3 6 6')
+    .attr('refX', 18).attr('refY', 0)
+    .attr('markerWidth', 6).attr('markerHeight', 6)
+    .attr('orient', 'auto')
+    .append('path').attr('d', 'M0,-3L6,0L0,3').attr('fill', '#555');
+
+  defs.append('marker')
+    .attr('id', 'kg-arrow-concept')
+    .attr('viewBox', '0 -3 6 6')
+    .attr('refX', 20).attr('refY', 0)
+    .attr('markerWidth', 6).attr('markerHeight', 6)
+    .attr('orient', 'auto')
+    .append('path').attr('d', 'M0,-3L6,0L0,3').attr('fill', '#f59e0b');
+
+  const filtered = getFilteredData();
+  const nodes = filtered.nodes;
+  const links = filtered.links;
+
+  if (nodes.length === 0) {
+    kgSvgGroup.append('text')
+      .attr('x', width / 2).attr('y', height / 2)
+      .attr('text-anchor', 'middle')
+      .attr('fill', '#666')
+      .attr('font-size', 14)
+      .text('No nodes match the current filter.');
+    return;
+  }
+
+  // Force simulation
+  kgSimulation = d3.forceSimulation(nodes)
+    .force('link', d3.forceLink(links).id(d => d.id).distance(d => {
+      const src = typeof d.source === 'object' ? d.source : nodes.find(n => n.id === d.source);
+      const tgt = typeof d.target === 'object' ? d.target : nodes.find(n => n.id === d.target);
+      if (src && tgt && (src.type === 'MODULE' || tgt.type === 'MODULE')) return 140;
+      if (d.type === 'MEASURES' || d.type === 'RELATES_TO') return 160;
+      return 90;
+    }).strength(0.4))
+    .force('charge', d3.forceManyBody().strength(d => {
+      if (d.type === 'MODULE') return -600;
+      if (d.type === 'CONCEPT') return -300;
+      return -200;
+    }))
+    .force('center', d3.forceCenter(width / 2, height / 2))
+    .force('collision', d3.forceCollide().radius(d => (d.size || 10) + 8))
+    .force('x', d3.forceX(width / 2).strength(0.03))
+    .force('y', d3.forceY(height / 2).strength(0.03));
+
+  // Draw edges
+  const link = kgSvgGroup.append('g')
+    .selectAll('line')
+    .data(links)
+    .join('line')
+    .attr('stroke', d => {
+      if (d.type === 'MEASURES' || d.type === 'RELATES_TO' || d.type === 'AGGREGATES') return '#f59e0b';
+      if (d.type === 'BELONGS_TO') return '#444';
+      return '#555';
+    })
+    .attr('stroke-opacity', d => d.type === 'BELONGS_TO' ? 0.3 : 0.6)
+    .attr('stroke-width', d => {
+      if (d.type === 'JOINS_TO' || d.type === 'FOREIGN_KEY') return 1.5;
+      return 1;
+    })
+    .attr('stroke-dasharray', d => {
+      if (d.type === 'MEASURES' || d.type === 'RELATES_TO' || d.type === 'AGGREGATES') return '4,3';
+      return null;
+    })
+    .attr('marker-end', d => {
+      if (d.type === 'BELONGS_TO') return null;
+      if (d.type === 'MEASURES' || d.type === 'RELATES_TO') return 'url(#kg-arrow-concept)';
+      return 'url(#kg-arrow)';
+    });
+
+  // Draw nodes
+  const node = kgSvgGroup.append('g')
+    .selectAll('g')
+    .data(nodes)
+    .join('g')
+    .attr('cursor', 'pointer')
+    .call(d3.drag()
+      .on('start', kgDragStarted)
+      .on('drag', kgDragged)
+      .on('end', kgDragEnded));
+
+  // Node shapes
+  node.each(function(d) {
+    const g = d3.select(this);
+    if (d.type === 'CONCEPT') {
+      // Diamond shape for concepts
+      const s = d.size || 14;
+      g.append('rect')
+        .attr('width', s).attr('height', s)
+        .attr('x', -s/2).attr('y', -s/2)
+        .attr('rx', 2)
+        .attr('transform', 'rotate(45)')
+        .attr('fill', d.color || '#f59e0b')
+        .attr('stroke', '#fff')
+        .attr('stroke-width', 1.5)
+        .attr('opacity', 0.9);
+    } else {
+      // Circle for modules and tables
+      g.append('circle')
+        .attr('r', d.size || 10)
+        .attr('fill', d.color || '#666')
+        .attr('stroke', d.type === 'MODULE' ? '#fff' : 'rgba(255,255,255,0.3)')
+        .attr('stroke-width', d.type === 'MODULE' ? 2 : 1)
+        .attr('opacity', 0.9);
+    }
+  });
+
+  // Node labels
+  node.append('text')
+    .attr('dy', d => (d.size || 10) + 12)
+    .attr('text-anchor', 'middle')
+    .attr('fill', '#bbb')
+    .attr('font-size', d => {
+      if (d.type === 'MODULE') return 12;
+      if (d.type === 'CONCEPT') return 10;
+      return 9;
+    })
+    .attr('font-weight', d => d.type === 'MODULE' ? 700 : 400)
+    .text(d => {
+      if (d.type === 'MODULE') return d.label || d.id;
+      if (d.type === 'CONCEPT') return d.label || d.id;
+      // For tables, show short name
+      const name = (d.label || d.id).replace('tbl:', '');
+      return name.length > 22 ? name.substring(0, 20) + '...' : name;
+    });
+
+  // Hover tooltip
+  const tooltip = document.getElementById('kgTooltip');
+  node.on('mouseover', (event, d) => {
+    tooltip.innerHTML = `
+      <div class="tt-label">${d.label || d.id}</div>
+      <div class="tt-type">${d.type}${d.module ? ' — ' + (KG_MODULE_NAMES[d.module] || d.module) : ''}</div>
+      ${d.description ? '<div class="tt-desc">' + d.description + '</div>' : ''}
+    `;
+    tooltip.classList.add('visible');
+    tooltip.style.left = (event.offsetX + 16) + 'px';
+    tooltip.style.top = (event.offsetY - 10) + 'px';
+
+    // Highlight connected edges
+    link.attr('stroke-opacity', l => {
+      const src = typeof l.source === 'object' ? l.source.id : l.source;
+      const tgt = typeof l.target === 'object' ? l.target.id : l.target;
+      return (src === d.id || tgt === d.id) ? 1 : 0.1;
+    }).attr('stroke-width', l => {
+      const src = typeof l.source === 'object' ? l.source.id : l.source;
+      const tgt = typeof l.target === 'object' ? l.target.id : l.target;
+      return (src === d.id || tgt === d.id) ? 2.5 : 1;
+    });
+
+    // Dim non-connected nodes
+    node.attr('opacity', n => {
+      if (n.id === d.id) return 1;
+      const connected = links.some(l => {
+        const src = typeof l.source === 'object' ? l.source.id : l.source;
+        const tgt = typeof l.target === 'object' ? l.target.id : l.target;
+        return (src === d.id && tgt === n.id) || (tgt === d.id && src === n.id);
+      });
+      return connected ? 1 : 0.2;
+    });
+
+  }).on('mousemove', (event) => {
+    tooltip.style.left = (event.offsetX + 16) + 'px';
+    tooltip.style.top = (event.offsetY - 10) + 'px';
+  }).on('mouseout', () => {
+    tooltip.classList.remove('visible');
+    link.attr('stroke-opacity', d => d.type === 'BELONGS_TO' ? 0.3 : 0.6)
+        .attr('stroke-width', d => (d.type === 'JOINS_TO' || d.type === 'FOREIGN_KEY') ? 1.5 : 1);
+    node.attr('opacity', 1);
+  });
+
+  // Click to select node → show detail panel
+  node.on('click', (event, d) => {
+    event.stopPropagation();
+    kgSelectNode(d);
+  });
+
+  // Click background to deselect
+  svg.on('click', () => {
+    kgDeselectNode();
+  });
+
+  // Edge labels (for JOINS_TO only, on hover)
+  const edgeLabel = kgSvgGroup.append('g')
+    .selectAll('text')
+    .data(links.filter(l => l.type === 'JOINS_TO' || l.type === 'FOREIGN_KEY'))
+    .join('text')
+    .attr('text-anchor', 'middle')
+    .attr('fill', '#666')
+    .attr('font-size', 8)
+    .attr('opacity', 0)
+    .text(d => d.label || d.type);
+
+  // Tick
+  kgSimulation.on('tick', () => {
+    link
+      .attr('x1', d => d.source.x)
+      .attr('y1', d => d.source.y)
+      .attr('x2', d => d.target.x)
+      .attr('y2', d => d.target.y);
+
+    node.attr('transform', d => `translate(${d.x},${d.y})`);
+
+    edgeLabel
+      .attr('x', d => (d.source.x + d.target.x) / 2)
+      .attr('y', d => (d.source.y + d.target.y) / 2 - 4);
+  });
+
+  // Auto-fit after simulation settles
+  kgSimulation.on('end', () => {
+    kgZoomFit();
+  });
+}
+
+function kgDragStarted(event, d) {
+  if (!event.active) kgSimulation.alphaTarget(0.3).restart();
+  d.fx = d.x;
+  d.fy = d.y;
+}
+
+function kgDragged(event, d) {
+  d.fx = event.x;
+  d.fy = event.y;
+}
+
+function kgDragEnded(event, d) {
+  if (!event.active) kgSimulation.alphaTarget(0);
+  d.fx = null;
+  d.fy = null;
+}
+
+function kgSelectNode(d) {
+  kgSelectedNode = d;
+  const detail = document.getElementById('kgDetail');
+  detail.classList.add('visible');
+
+  // Type badge color
+  let typeColor = '#666';
+  let typeBg = '#333';
+  if (d.type === 'MODULE') { typeColor = '#fff'; typeBg = d.color || '#6366f1'; }
+  else if (d.type === 'TABLE') { typeColor = '#fff'; typeBg = d.color || '#4488cc'; }
+  else if (d.type === 'CONCEPT') { typeColor = '#000'; typeBg = '#f59e0b'; }
+
+  let html = `
+    <div class="kg-detail-header">
+      <div>
+        <div class="kg-detail-title">${d.label || d.id}</div>
+        <span class="kg-detail-type" style="color:${typeColor};background:${typeBg};">${d.type}</span>
+      </div>
+      <button class="kg-detail-close" onclick="kgDeselectNode()">&times;</button>
+    </div>
+  `;
+
+  if (d.description) {
+    html += `<div class="kg-detail-section"><h5>Description</h5><p>${d.description}</p></div>`;
+  }
+
+  if (d.module && d.type !== 'MODULE') {
+    html += `<div class="kg-detail-section"><h5>Module</h5><p>${KG_MODULE_NAMES[d.module] || d.module} (${d.module})</p></div>`;
+  }
+
+  // Find connected nodes
+  const connected = [];
+  if (kgData) {
+    kgData.links.forEach(l => {
+      const src = typeof l.source === 'object' ? l.source.id : l.source;
+      const tgt = typeof l.target === 'object' ? l.target.id : l.target;
+      if (src === d.id) {
+        const targetNode = kgData.nodes.find(n => n.id === tgt);
+        if (targetNode) connected.push({ direction: 'out', type: l.type, label: l.label, node: targetNode, join: l.join_condition });
+      }
+      if (tgt === d.id) {
+        const sourceNode = kgData.nodes.find(n => n.id === src);
+        if (sourceNode) connected.push({ direction: 'in', type: l.type, label: l.label, node: sourceNode, join: l.join_condition });
+      }
+    });
+  }
+
+  // Group connections by type
+  const joins = connected.filter(c => c.type === 'JOINS_TO' || c.type === 'FOREIGN_KEY');
+  const belongs = connected.filter(c => c.type === 'BELONGS_TO');
+  const concepts = connected.filter(c => c.type === 'MEASURES' || c.type === 'RELATES_TO' || c.type === 'AGGREGATES');
+  const others = connected.filter(c => !['JOINS_TO','FOREIGN_KEY','BELONGS_TO','MEASURES','RELATES_TO','AGGREGATES'].includes(c.type));
+
+  if (joins.length > 0) {
+    html += `<div class="kg-detail-section"><h5>Joins (${joins.length})</h5>`;
+    joins.forEach(c => {
+      const arrow = c.direction === 'out' ? '&rarr;' : '&larr;';
+      html += `<div class="kg-detail-rel" onclick="kgNavigateTo('${c.node.id}')">
+        ${arrow} <strong>${c.node.label || c.node.id}</strong>
+        ${c.join ? `<br><span class="rel-type">${c.join}</span>` : ''}
+      </div>`;
+    });
+    html += '</div>';
+  }
+
+  if (concepts.length > 0) {
+    html += `<div class="kg-detail-section"><h5>Business Concepts (${concepts.length})</h5>`;
+    concepts.forEach(c => {
+      html += `<div class="kg-detail-rel" onclick="kgNavigateTo('${c.node.id}')">
+        &#9830; <strong>${c.node.label || c.node.id}</strong>
+        <span class="rel-type">${c.type}</span>
+      </div>`;
+    });
+    html += '</div>';
+  }
+
+  if (d.type === 'MODULE') {
+    const moduleTables = kgData.nodes.filter(n => n.type === 'TABLE' && n.module === (d.module || d.id.replace('mod:','')));
+    if (moduleTables.length > 0) {
+      html += `<div class="kg-detail-section"><h5>Tables (${moduleTables.length})</h5>`;
+      moduleTables.forEach(t => {
+        html += `<div class="kg-detail-rel" onclick="kgNavigateTo('${t.id}')">
+          <strong>${t.label || t.id}</strong>
+          ${t.description ? `<br><span class="rel-type">${t.description}</span>` : ''}
+        </div>`;
+      });
+      html += '</div>';
+    }
+  }
+
+  detail.innerHTML = html;
+}
+
+function kgDeselectNode() {
+  kgSelectedNode = null;
+  document.getElementById('kgDetail').classList.remove('visible');
+}
+
+function kgNavigateTo(nodeId) {
+  if (!kgData) return;
+  const targetNode = kgData.nodes.find(n => n.id === nodeId);
+  if (targetNode) {
+    kgSelectNode(targetNode);
+    // Pan to node if it has coordinates
+    if (targetNode.x !== undefined && targetNode.y !== undefined) {
+      const svg = d3.select('#kgSvg');
+      const container = document.getElementById('kgCanvasWrap');
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+      svg.transition().duration(500).call(
+        kgZoomBehavior.transform,
+        d3.zoomIdentity.translate(width / 2 - targetNode.x, height / 2 - targetNode.y)
+      );
+    }
+  }
+}
+
+function kgFilterModule(module, btn) {
+  kgActiveFilter = module;
+  // Update button states
+  document.querySelectorAll('[data-kg-filter]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (module === 'all') {
+    document.querySelector('[data-kg-filter="all"]').classList.add('active');
+  }
+  renderKnowledgeGraph();
+}
+
+function kgSwitchView(view, btn) {
+  kgActiveView = view;
+  document.querySelectorAll('[data-kg-view]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderKnowledgeGraph();
+}
+
+function kgSearchNodes(term) {
+  kgSearchTerm = term.trim();
+  // Debounce re-render
+  clearTimeout(kgSearchNodes._timer);
+  kgSearchNodes._timer = setTimeout(() => renderKnowledgeGraph(), 250);
+}
+
+function kgZoomIn() {
+  const svg = d3.select('#kgSvg');
+  svg.transition().duration(300).call(kgZoomBehavior.scaleBy, 1.4);
+}
+
+function kgZoomOut() {
+  const svg = d3.select('#kgSvg');
+  svg.transition().duration(300).call(kgZoomBehavior.scaleBy, 0.7);
+}
+
+function kgZoomFit() {
+  if (!kgSvgGroup || !kgZoomBehavior) return;
+  const container = document.getElementById('kgCanvasWrap');
+  const width = container.clientWidth;
+  const height = container.clientHeight;
+
+  const bounds = kgSvgGroup.node().getBBox();
+  if (bounds.width === 0 || bounds.height === 0) return;
+
+  const scale = Math.min(
+    0.9 * width / bounds.width,
+    0.9 * height / bounds.height,
+    2
+  );
+  const tx = (width - scale * (bounds.x + bounds.width / 2));
+  const ty = (height - scale * (bounds.y + bounds.height / 2));
+
+  const svg = d3.select('#kgSvg');
+  svg.transition().duration(500).call(
+    kgZoomBehavior.transform,
+    d3.zoomIdentity.translate(tx - width / 2 + scale * (bounds.x + bounds.width / 2), ty - height / 2 + scale * (bounds.y + bounds.height / 2)).scale(scale)
+  );
 }
 
 // ===================== Init =====================

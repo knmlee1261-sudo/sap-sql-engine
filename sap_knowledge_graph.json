@@ -1,0 +1,2120 @@
+{
+  "nodes": [
+    {
+      "id": "mod:BEN",
+      "label": "BEN \u2014 Benefits",
+      "type": "MODULE",
+      "module": "BEN",
+      "description": "SAP Benefits - health plans, insurance, and savings accounts",
+      "group": "BEN",
+      "color": "#06b6d4"
+    },
+    {
+      "id": "mod:CO",
+      "label": "CO \u2014 Controlling",
+      "type": "MODULE",
+      "module": "CO",
+      "description": "SAP CO Controlling - cost centers, internal orders, and cost accounting",
+      "group": "CO",
+      "color": "#10b981"
+    },
+    {
+      "id": "mod:FI_AP",
+      "label": "FI_AP \u2014 Accounts Payable",
+      "type": "MODULE",
+      "module": "FI_AP",
+      "description": "SAP FI Accounts Payable - vendor master, invoices, payments, and open items",
+      "group": "FI_AP",
+      "color": "#ec4899"
+    },
+    {
+      "id": "mod:FI_AR",
+      "label": "FI_AR \u2014 Accounts Receivable",
+      "type": "MODULE",
+      "module": "FI_AR",
+      "description": "SAP FI Accounts Receivable - customer master, invoices, and payment tracking",
+      "group": "FI_AR",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "mod:FI_GL",
+      "label": "FI_GL \u2014 General Ledger",
+      "type": "MODULE",
+      "module": "FI_GL",
+      "description": "SAP FI General Ledger accounting - journal entries, GL account masters, and period balances",
+      "group": "FI_GL",
+      "color": "#6366f1"
+    },
+    {
+      "id": "mod:HR",
+      "label": "HR \u2014 Human Resources",
+      "type": "MODULE",
+      "module": "HR",
+      "description": "SAP HR Human Resources - employees, assignments, and compensation",
+      "group": "HR",
+      "color": "#14b8a6"
+    },
+    {
+      "id": "mod:MM",
+      "label": "MM \u2014 Materials Management",
+      "type": "MODULE",
+      "module": "MM",
+      "description": "SAP MM Materials Management - materials, purchasing, inventory, and goods movements",
+      "group": "MM",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "mod:PAY",
+      "label": "PAY \u2014 Payroll",
+      "type": "MODULE",
+      "module": "PAY",
+      "description": "SAP Payroll - payroll processing and wage type definitions",
+      "group": "PAY",
+      "color": "#f97316"
+    },
+    {
+      "id": "mod:PM",
+      "label": "PM \u2014 Plant Maintenance",
+      "type": "MODULE",
+      "module": "PM",
+      "description": "SAP PM Plant Maintenance - maintenance orders, operations, equipment, functional locations, and conf",
+      "group": "PM",
+      "color": "#ef4444"
+    },
+    {
+      "id": "mod:SD",
+      "label": "SD \u2014 Sales & Distribution",
+      "type": "MODULE",
+      "module": "SD",
+      "description": "SAP SD Sales and Distribution - sales orders, deliveries, and billing",
+      "group": "SD",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "tbl:PA0167",
+      "label": "PA0167",
+      "type": "TABLE",
+      "module": "BEN",
+      "description": "Health Insurance Plan",
+      "group": "BEN",
+      "color": "#06b6d4"
+    },
+    {
+      "id": "tbl:PA0168",
+      "label": "PA0168",
+      "type": "TABLE",
+      "module": "BEN",
+      "description": "Insurance Plan",
+      "group": "BEN",
+      "color": "#06b6d4"
+    },
+    {
+      "id": "tbl:PA0169",
+      "label": "PA0169",
+      "type": "TABLE",
+      "module": "BEN",
+      "description": "Savings Plan",
+      "group": "BEN",
+      "color": "#06b6d4"
+    },
+    {
+      "id": "tbl:CSKS",
+      "label": "CSKS",
+      "type": "TABLE",
+      "module": "CO",
+      "description": "Cost Center Master - General data",
+      "group": "CO",
+      "color": "#10b981"
+    },
+    {
+      "id": "tbl:CSKT",
+      "label": "CSKT",
+      "type": "TABLE",
+      "module": "CO",
+      "description": "Cost Center Description - multilingual texts",
+      "group": "CO",
+      "color": "#10b981"
+    },
+    {
+      "id": "tbl:AUFK",
+      "label": "AUFK",
+      "type": "TABLE",
+      "module": "CO",
+      "description": "Internal Order Master",
+      "group": "CO",
+      "color": "#10b981"
+    },
+    {
+      "id": "tbl:COSP",
+      "label": "COSP",
+      "type": "TABLE",
+      "module": "CO",
+      "description": "Actual Cost Objects - actual costs by period",
+      "group": "CO",
+      "color": "#10b981"
+    },
+    {
+      "id": "tbl:COSS",
+      "label": "COSS",
+      "type": "TABLE",
+      "module": "CO",
+      "description": "Statistical Key Figures - non-financial data by period",
+      "group": "CO",
+      "color": "#10b981"
+    },
+    {
+      "id": "tbl:COBK",
+      "label": "COBK",
+      "type": "TABLE",
+      "module": "CO",
+      "description": "CO Document Header",
+      "group": "CO",
+      "color": "#10b981"
+    },
+    {
+      "id": "tbl:COEP",
+      "label": "COEP",
+      "type": "TABLE",
+      "module": "CO",
+      "description": "CO Document Line Items",
+      "group": "CO",
+      "color": "#10b981"
+    },
+    {
+      "id": "tbl:LFA1",
+      "label": "LFA1",
+      "type": "TABLE",
+      "module": "FI_AP",
+      "description": "Vendor Master - General data",
+      "group": "FI_AP",
+      "color": "#ec4899"
+    },
+    {
+      "id": "tbl:LFB1",
+      "label": "LFB1",
+      "type": "TABLE",
+      "module": "FI_AP",
+      "description": "Vendor Master - Company Code data",
+      "group": "FI_AP",
+      "color": "#ec4899"
+    },
+    {
+      "id": "tbl:RBKP",
+      "label": "RBKP",
+      "type": "TABLE",
+      "module": "FI_AP",
+      "description": "Vendor Invoice Header - IR/PO document header",
+      "group": "FI_AP",
+      "color": "#ec4899"
+    },
+    {
+      "id": "tbl:RSEG",
+      "label": "RSEG",
+      "type": "TABLE",
+      "module": "FI_AP",
+      "description": "Vendor Invoice Line Items - line items per invoice",
+      "group": "FI_AP",
+      "color": "#ec4899"
+    },
+    {
+      "id": "tbl:REGUH",
+      "label": "REGUH",
+      "type": "TABLE",
+      "module": "FI_AP",
+      "description": "Vendor Payment Header",
+      "group": "FI_AP",
+      "color": "#ec4899"
+    },
+    {
+      "id": "tbl:BSIK",
+      "label": "BSIK",
+      "type": "TABLE",
+      "module": "FI_AP",
+      "description": "Vendor Open Items - unpaid invoices",
+      "group": "FI_AP",
+      "color": "#ec4899"
+    },
+    {
+      "id": "tbl:BSAK",
+      "label": "BSAK",
+      "type": "TABLE",
+      "module": "FI_AP",
+      "description": "Vendor Cleared Items - paid invoices archive",
+      "group": "FI_AP",
+      "color": "#ec4899"
+    },
+    {
+      "id": "tbl:KNA1",
+      "label": "KNA1",
+      "type": "TABLE",
+      "module": "FI_AR",
+      "description": "Customer Master - General data",
+      "group": "FI_AR",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "tbl:KNB1",
+      "label": "KNB1",
+      "type": "TABLE",
+      "module": "FI_AR",
+      "description": "Customer Master - Company Code data",
+      "group": "FI_AR",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "tbl:BSID",
+      "label": "BSID",
+      "type": "TABLE",
+      "module": "FI_AR",
+      "description": "Customer Open Items - unpaid invoices",
+      "group": "FI_AR",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "tbl:BSAD",
+      "label": "BSAD",
+      "type": "TABLE",
+      "module": "FI_AR",
+      "description": "Customer Cleared Items - paid invoices archive",
+      "group": "FI_AR",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "tbl:BKPF",
+      "label": "BKPF",
+      "type": "TABLE",
+      "module": "FI_GL",
+      "description": "Accounting Document Header - stores metadata for all financial transactions",
+      "group": "FI_GL",
+      "color": "#6366f1"
+    },
+    {
+      "id": "tbl:BSEG",
+      "label": "BSEG",
+      "type": "TABLE",
+      "module": "FI_GL",
+      "description": "Accounting Document Line Items - individual debit/credit postings within a document",
+      "group": "FI_GL",
+      "color": "#6366f1"
+    },
+    {
+      "id": "tbl:SKA1",
+      "label": "SKA1",
+      "type": "TABLE",
+      "module": "FI_GL",
+      "description": "GL Account Master - Chart of Accounts level",
+      "group": "FI_GL",
+      "color": "#6366f1"
+    },
+    {
+      "id": "tbl:SKAT",
+      "label": "SKAT",
+      "type": "TABLE",
+      "module": "FI_GL",
+      "description": "GL Account Descriptions - multilingual account texts",
+      "group": "FI_GL",
+      "color": "#6366f1"
+    },
+    {
+      "id": "tbl:SKB1",
+      "label": "SKB1",
+      "type": "TABLE",
+      "module": "FI_GL",
+      "description": "GL Account Master - Company Code level details",
+      "group": "FI_GL",
+      "color": "#6366f1"
+    },
+    {
+      "id": "tbl:GLT0",
+      "label": "GLT0",
+      "type": "TABLE",
+      "module": "FI_GL",
+      "description": "GL Account Balances - period transaction figures",
+      "group": "FI_GL",
+      "color": "#6366f1"
+    },
+    {
+      "id": "tbl:PA0001",
+      "label": "PA0001",
+      "type": "TABLE",
+      "module": "HR",
+      "description": "Organizational Assignment",
+      "group": "HR",
+      "color": "#14b8a6"
+    },
+    {
+      "id": "tbl:PA0002",
+      "label": "PA0002",
+      "type": "TABLE",
+      "module": "HR",
+      "description": "Personal Data",
+      "group": "HR",
+      "color": "#14b8a6"
+    },
+    {
+      "id": "tbl:PA0006",
+      "label": "PA0006",
+      "type": "TABLE",
+      "module": "HR",
+      "description": "Address",
+      "group": "HR",
+      "color": "#14b8a6"
+    },
+    {
+      "id": "tbl:PA0008",
+      "label": "PA0008",
+      "type": "TABLE",
+      "module": "HR",
+      "description": "Basic Pay",
+      "group": "HR",
+      "color": "#14b8a6"
+    },
+    {
+      "id": "tbl:PA0014",
+      "label": "PA0014",
+      "type": "TABLE",
+      "module": "HR",
+      "description": "Recurring Deductions and Allowances",
+      "group": "HR",
+      "color": "#14b8a6"
+    },
+    {
+      "id": "tbl:MARA",
+      "label": "MARA",
+      "type": "TABLE",
+      "module": "MM",
+      "description": "Material Master - General data",
+      "group": "MM",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "tbl:MAKT",
+      "label": "MAKT",
+      "type": "TABLE",
+      "module": "MM",
+      "description": "Material Description - multilingual texts",
+      "group": "MM",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "tbl:MARC",
+      "label": "MARC",
+      "type": "TABLE",
+      "module": "MM",
+      "description": "Material Master - Plant data",
+      "group": "MM",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "tbl:MARD",
+      "label": "MARD",
+      "type": "TABLE",
+      "module": "MM",
+      "description": "Material Master - Storage location data",
+      "group": "MM",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "tbl:EKKO",
+      "label": "EKKO",
+      "type": "TABLE",
+      "module": "MM",
+      "description": "Purchase Order Header",
+      "group": "MM",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "tbl:EKPO",
+      "label": "EKPO",
+      "type": "TABLE",
+      "module": "MM",
+      "description": "Purchase Order Line Items",
+      "group": "MM",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "tbl:EBAN",
+      "label": "EBAN",
+      "type": "TABLE",
+      "module": "MM",
+      "description": "Purchase Requisition",
+      "group": "MM",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "tbl:EKBE",
+      "label": "EKBE",
+      "type": "TABLE",
+      "module": "MM",
+      "description": "PO History - receipt documents and invoices",
+      "group": "MM",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "tbl:HRPY_RGDIR",
+      "label": "HRPY_RGDIR",
+      "type": "TABLE",
+      "module": "PAY",
+      "description": "Payroll Run Directory",
+      "group": "PAY",
+      "color": "#f97316"
+    },
+    {
+      "id": "tbl:T511",
+      "label": "T511",
+      "type": "TABLE",
+      "module": "PAY",
+      "description": "Wage Type Master",
+      "group": "PAY",
+      "color": "#f97316"
+    },
+    {
+      "id": "tbl:T512T",
+      "label": "T512T",
+      "type": "TABLE",
+      "module": "PAY",
+      "description": "Wage Type Text - multilingual descriptions",
+      "group": "PAY",
+      "color": "#f97316"
+    },
+    {
+      "id": "tbl:AFIH",
+      "label": "AFIH",
+      "type": "TABLE",
+      "module": "PM",
+      "description": "Maintenance Order Header - PM-specific header data linked to AUFK",
+      "group": "PM",
+      "color": "#ef4444"
+    },
+    {
+      "id": "tbl:AFKO",
+      "label": "AFKO",
+      "type": "TABLE",
+      "module": "PM",
+      "description": "Order Header Data - routing/operation list header for PM and PP orders",
+      "group": "PM",
+      "color": "#ef4444"
+    },
+    {
+      "id": "tbl:AFVC",
+      "label": "AFVC",
+      "type": "TABLE",
+      "module": "PM",
+      "description": "Operation within an Order - individual work steps",
+      "group": "PM",
+      "color": "#ef4444"
+    },
+    {
+      "id": "tbl:AFRU",
+      "label": "AFRU",
+      "type": "TABLE",
+      "module": "PM",
+      "description": "Order Completion Confirmations - actual work times and quantities",
+      "group": "PM",
+      "color": "#ef4444"
+    },
+    {
+      "id": "tbl:EQUI",
+      "label": "EQUI",
+      "type": "TABLE",
+      "module": "PM",
+      "description": "Equipment Master - physical asset register",
+      "group": "PM",
+      "color": "#ef4444"
+    },
+    {
+      "id": "tbl:EQKT",
+      "label": "EQKT",
+      "type": "TABLE",
+      "module": "PM",
+      "description": "Equipment Short Text - multilingual descriptions",
+      "group": "PM",
+      "color": "#ef4444"
+    },
+    {
+      "id": "tbl:IFLOT",
+      "label": "IFLOT",
+      "type": "TABLE",
+      "module": "PM",
+      "description": "Functional Location - hierarchical structure",
+      "group": "PM",
+      "color": "#ef4444"
+    },
+    {
+      "id": "tbl:IFLOTX",
+      "label": "IFLOTX",
+      "type": "TABLE",
+      "module": "PM",
+      "description": "Functional Location Short Texts",
+      "group": "PM",
+      "color": "#ef4444"
+    },
+    {
+      "id": "tbl:VBAK",
+      "label": "VBAK",
+      "type": "TABLE",
+      "module": "SD",
+      "description": "Sales Order Header",
+      "group": "SD",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "tbl:VBAP",
+      "label": "VBAP",
+      "type": "TABLE",
+      "module": "SD",
+      "description": "Sales Order Line Items",
+      "group": "SD",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "tbl:LIKP",
+      "label": "LIKP",
+      "type": "TABLE",
+      "module": "SD",
+      "description": "Delivery Document Header",
+      "group": "SD",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "tbl:LIPS",
+      "label": "LIPS",
+      "type": "TABLE",
+      "module": "SD",
+      "description": "Delivery Line Items",
+      "group": "SD",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "tbl:VBRK",
+      "label": "VBRK",
+      "type": "TABLE",
+      "module": "SD",
+      "description": "Billing Document Header",
+      "group": "SD",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "tbl:VBRP",
+      "label": "VBRP",
+      "type": "TABLE",
+      "module": "SD",
+      "description": "Billing Document Line Items",
+      "group": "SD",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "tbl:VBFA",
+      "label": "VBFA",
+      "type": "TABLE",
+      "module": "SD",
+      "description": "Document Flow",
+      "group": "SD",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "concept:BEN_Health_Plan",
+      "label": "Health Plan",
+      "type": "CONCEPT",
+      "module": "BEN",
+      "description": "Health insurance plan enrollment",
+      "group": "BEN",
+      "color": "#06b6d4"
+    },
+    {
+      "id": "concept:BEN_Insurance_Plan",
+      "label": "Insurance Plan",
+      "type": "CONCEPT",
+      "module": "BEN",
+      "description": "Insurance plan enrollment (life, disability, etc.)",
+      "group": "BEN",
+      "color": "#06b6d4"
+    },
+    {
+      "id": "concept:BEN_Savings_Plan",
+      "label": "Savings Plan",
+      "type": "CONCEPT",
+      "module": "BEN",
+      "description": "401k/Savings plan enrollment and contributions",
+      "group": "BEN",
+      "color": "#06b6d4"
+    },
+    {
+      "id": "concept:CO_Cost_Center",
+      "label": "Cost Center",
+      "type": "CONCEPT",
+      "module": "CO",
+      "description": "Cost center master data for allocating costs",
+      "group": "CO",
+      "color": "#10b981"
+    },
+    {
+      "id": "concept:CO_Internal_Order",
+      "label": "Internal Order",
+      "type": "CONCEPT",
+      "module": "CO",
+      "description": "Internal orders for tracking costs and revenues",
+      "group": "CO",
+      "color": "#10b981"
+    },
+    {
+      "id": "concept:CO_Cost_Totals",
+      "label": "Cost Totals",
+      "type": "CONCEPT",
+      "module": "CO",
+      "description": "Accumulated cost and revenue totals by cost object",
+      "group": "CO",
+      "color": "#10b981"
+    },
+    {
+      "id": "concept:CO_CO_Document",
+      "label": "Co Document",
+      "type": "CONCEPT",
+      "module": "CO",
+      "description": "Cost accounting documents (headers and line items)",
+      "group": "CO",
+      "color": "#10b981"
+    },
+    {
+      "id": "concept:FI_AP_Vendor",
+      "label": "Vendor",
+      "type": "CONCEPT",
+      "module": "FI_AP",
+      "description": "Vendor master data with company code specific details",
+      "group": "FI_AP",
+      "color": "#ec4899"
+    },
+    {
+      "id": "concept:FI_AP_Vendor_Invoice",
+      "label": "Vendor Invoice",
+      "type": "CONCEPT",
+      "module": "FI_AP",
+      "description": "Vendor invoices received from suppliers",
+      "group": "FI_AP",
+      "color": "#ec4899"
+    },
+    {
+      "id": "concept:FI_AP_Vendor_Payment",
+      "label": "Vendor Payment",
+      "type": "CONCEPT",
+      "module": "FI_AP",
+      "description": "Vendor payment records",
+      "group": "FI_AP",
+      "color": "#ec4899"
+    },
+    {
+      "id": "concept:FI_AP_Vendor_Open_Items",
+      "label": "Vendor Open Items",
+      "type": "CONCEPT",
+      "module": "FI_AP",
+      "description": "Open (unpaid) vendor invoices",
+      "group": "FI_AP",
+      "color": "#ec4899"
+    },
+    {
+      "id": "concept:FI_AP_Vendor_Cleared_Items",
+      "label": "Vendor Cleared Items",
+      "type": "CONCEPT",
+      "module": "FI_AP",
+      "description": "Cleared (paid) vendor invoices",
+      "group": "FI_AP",
+      "color": "#ec4899"
+    },
+    {
+      "id": "concept:FI_AR_Customer",
+      "label": "Customer",
+      "type": "CONCEPT",
+      "module": "FI_AR",
+      "description": "Customer master data with company code specific details",
+      "group": "FI_AR",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "concept:FI_AR_Customer_Open_Items",
+      "label": "Customer Open Items",
+      "type": "CONCEPT",
+      "module": "FI_AR",
+      "description": "Open (unpaid) customer invoices",
+      "group": "FI_AR",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "concept:FI_AR_Customer_Cleared_Items",
+      "label": "Customer Cleared Items",
+      "type": "CONCEPT",
+      "module": "FI_AR",
+      "description": "Cleared (paid) customer invoices",
+      "group": "FI_AR",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "concept:FI_GL_Journal_Entry",
+      "label": "Journal Entry",
+      "type": "CONCEPT",
+      "module": "FI_GL",
+      "description": "Accounting documents consisting of header (BKPF) and line items (BSEG)",
+      "group": "FI_GL",
+      "color": "#6366f1"
+    },
+    {
+      "id": "concept:FI_GL_GL_Account",
+      "label": "Gl Account",
+      "type": "CONCEPT",
+      "module": "FI_GL",
+      "description": "General Ledger account master data with chart of accounts and company code details",
+      "group": "FI_GL",
+      "color": "#6366f1"
+    },
+    {
+      "id": "concept:FI_GL_GL_Balance",
+      "label": "Gl Balance",
+      "type": "CONCEPT",
+      "module": "FI_GL",
+      "description": "GL account period balances and transaction figures",
+      "group": "FI_GL",
+      "color": "#6366f1"
+    },
+    {
+      "id": "concept:HR_Employee",
+      "label": "Employee",
+      "type": "CONCEPT",
+      "module": "HR",
+      "description": "Employee master data with personal and organizational information",
+      "group": "HR",
+      "color": "#14b8a6"
+    },
+    {
+      "id": "concept:HR_Basic_Pay",
+      "label": "Basic Pay",
+      "type": "CONCEPT",
+      "module": "HR",
+      "description": "Basic salary and compensation information",
+      "group": "HR",
+      "color": "#14b8a6"
+    },
+    {
+      "id": "concept:HR_Recurring_Deductions",
+      "label": "Recurring Deductions",
+      "type": "CONCEPT",
+      "module": "HR",
+      "description": "Recurring deductions and deduction records",
+      "group": "HR",
+      "color": "#14b8a6"
+    },
+    {
+      "id": "concept:MM_Material",
+      "label": "Material",
+      "type": "CONCEPT",
+      "module": "MM",
+      "description": "Material master data with plant and storage location details",
+      "group": "MM",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "concept:MM_Purchase_Order",
+      "label": "Purchase Order",
+      "type": "CONCEPT",
+      "module": "MM",
+      "description": "Purchase orders for acquiring materials",
+      "group": "MM",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "concept:MM_Purchase_Requisition",
+      "label": "Purchase Requisition",
+      "type": "CONCEPT",
+      "module": "MM",
+      "description": "Purchase requisitions (purchase requests before PO creation)",
+      "group": "MM",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "concept:MM_PO_History",
+      "label": "Po History",
+      "type": "CONCEPT",
+      "module": "MM",
+      "description": "Purchase order history with goods receipts and invoice receipts",
+      "group": "MM",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "concept:PAY_Payroll_Results",
+      "label": "Payroll Results",
+      "type": "CONCEPT",
+      "module": "PAY",
+      "description": "Payroll run results and payroll documents",
+      "group": "PAY",
+      "color": "#f97316"
+    },
+    {
+      "id": "concept:PAY_Wage_Types",
+      "label": "Wage Types",
+      "type": "CONCEPT",
+      "module": "PAY",
+      "description": "Wage type master data and descriptions",
+      "group": "PAY",
+      "color": "#f97316"
+    },
+    {
+      "id": "concept:PM_Maintenance_Order",
+      "label": "Maintenance Order",
+      "type": "CONCEPT",
+      "module": "PM",
+      "description": "Maintenance orders consisting of order master (AUFK), PM header (AFIH), and order header data (AFKO)",
+      "group": "PM",
+      "color": "#ef4444"
+    },
+    {
+      "id": "concept:PM_Operation",
+      "label": "Operation",
+      "type": "CONCEPT",
+      "module": "PM",
+      "description": "Operations (work steps) within a maintenance order",
+      "group": "PM",
+      "color": "#ef4444"
+    },
+    {
+      "id": "concept:PM_Confirmation",
+      "label": "Confirmation",
+      "type": "CONCEPT",
+      "module": "PM",
+      "description": "Order completion confirmations - actual work reported against operations",
+      "group": "PM",
+      "color": "#ef4444"
+    },
+    {
+      "id": "concept:PM_Equipment",
+      "label": "Equipment",
+      "type": "CONCEPT",
+      "module": "PM",
+      "description": "Equipment master data - physical assets maintained by PM",
+      "group": "PM",
+      "color": "#ef4444"
+    },
+    {
+      "id": "concept:PM_Functional_Location",
+      "label": "Functional Location",
+      "type": "CONCEPT",
+      "module": "PM",
+      "description": "Functional locations - hierarchical structure representing where equipment is installed",
+      "group": "PM",
+      "color": "#ef4444"
+    },
+    {
+      "id": "concept:SD_Sales_Order",
+      "label": "Sales Order",
+      "type": "CONCEPT",
+      "module": "SD",
+      "description": "Sales orders for customer orders",
+      "group": "SD",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "concept:SD_Delivery",
+      "label": "Delivery",
+      "type": "CONCEPT",
+      "module": "SD",
+      "description": "Delivery documents for goods shipped to customers",
+      "group": "SD",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "concept:SD_Billing",
+      "label": "Billing",
+      "type": "CONCEPT",
+      "module": "SD",
+      "description": "Billing documents (invoices) for customer shipments",
+      "group": "SD",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "concept:SD_Document_Flow",
+      "label": "Document Flow",
+      "type": "CONCEPT",
+      "module": "SD",
+      "description": "Document flow tracing relationships between sales, delivery, and billing",
+      "group": "SD",
+      "color": "#8b5cf6"
+    }
+  ],
+  "links": [
+    {
+      "source": "tbl:PA0167",
+      "target": "mod:BEN",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:PA0168",
+      "target": "mod:BEN",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:PA0169",
+      "target": "mod:BEN",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:CSKS",
+      "target": "mod:CO",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:CSKS",
+      "target": "tbl:PA0001",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:CSKS",
+      "target": "tbl:BSEG",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:CSKS",
+      "target": "tbl:CSKT",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:CSKT",
+      "target": "mod:CO",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:AUFK",
+      "target": "mod:CO",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:AUFK",
+      "target": "tbl:CSKS",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:AUFK",
+      "target": "tbl:COEP",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:COSP",
+      "target": "mod:CO",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:COSP",
+      "target": "tbl:AUFK",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:COSS",
+      "target": "mod:CO",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:COBK",
+      "target": "mod:CO",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:COBK",
+      "target": "tbl:COEP",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:COEP",
+      "target": "mod:CO",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:COEP",
+      "target": "tbl:MAKT",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:COEP",
+      "target": "tbl:SKAT",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:COEP",
+      "target": "tbl:BSEG",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:LFA1",
+      "target": "mod:FI_AP",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:LFA1",
+      "target": "tbl:EKKO",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:LFA1",
+      "target": "tbl:LFB1",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:LFA1",
+      "target": "tbl:RBKP",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:LFB1",
+      "target": "mod:FI_AP",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:RBKP",
+      "target": "mod:FI_AP",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:RBKP",
+      "target": "tbl:EKPO",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:RBKP",
+      "target": "tbl:BKPF",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:RSEG",
+      "target": "mod:FI_AP",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:REGUH",
+      "target": "mod:FI_AP",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:REGUH",
+      "target": "tbl:BSEG",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:BSIK",
+      "target": "mod:FI_AP",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:BSIK",
+      "target": "tbl:SKB1",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:BSIK",
+      "target": "tbl:LFA1",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:BSIK",
+      "target": "tbl:SKAT",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:BSAK",
+      "target": "mod:FI_AP",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:BSAK",
+      "target": "tbl:LFA1",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:BSAK",
+      "target": "tbl:SKAT",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:KNA1",
+      "target": "mod:FI_AR",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:KNA1",
+      "target": "tbl:VBAK",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:KNA1",
+      "target": "tbl:VBRK",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:KNA1",
+      "target": "tbl:LIKP",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:KNB1",
+      "target": "mod:FI_AR",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:KNB1",
+      "target": "tbl:SKB1",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:KNB1",
+      "target": "tbl:SKAT",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:BSID",
+      "target": "mod:FI_AR",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:BSID",
+      "target": "tbl:SKB1",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:BSID",
+      "target": "tbl:KNA1",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:BSAD",
+      "target": "mod:FI_AR",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:BSAD",
+      "target": "tbl:KNA1",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:BKPF",
+      "target": "mod:FI_GL",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:BSEG",
+      "target": "mod:FI_GL",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:BSEG",
+      "target": "tbl:BSIK",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:BSEG",
+      "target": "tbl:BSID",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:BSEG",
+      "target": "tbl:COEP",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:BSEG",
+      "target": "tbl:SKAT",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:SKA1",
+      "target": "mod:FI_GL",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:SKA1",
+      "target": "tbl:SKAT",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:SKA1",
+      "target": "tbl:SKB1",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:SKAT",
+      "target": "mod:FI_GL",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:SKAT",
+      "target": "tbl:SKB1",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:SKB1",
+      "target": "mod:FI_GL",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:GLT0",
+      "target": "mod:FI_GL",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:GLT0",
+      "target": "tbl:SKAT",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:PA0001",
+      "target": "mod:HR",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:PA0001",
+      "target": "tbl:HRPY_RGDIR",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:PA0001",
+      "target": "tbl:CSKS",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:PA0001",
+      "target": "tbl:PA0167",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:PA0001",
+      "target": "tbl:PA0168",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:PA0001",
+      "target": "tbl:PA0169",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:PA0002",
+      "target": "mod:HR",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:PA0006",
+      "target": "mod:HR",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:PA0008",
+      "target": "mod:HR",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:PA0008",
+      "target": "tbl:PA0001",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:PA0014",
+      "target": "mod:HR",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:MARA",
+      "target": "mod:MM",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:MARA",
+      "target": "tbl:VBAP",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:MARA",
+      "target": "tbl:MARC",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:MARA",
+      "target": "tbl:MARD",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:MAKT",
+      "target": "mod:MM",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:MAKT",
+      "target": "tbl:MARA",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:MAKT",
+      "target": "tbl:MARD",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:MARC",
+      "target": "mod:MM",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:MARD",
+      "target": "mod:MM",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:MARD",
+      "target": "tbl:VBAP",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:EKKO",
+      "target": "mod:MM",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:EKKO",
+      "target": "tbl:EKBE",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:EKKO",
+      "target": "tbl:BSEG",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:EKKO",
+      "target": "tbl:EKPO",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:EKKO",
+      "target": "tbl:MAKT",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:EKKO",
+      "target": "tbl:BSIK",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:EKPO",
+      "target": "mod:MM",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:EKPO",
+      "target": "tbl:RSEG",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:EKPO",
+      "target": "tbl:MAKT",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:EKPO",
+      "target": "tbl:MARA",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:EBAN",
+      "target": "mod:MM",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:EBAN",
+      "target": "tbl:EKKO",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:EKBE",
+      "target": "mod:MM",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:EKBE",
+      "target": "tbl:EKPO",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:HRPY_RGDIR",
+      "target": "mod:PAY",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:T511",
+      "target": "mod:PAY",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:T512T",
+      "target": "mod:PAY",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:AFIH",
+      "target": "mod:PM",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:AFIH",
+      "target": "tbl:EQUI",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:AFIH",
+      "target": "tbl:IFLOT",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:AFIH",
+      "target": "tbl:AUFK",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:AFKO",
+      "target": "mod:PM",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:AFKO",
+      "target": "tbl:AFVC",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:AFKO",
+      "target": "tbl:AUFK",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:AFVC",
+      "target": "mod:PM",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:AFRU",
+      "target": "mod:PM",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:AFRU",
+      "target": "tbl:PA0001",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:EQUI",
+      "target": "mod:PM",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:EQUI",
+      "target": "tbl:IFLOT",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:EQKT",
+      "target": "mod:PM",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:EQKT",
+      "target": "tbl:EQUI",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:IFLOT",
+      "target": "mod:PM",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:IFLOT",
+      "target": "tbl:IFLOTX",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:IFLOTX",
+      "target": "mod:PM",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:VBAK",
+      "target": "mod:SD",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:VBAK",
+      "target": "tbl:LIKP",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:VBAK",
+      "target": "tbl:BSID",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:VBAK",
+      "target": "tbl:BSID",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:VBAK",
+      "target": "tbl:VBAP",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:VBAK",
+      "target": "tbl:VBFA",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:VBAP",
+      "target": "mod:SD",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:VBAP",
+      "target": "tbl:MARD",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:LIKP",
+      "target": "mod:SD",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:LIKP",
+      "target": "tbl:VBRK",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:LIKP",
+      "target": "tbl:LIPS",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:LIPS",
+      "target": "mod:SD",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:VBRK",
+      "target": "mod:SD",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:VBRK",
+      "target": "tbl:BKPF",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:VBRK",
+      "target": "tbl:VBRP",
+      "type": "FOREIGN_KEY",
+      "label": "joins to"
+    },
+    {
+      "source": "tbl:VBRP",
+      "target": "mod:SD",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "tbl:VBFA",
+      "target": "mod:SD",
+      "type": "BELONGS_TO",
+      "label": "belongs to"
+    },
+    {
+      "source": "concept:BEN_Health_Plan",
+      "target": "tbl:PA0167",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:BEN_Insurance_Plan",
+      "target": "tbl:PA0168",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:BEN_Savings_Plan",
+      "target": "tbl:PA0169",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:CO_Cost_Center",
+      "target": "tbl:CSKS",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:CO_Cost_Center",
+      "target": "tbl:CSKT",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:CO_Internal_Order",
+      "target": "tbl:AUFK",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:CO_Cost_Totals",
+      "target": "tbl:COSP",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:CO_Cost_Totals",
+      "target": "tbl:COSS",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:CO_CO_Document",
+      "target": "tbl:COBK",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:CO_CO_Document",
+      "target": "tbl:COEP",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:FI_AP_Vendor",
+      "target": "tbl:LFA1",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:FI_AP_Vendor",
+      "target": "tbl:LFB1",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:FI_AP_Vendor_Invoice",
+      "target": "tbl:RBKP",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:FI_AP_Vendor_Invoice",
+      "target": "tbl:RSEG",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:FI_AP_Vendor_Payment",
+      "target": "tbl:REGUH",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:FI_AP_Vendor_Open_Items",
+      "target": "tbl:BSIK",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:FI_AP_Vendor_Cleared_Items",
+      "target": "tbl:BSAK",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:FI_AR_Customer",
+      "target": "tbl:KNA1",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:FI_AR_Customer",
+      "target": "tbl:KNB1",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:FI_AR_Customer_Open_Items",
+      "target": "tbl:BSID",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:FI_AR_Customer_Cleared_Items",
+      "target": "tbl:BSAD",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:FI_GL_Journal_Entry",
+      "target": "tbl:BKPF",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:FI_GL_Journal_Entry",
+      "target": "tbl:BSEG",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:FI_GL_GL_Account",
+      "target": "tbl:SKA1",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:FI_GL_GL_Account",
+      "target": "tbl:SKAT",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:FI_GL_GL_Account",
+      "target": "tbl:SKB1",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:FI_GL_GL_Balance",
+      "target": "tbl:GLT0",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:HR_Employee",
+      "target": "tbl:PA0001",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:HR_Employee",
+      "target": "tbl:PA0002",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:HR_Employee",
+      "target": "tbl:PA0006",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:HR_Basic_Pay",
+      "target": "tbl:PA0008",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:HR_Recurring_Deductions",
+      "target": "tbl:PA0014",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:MM_Material",
+      "target": "tbl:MARA",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:MM_Material",
+      "target": "tbl:MAKT",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:MM_Material",
+      "target": "tbl:MARC",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:MM_Material",
+      "target": "tbl:MARD",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:MM_Purchase_Order",
+      "target": "tbl:EKKO",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:MM_Purchase_Order",
+      "target": "tbl:EKPO",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:MM_Purchase_Requisition",
+      "target": "tbl:EBAN",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:MM_PO_History",
+      "target": "tbl:EKBE",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:PAY_Payroll_Results",
+      "target": "tbl:HRPY_RGDIR",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:PAY_Wage_Types",
+      "target": "tbl:T511",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:PAY_Wage_Types",
+      "target": "tbl:T512T",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:PM_Maintenance_Order",
+      "target": "tbl:AUFK",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:PM_Maintenance_Order",
+      "target": "tbl:AFIH",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:PM_Maintenance_Order",
+      "target": "tbl:AFKO",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:PM_Operation",
+      "target": "tbl:AFVC",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:PM_Confirmation",
+      "target": "tbl:AFRU",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:PM_Equipment",
+      "target": "tbl:EQUI",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:PM_Equipment",
+      "target": "tbl:EQKT",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:PM_Functional_Location",
+      "target": "tbl:IFLOT",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:PM_Functional_Location",
+      "target": "tbl:IFLOTX",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:SD_Sales_Order",
+      "target": "tbl:VBAK",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:SD_Sales_Order",
+      "target": "tbl:VBAP",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:SD_Delivery",
+      "target": "tbl:LIKP",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:SD_Delivery",
+      "target": "tbl:LIPS",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:SD_Billing",
+      "target": "tbl:VBRK",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:SD_Billing",
+      "target": "tbl:VBRP",
+      "type": "DESCRIBES",
+      "label": "describes"
+    },
+    {
+      "source": "concept:SD_Document_Flow",
+      "target": "tbl:VBFA",
+      "type": "DESCRIBES",
+      "label": "describes"
+    }
+  ],
+  "stats": {
+    "total_nodes": 240,
+    "total_edges": 336,
+    "modules": 10,
+    "tables": 58,
+    "concepts": 36,
+    "nl_terms": 136
+  }
+}

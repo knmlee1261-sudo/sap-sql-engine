@@ -1,0 +1,768 @@
+{
+  "MM": {
+    "module_name": "Materials Management",
+    "description": "SAP MM Materials Management - materials, purchasing, inventory, and goods movements",
+    "application_short_name": "MM",
+    "business_objects": {
+      "Material": {
+        "description": "Material master data with plant and storage location details",
+        "nl_aliases": [
+          "material",
+          "product",
+          "SKU",
+          "item",
+          "MARA"
+        ],
+        "business_questions": [
+          "Show me all materials in product group XYZ",
+          "What is the unit of measure for material 1000-001?",
+          "Show me materials by plant"
+        ],
+        "primary_table": "MARA",
+        "tables": {
+          "MARA": {
+            "schema": "SAP",
+            "description": "Material Master - General data",
+            "primary_key": {
+              "column": "MATNR",
+              "type": "PRIMARY"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "MATNR",
+                "type": "CHAR(18)",
+                "description": "Material number",
+                "nl_aliases": [
+                  "material",
+                  "SKU",
+                  "product"
+                ]
+              },
+              {
+                "column": "MTART",
+                "type": "CHAR(4)",
+                "description": "Material type",
+                "nl_aliases": [
+                  "type"
+                ]
+              },
+              {
+                "column": "MBRSH",
+                "type": "CHAR(1)",
+                "description": "Industry sector"
+              },
+              {
+                "column": "MATKL",
+                "type": "CHAR(9)",
+                "description": "Material class",
+                "nl_aliases": [
+                  "class"
+                ]
+              },
+              {
+                "column": "MEINS",
+                "type": "CHAR(3)",
+                "description": "Base unit of measure",
+                "nl_aliases": [
+                  "UOM"
+                ]
+              },
+              {
+                "column": "BRGEW",
+                "type": "QUAN(13,3)",
+                "description": "Gross weight"
+              },
+              {
+                "column": "GEWEI",
+                "type": "CHAR(3)",
+                "description": "Weight unit"
+              },
+              {
+                "column": "NTGEW",
+                "type": "QUAN(13,3)",
+                "description": "Net weight"
+              },
+              {
+                "column": "EAN11",
+                "type": "CHAR(18)",
+                "description": "EAN/UPC barcode",
+                "nl_aliases": [
+                  "barcode"
+                ]
+              },
+              {
+                "column": "ERDAT",
+                "type": "DATE",
+                "description": "Created date"
+              },
+              {
+                "column": "ERNAM",
+                "type": "CHAR(12)",
+                "description": "Created by user"
+              },
+              {
+                "column": "LVORM",
+                "type": "CHAR(1)",
+                "description": "Deletion indicator"
+              }
+            ]
+          },
+          "MAKT": {
+            "schema": "SAP",
+            "description": "Material Description - multilingual texts",
+            "primary_key": {
+              "column": "MATNR, SPRAS",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [
+              {
+                "column": "MATNR",
+                "references": "MARA.MATNR"
+              }
+            ],
+            "business_columns": [
+              {
+                "column": "MATNR",
+                "type": "CHAR(18)",
+                "description": "Material number"
+              },
+              {
+                "column": "SPRAS",
+                "type": "CHAR(1)",
+                "description": "Language"
+              },
+              {
+                "column": "MAKTX",
+                "type": "CHAR(40)",
+                "description": "Material description",
+                "nl_aliases": [
+                  "name",
+                  "description"
+                ]
+              }
+            ]
+          },
+          "MARC": {
+            "schema": "SAP",
+            "description": "Material Master - Plant data",
+            "primary_key": {
+              "column": "MATNR, WERKS",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [
+              {
+                "column": "MATNR",
+                "references": "MARA.MATNR"
+              }
+            ],
+            "business_columns": [
+              {
+                "column": "MATNR",
+                "type": "CHAR(18)",
+                "description": "Material number"
+              },
+              {
+                "column": "WERKS",
+                "type": "CHAR(4)",
+                "description": "Plant",
+                "nl_aliases": [
+                  "plant",
+                  "facility"
+                ]
+              },
+              {
+                "column": "EKGRP",
+                "type": "CHAR(3)",
+                "description": "Purchasing group"
+              },
+              {
+                "column": "DISMM",
+                "type": "CHAR(2)",
+                "description": "MRP type"
+              },
+              {
+                "column": "DISPO",
+                "type": "CHAR(3)",
+                "description": "Inventory planning"
+              },
+              {
+                "column": "BESKZ",
+                "type": "CHAR(1)",
+                "description": "Procurement type (E=Purchase, F=In-house)"
+              },
+              {
+                "column": "LGPRO",
+                "type": "CHAR(4)",
+                "description": "Production storage location"
+              },
+              {
+                "column": "LGFSB",
+                "type": "CHAR(4)",
+                "description": "Goods receipt location"
+              },
+              {
+                "column": "PRCTR",
+                "type": "CHAR(10)",
+                "description": "Profit center"
+              }
+            ]
+          },
+          "MARD": {
+            "schema": "SAP",
+            "description": "Material Master - Storage location data",
+            "primary_key": {
+              "column": "MATNR, WERKS, LGORT",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [
+              {
+                "column": "MATNR, WERKS",
+                "references": "MARC.MATNR, WERKS"
+              }
+            ],
+            "business_columns": [
+              {
+                "column": "MATNR",
+                "type": "CHAR(18)",
+                "description": "Material number"
+              },
+              {
+                "column": "WERKS",
+                "type": "CHAR(4)",
+                "description": "Plant"
+              },
+              {
+                "column": "LGORT",
+                "type": "CHAR(4)",
+                "description": "Storage location",
+                "nl_aliases": [
+                  "warehouse",
+                  "storage location"
+                ]
+              },
+              {
+                "column": "LABST",
+                "type": "QUAN(13,3)",
+                "description": "Valuated stock",
+                "nl_aliases": [
+                  "stock",
+                  "inventory"
+                ]
+              },
+              {
+                "column": "INSME",
+                "type": "QUAN(13,3)",
+                "description": "Quality inspection stock"
+              },
+              {
+                "column": "SPEME",
+                "type": "QUAN(13,3)",
+                "description": "Blocked stock"
+              },
+              {
+                "column": "EINME",
+                "type": "QUAN(13,3)",
+                "description": "Unrestricted use stock"
+              },
+              {
+                "column": "RETME",
+                "type": "QUAN(13,3)",
+                "description": "Returns stock"
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": [
+          {
+            "from": "MARA",
+            "to": "MAKT",
+            "join": "MARA.MATNR = MAKT.MATNR",
+            "type": "one-to-many"
+          },
+          {
+            "from": "MARA",
+            "to": "MARC",
+            "join": "MARA.MATNR = MARC.MATNR",
+            "type": "one-to-many"
+          },
+          {
+            "from": "MARC",
+            "to": "MARD",
+            "join": "MARC.MATNR = MARD.MATNR AND MARC.WERKS = MARD.WERKS",
+            "type": "one-to-many"
+          }
+        ]
+      },
+      "Purchase_Order": {
+        "description": "Purchase orders for acquiring materials",
+        "nl_aliases": [
+          "purchase order",
+          "PO",
+          "purchase requisition",
+          "purchase request"
+        ],
+        "business_questions": [
+          "Show me open purchase orders",
+          "What is the status of PO 4500123456?",
+          "Show me POs by vendor"
+        ],
+        "primary_table": "EKKO",
+        "tables": {
+          "EKKO": {
+            "schema": "SAP",
+            "description": "Purchase Order Header",
+            "primary_key": {
+              "column": "EBELN",
+              "type": "PRIMARY"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "EBELN",
+                "type": "CHAR(10)",
+                "description": "Purchase order number",
+                "nl_aliases": [
+                  "PO",
+                  "PO number"
+                ]
+              },
+              {
+                "column": "BUKRS",
+                "type": "CHAR(4)",
+                "description": "Company code"
+              },
+              {
+                "column": "BSTYP",
+                "type": "CHAR(1)",
+                "description": "Document type (F=PO, K=Scheduling Agreement)"
+              },
+              {
+                "column": "BSART",
+                "type": "CHAR(4)",
+                "description": "Order type"
+              },
+              {
+                "column": "LOEKZ",
+                "type": "CHAR(1)",
+                "description": "Deletion indicator"
+              },
+              {
+                "column": "AEDAT",
+                "type": "DATE",
+                "description": "Last changed date"
+              },
+              {
+                "column": "ERNAM",
+                "type": "CHAR(12)",
+                "description": "Created by user"
+              },
+              {
+                "column": "LIFNR",
+                "type": "CHAR(10)",
+                "description": "Vendor number",
+                "nl_aliases": [
+                  "vendor",
+                  "supplier"
+                ]
+              },
+              {
+                "column": "ZTERM",
+                "type": "CHAR(4)",
+                "description": "Payment terms"
+              },
+              {
+                "column": "EKORG",
+                "type": "CHAR(4)",
+                "description": "Purchasing organization"
+              },
+              {
+                "column": "EKGRP",
+                "type": "CHAR(3)",
+                "description": "Purchasing group"
+              },
+              {
+                "column": "WAERS",
+                "type": "CHAR(5)",
+                "description": "Currency",
+                "nl_aliases": [
+                  "currency"
+                ]
+              },
+              {
+                "column": "BEDAT",
+                "type": "DATE",
+                "description": "PO date"
+              },
+              {
+                "column": "MEMORY",
+                "type": "CHAR(1)",
+                "description": "Save processed indicator"
+              },
+              {
+                "column": "ERDAT",
+                "type": "VARCHAR(8)",
+                "description": "Created date",
+                "nl_aliases": [
+                  "creation date"
+                ]
+              }
+            ]
+          },
+          "EKPO": {
+            "schema": "SAP",
+            "description": "Purchase Order Line Items",
+            "primary_key": {
+              "column": "EBELN, EBELP",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [
+              {
+                "column": "EBELN",
+                "references": "EKKO.EBELN"
+              }
+            ],
+            "business_columns": [
+              {
+                "column": "EBELN",
+                "type": "CHAR(10)",
+                "description": "Purchase order number"
+              },
+              {
+                "column": "EBELP",
+                "type": "NUMC(5)",
+                "description": "Line item"
+              },
+              {
+                "column": "LOEKZ",
+                "type": "CHAR(1)",
+                "description": "Deletion indicator"
+              },
+              {
+                "column": "MATNR",
+                "type": "CHAR(18)",
+                "description": "Material number"
+              },
+              {
+                "column": "TXZ01",
+                "type": "CHAR(40)",
+                "description": "Short text"
+              },
+              {
+                "column": "MENGE",
+                "type": "QUAN(13,3)",
+                "description": "Order quantity",
+                "nl_aliases": [
+                  "quantity",
+                  "qty"
+                ]
+              },
+              {
+                "column": "MEINS",
+                "type": "CHAR(3)",
+                "description": "Unit of measure"
+              },
+              {
+                "column": "NETPR",
+                "type": "CURR(13,2)",
+                "description": "Net price"
+              },
+              {
+                "column": "PEINH",
+                "type": "NUMC(3)",
+                "description": "Price unit"
+              },
+              {
+                "column": "NETWR",
+                "type": "CURR(13,2)",
+                "description": "Line total amount",
+                "nl_aliases": [
+                  "line amount",
+                  "total"
+                ]
+              },
+              {
+                "column": "WERKS",
+                "type": "CHAR(4)",
+                "description": "Plant"
+              },
+              {
+                "column": "LGORT",
+                "type": "CHAR(4)",
+                "description": "Storage location"
+              },
+              {
+                "column": "MATKL",
+                "type": "CHAR(9)",
+                "description": "Material class"
+              },
+              {
+                "column": "BUKRS",
+                "type": "CHAR(4)",
+                "description": "Company code"
+              },
+              {
+                "column": "MWSKZ",
+                "type": "CHAR(2)",
+                "description": "Tax code"
+              },
+              {
+                "column": "ELIKZ",
+                "type": "CHAR(1)",
+                "description": "Final invoice received"
+              },
+              {
+                "column": "EREKZ",
+                "type": "CHAR(1)",
+                "description": "Final goods receipt"
+              },
+              {
+                "column": "PRCTR",
+                "type": "VARCHAR(10)",
+                "description": "Profit center",
+                "nl_aliases": [
+                  "profit center"
+                ]
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": [
+          {
+            "from": "EKKO",
+            "to": "EKPO",
+            "join": "EKKO.EBELN = EKPO.EBELN",
+            "type": "one-to-many"
+          }
+        ]
+      },
+      "Purchase_Requisition": {
+        "description": "Purchase requisitions (purchase requests before PO creation)",
+        "nl_aliases": [
+          "purchase requisition",
+          "PR",
+          "requisition",
+          "purchase request"
+        ],
+        "business_questions": [
+          "Show me open requisitions",
+          "What requisitions have been converted to POs?"
+        ],
+        "primary_table": "EBAN",
+        "tables": {
+          "EBAN": {
+            "schema": "SAP",
+            "description": "Purchase Requisition",
+            "primary_key": {
+              "column": "BANFN, BNFPO",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "BANFN",
+                "type": "CHAR(10)",
+                "description": "Requisition number",
+                "nl_aliases": [
+                  "PR number",
+                  "requisition"
+                ]
+              },
+              {
+                "column": "BNFPO",
+                "type": "NUMC(5)",
+                "description": "Line item"
+              },
+              {
+                "column": "BSART",
+                "type": "CHAR(4)",
+                "description": "Document type"
+              },
+              {
+                "column": "BADAT",
+                "type": "DATE",
+                "description": "Requisition date"
+              },
+              {
+                "column": "ERNAM",
+                "type": "CHAR(12)",
+                "description": "Created by user"
+              },
+              {
+                "column": "MATNR",
+                "type": "CHAR(18)",
+                "description": "Material number"
+              },
+              {
+                "column": "TXZ01",
+                "type": "CHAR(40)",
+                "description": "Short text"
+              },
+              {
+                "column": "MENGE",
+                "type": "QUAN(13,3)",
+                "description": "Requisition quantity"
+              },
+              {
+                "column": "MEINS",
+                "type": "CHAR(3)",
+                "description": "Unit of measure"
+              },
+              {
+                "column": "PREIS",
+                "type": "CURR(13,2)",
+                "description": "Estimated price"
+              },
+              {
+                "column": "EKGRP",
+                "type": "CHAR(3)",
+                "description": "Purchasing group"
+              },
+              {
+                "column": "WERKS",
+                "type": "CHAR(4)",
+                "description": "Plant"
+              },
+              {
+                "column": "LGORT",
+                "type": "CHAR(4)",
+                "description": "Storage location"
+              },
+              {
+                "column": "FRGST",
+                "type": "CHAR(1)",
+                "description": "Release status"
+              },
+              {
+                "column": "FRGKZ",
+                "type": "CHAR(1)",
+                "description": "Release indicator"
+              },
+              {
+                "column": "LOEKZ",
+                "type": "CHAR(1)",
+                "description": "Deletion indicator"
+              },
+              {
+                "column": "EBELN",
+                "type": "CHAR(10)",
+                "description": "PO number (if converted)"
+              },
+              {
+                "column": "EBELP",
+                "type": "NUMC(5)",
+                "description": "PO line item"
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": []
+      },
+      "PO_History": {
+        "description": "Purchase order history with goods receipts and invoice receipts",
+        "nl_aliases": [
+          "PO history",
+          "goods receipt history",
+          "invoice receipt history"
+        ],
+        "business_questions": [
+          "Show me goods receipt history for PO 4500123456",
+          "What invoices have been matched to this PO?"
+        ],
+        "primary_table": "EKBE",
+        "tables": {
+          "EKBE": {
+            "schema": "SAP",
+            "description": "PO History - receipt documents and invoices",
+            "primary_key": {
+              "column": "EBELN, EBELP, ZEESSION, VGABE, GJAHR",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [
+              {
+                "column": "EBELN, EBELP",
+                "references": "EKPO.EBELN, EBELP"
+              }
+            ],
+            "business_columns": [
+              {
+                "column": "EBELN",
+                "type": "CHAR(10)",
+                "description": "PO number"
+              },
+              {
+                "column": "EBELP",
+                "type": "NUMC(5)",
+                "description": "Line item"
+              },
+              {
+                "column": "ZEESSION",
+                "type": "CHAR(8)",
+                "description": "Receipt sequence"
+              },
+              {
+                "column": "VGABE",
+                "type": "CHAR(1)",
+                "description": "Transaction (1=Goods Receipt, 2=Invoice)"
+              },
+              {
+                "column": "GJAHR",
+                "type": "NUMC(4)",
+                "description": "Fiscal year"
+              },
+              {
+                "column": "BELNR",
+                "type": "CHAR(10)",
+                "description": "Receipt/Invoice number"
+              },
+              {
+                "column": "BUZEI",
+                "type": "NUMC(3)",
+                "description": "Line item number"
+              },
+              {
+                "column": "BEWTP",
+                "type": "CHAR(1)",
+                "description": "Valuation type"
+              },
+              {
+                "column": "BWART",
+                "type": "CHAR(3)",
+                "description": "Movement type"
+              },
+              {
+                "column": "BUDAT",
+                "type": "DATE",
+                "description": "Posting date"
+              },
+              {
+                "column": "MENGE",
+                "type": "QUAN(13,3)",
+                "description": "Quantity"
+              },
+              {
+                "column": "DMBTR",
+                "type": "CURR(13,2)",
+                "description": "Amount in local currency"
+              },
+              {
+                "column": "WAERS",
+                "type": "CHAR(5)",
+                "description": "Currency"
+              },
+              {
+                "column": "SHKZG",
+                "type": "CHAR(1)",
+                "description": "Debit/Credit"
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": []
+      }
+    }
+  },
+  "module_key": "MM",
+  "module_name": "Materials Management",
+  "description": "Purchasing and inventory management"
+}

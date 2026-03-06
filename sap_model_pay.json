@@ -1,0 +1,174 @@
+{
+  "PAY": {
+    "module_name": "Payroll",
+    "description": "SAP Payroll - payroll processing and wage type definitions",
+    "application_short_name": "PAY",
+    "business_objects": {
+      "Payroll_Results": {
+        "description": "Payroll run results and payroll documents",
+        "nl_aliases": [
+          "payroll",
+          "payroll run",
+          "pay run",
+          "payroll results"
+        ],
+        "business_questions": [
+          "Show me payroll results for period 202312",
+          "What is the payroll status for this run?"
+        ],
+        "primary_table": "HRPY_RGDIR",
+        "tables": {
+          "HRPY_RGDIR": {
+            "schema": "SAP",
+            "description": "Payroll Run Directory",
+            "primary_key": {
+              "column": "PERNR, SEQNR",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "PERNR",
+                "type": "NUMC(8)",
+                "description": "Employee number"
+              },
+              {
+                "column": "SEQNR",
+                "type": "NUMC(3)",
+                "description": "Sequence number"
+              },
+              {
+                "column": "FPPER",
+                "type": "CHAR(7)",
+                "description": "Payroll period",
+                "nl_aliases": [
+                  "period"
+                ]
+              },
+              {
+                "column": "INPER",
+                "type": "CHAR(7)",
+                "description": "Input period"
+              },
+              {
+                "column": "ABESSION",
+                "type": "CHAR(4)",
+                "description": "Payroll type"
+              },
+              {
+                "column": "PAYTY",
+                "type": "CHAR(4)",
+                "description": "Payment type"
+              },
+              {
+                "column": "PAYID",
+                "type": "NUMC(3)",
+                "description": "Payroll ID"
+              },
+              {
+                "column": "BONDT",
+                "type": "CHAR(1)",
+                "description": "Bonus indicator"
+              },
+              {
+                "column": "JUESSION",
+                "type": "CHAR(1)",
+                "description": "Session number"
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": []
+      },
+      "Wage_Types": {
+        "description": "Wage type master data and descriptions",
+        "nl_aliases": [
+          "wage type",
+          "salary component",
+          "pay element"
+        ],
+        "business_questions": [
+          "Show me all wage types",
+          "What is the description for wage type 1000?"
+        ],
+        "primary_table": "T511",
+        "tables": {
+          "T511": {
+            "schema": "SAP",
+            "description": "Wage Type Master",
+            "primary_key": {
+              "column": "MOLGA, LGART",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "MOLGA",
+                "type": "CHAR(2)",
+                "description": "Payroll area"
+              },
+              {
+                "column": "LGART",
+                "type": "CHAR(4)",
+                "description": "Wage type",
+                "nl_aliases": [
+                  "wage type"
+                ]
+              }
+            ]
+          },
+          "T512T": {
+            "schema": "SAP",
+            "description": "Wage Type Text - multilingual descriptions",
+            "primary_key": {
+              "column": "MOLGA, LGART, SPRAS",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [
+              {
+                "column": "MOLGA, LGART",
+                "references": "T511.MOLGA, LGART"
+              }
+            ],
+            "business_columns": [
+              {
+                "column": "MOLGA",
+                "type": "CHAR(2)",
+                "description": "Payroll area"
+              },
+              {
+                "column": "LGART",
+                "type": "CHAR(4)",
+                "description": "Wage type"
+              },
+              {
+                "column": "SPRAS",
+                "type": "CHAR(1)",
+                "description": "Language"
+              },
+              {
+                "column": "LGTXT",
+                "type": "CHAR(40)",
+                "description": "Wage type description",
+                "nl_aliases": [
+                  "description"
+                ]
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": [
+          {
+            "from": "T511",
+            "to": "T512T",
+            "join": "T511.MOLGA = T512T.MOLGA AND T511.LGART = T512T.LGART",
+            "type": "one-to-many"
+          }
+        ]
+      }
+    }
+  },
+  "module_key": "PAY",
+  "module_name": "Payroll",
+  "description": "Payroll processing and compensation"
+}

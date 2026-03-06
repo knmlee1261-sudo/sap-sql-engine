@@ -1,0 +1,794 @@
+{
+  "PM": {
+    "module_name": "Plant Maintenance",
+    "description": "SAP PM Plant Maintenance - maintenance orders, operations, equipment, functional locations, and confirmations",
+    "application_short_name": "PM",
+    "business_objects": {
+      "Maintenance_Order": {
+        "description": "Maintenance orders consisting of order master (AUFK), PM header (AFIH), and order header data (AFKO)",
+        "nl_aliases": [
+          "maintenance order",
+          "work order",
+          "PM order",
+          "service order",
+          "repair order"
+        ],
+        "business_questions": [
+          "Show me all open maintenance orders",
+          "What maintenance orders are assigned to equipment 10000001?",
+          "Show me high priority maintenance orders for plant 1000"
+        ],
+        "primary_table": "AUFK",
+        "tables": {
+          "AUFK": {
+            "schema": "SAP",
+            "description": "Order Master Data - general order information for PM, CO, and PP orders",
+            "primary_key": {
+              "column": "AUFNR",
+              "type": "PRIMARY"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "AUFNR",
+                "type": "CHAR(12)",
+                "description": "Order number",
+                "nl_aliases": [
+                  "order number",
+                  "work order",
+                  "order"
+                ]
+              },
+              {
+                "column": "AUART",
+                "type": "CHAR(4)",
+                "description": "Order type (PM01=Corrective, PM02=Preventive, PM03=Refurbishment)",
+                "nl_aliases": [
+                  "order type",
+                  "type"
+                ]
+              },
+              {
+                "column": "AUTYP",
+                "type": "CHAR(2)",
+                "description": "Order category (30=PM Order)"
+              },
+              {
+                "column": "BUKRS",
+                "type": "CHAR(4)",
+                "description": "Company code"
+              },
+              {
+                "column": "WERKS",
+                "type": "CHAR(4)",
+                "description": "Plant",
+                "nl_aliases": [
+                  "plant",
+                  "maintenance plant"
+                ]
+              },
+              {
+                "column": "KOKRS",
+                "type": "CHAR(4)",
+                "description": "Controlling area"
+              },
+              {
+                "column": "KOSTV",
+                "type": "CHAR(10)",
+                "description": "Responsible cost center"
+              },
+              {
+                "column": "KTEXT",
+                "type": "CHAR(40)",
+                "description": "Order description",
+                "nl_aliases": [
+                  "description",
+                  "short text"
+                ]
+              },
+              {
+                "column": "ERDAT",
+                "type": "DATE",
+                "description": "Created date"
+              },
+              {
+                "column": "ERNAM",
+                "type": "CHAR(12)",
+                "description": "Created by user"
+              },
+              {
+                "column": "AEDAT",
+                "type": "DATE",
+                "description": "Changed date"
+              },
+              {
+                "column": "LOEKZ",
+                "type": "CHAR(1)",
+                "description": "Deletion indicator (X=deleted)"
+              },
+              {
+                "column": "OBJNR",
+                "type": "CHAR(22)",
+                "description": "Object number for status management"
+              }
+            ]
+          },
+          "AFIH": {
+            "schema": "SAP",
+            "description": "Maintenance Order Header - PM-specific header data linked to AUFK",
+            "primary_key": {
+              "column": "AUFNR",
+              "type": "PRIMARY"
+            },
+            "foreign_keys": [
+              {
+                "column": "AUFNR",
+                "references": "AUFK.AUFNR"
+              },
+              {
+                "column": "EQUNR",
+                "references": "EQUI.EQUNR"
+              }
+            ],
+            "business_columns": [
+              {
+                "column": "AUFNR",
+                "type": "CHAR(12)",
+                "description": "Order number"
+              },
+              {
+                "column": "EQUNR",
+                "type": "CHAR(18)",
+                "description": "Equipment number",
+                "nl_aliases": [
+                  "equipment"
+                ]
+              },
+              {
+                "column": "TPLNR",
+                "type": "CHAR(30)",
+                "description": "Functional location",
+                "nl_aliases": [
+                  "functional location",
+                  "location"
+                ]
+              },
+              {
+                "column": "ILART",
+                "type": "CHAR(3)",
+                "description": "Maintenance activity type (001=Inspection, 002=Repair, 003=Overhaul)",
+                "nl_aliases": [
+                  "activity type"
+                ]
+              },
+              {
+                "column": "PRIOK",
+                "type": "CHAR(1)",
+                "description": "Priority (1=Very High, 2=High, 3=Medium, 4=Low)",
+                "nl_aliases": [
+                  "priority"
+                ]
+              },
+              {
+                "column": "IWERK",
+                "type": "CHAR(4)",
+                "description": "Maintenance planning plant"
+              },
+              {
+                "column": "INGPR",
+                "type": "CHAR(3)",
+                "description": "Planner group",
+                "nl_aliases": [
+                  "planner group"
+                ]
+              },
+              {
+                "column": "QMNUM",
+                "type": "CHAR(12)",
+                "description": "Notification number",
+                "nl_aliases": [
+                  "notification"
+                ]
+              },
+              {
+                "column": "IPHAS",
+                "type": "CHAR(1)",
+                "description": "Maintenance processing phase"
+              },
+              {
+                "column": "GSTRP",
+                "type": "DATE",
+                "description": "Basic start date",
+                "nl_aliases": [
+                  "start date"
+                ]
+              },
+              {
+                "column": "GLTRP",
+                "type": "DATE",
+                "description": "Basic finish date",
+                "nl_aliases": [
+                  "finish date",
+                  "due date"
+                ]
+              },
+              {
+                "column": "GSTRI",
+                "type": "DATE",
+                "description": "Actual start date"
+              },
+              {
+                "column": "GLTRI",
+                "type": "DATE",
+                "description": "Actual finish date"
+              }
+            ]
+          },
+          "AFKO": {
+            "schema": "SAP",
+            "description": "Order Header Data - routing/operation list header for PM and PP orders",
+            "primary_key": {
+              "column": "AUFNR",
+              "type": "PRIMARY"
+            },
+            "foreign_keys": [
+              {
+                "column": "AUFNR",
+                "references": "AUFK.AUFNR"
+              }
+            ],
+            "business_columns": [
+              {
+                "column": "AUFNR",
+                "type": "CHAR(12)",
+                "description": "Order number"
+              },
+              {
+                "column": "AUFPL",
+                "type": "NUMC(10)",
+                "description": "Routing number for operations (links to AFVC)",
+                "nl_aliases": [
+                  "routing number"
+                ]
+              },
+              {
+                "column": "GSTRP",
+                "type": "DATE",
+                "description": "Basic start date"
+              },
+              {
+                "column": "GLTRP",
+                "type": "DATE",
+                "description": "Basic finish date"
+              },
+              {
+                "column": "GSTRI",
+                "type": "DATE",
+                "description": "Actual start date"
+              },
+              {
+                "column": "GLTRI",
+                "type": "DATE",
+                "description": "Actual finish date"
+              },
+              {
+                "column": "FTRMS",
+                "type": "DATE",
+                "description": "Scheduled release date"
+              },
+              {
+                "column": "DESSION",
+                "type": "CHAR(3)",
+                "description": "Planner group"
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": [
+          {
+            "from": "AUFK",
+            "to": "AFIH",
+            "join": "AUFK.AUFNR = AFIH.AUFNR",
+            "type": "one-to-one"
+          },
+          {
+            "from": "AUFK",
+            "to": "AFKO",
+            "join": "AUFK.AUFNR = AFKO.AUFNR",
+            "type": "one-to-one"
+          }
+        ]
+      },
+      "Operation": {
+        "description": "Operations (work steps) within a maintenance order",
+        "nl_aliases": [
+          "operation",
+          "work step",
+          "task",
+          "activity"
+        ],
+        "business_questions": [
+          "Show me all operations for order 000004000001",
+          "What operations are cancelled?",
+          "Show me operations by work center"
+        ],
+        "primary_table": "AFVC",
+        "tables": {
+          "AFVC": {
+            "schema": "SAP",
+            "description": "Operation within an Order - individual work steps",
+            "primary_key": {
+              "column": "AUFPL, APLZL",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [
+              {
+                "column": "AUFPL",
+                "references": "AFKO.AUFPL"
+              }
+            ],
+            "business_columns": [
+              {
+                "column": "AUFPL",
+                "type": "NUMC(10)",
+                "description": "Routing number for operations"
+              },
+              {
+                "column": "APLZL",
+                "type": "NUMC(8)",
+                "description": "General counter for order"
+              },
+              {
+                "column": "VORNR",
+                "type": "CHAR(4)",
+                "description": "Operation number",
+                "nl_aliases": [
+                  "operation number",
+                  "activity number"
+                ]
+              },
+              {
+                "column": "STEUS",
+                "type": "CHAR(4)",
+                "description": "Control key (PM01=Internal, PM02=External, PM03=Service)"
+              },
+              {
+                "column": "LTXA1",
+                "type": "CHAR(40)",
+                "description": "Operation short text",
+                "nl_aliases": [
+                  "description"
+                ]
+              },
+              {
+                "column": "ARBID",
+                "type": "NUMC(8)",
+                "description": "Work center object ID",
+                "nl_aliases": [
+                  "work center"
+                ]
+              },
+              {
+                "column": "WERKS",
+                "type": "CHAR(4)",
+                "description": "Plant"
+              },
+              {
+                "column": "ARBPL",
+                "type": "CHAR(8)",
+                "description": "Work center",
+                "nl_aliases": [
+                  "work center name"
+                ]
+              },
+              {
+                "column": "ANZZL",
+                "type": "DEC(3)",
+                "description": "Number of confirmations"
+              },
+              {
+                "column": "USR00",
+                "type": "CHAR(20)",
+                "description": "User status"
+              },
+              {
+                "column": "LOEKZ",
+                "type": "CHAR(1)",
+                "description": "Deletion/cancellation indicator (X=cancelled)",
+                "nl_aliases": [
+                  "cancelled"
+                ]
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": []
+      },
+      "Confirmation": {
+        "description": "Order completion confirmations - actual work reported against operations",
+        "nl_aliases": [
+          "confirmation",
+          "time confirmation",
+          "completion confirmation"
+        ],
+        "business_questions": [
+          "Show me confirmations for order 000004000001",
+          "What actual work hours were reported this month?",
+          "Show me confirmations by employee"
+        ],
+        "primary_table": "AFRU",
+        "tables": {
+          "AFRU": {
+            "schema": "SAP",
+            "description": "Order Completion Confirmations - actual work times and quantities",
+            "primary_key": {
+              "column": "RUECK, RMZHL",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [
+              {
+                "column": "AUFNR",
+                "references": "AUFK.AUFNR"
+              }
+            ],
+            "business_columns": [
+              {
+                "column": "RUECK",
+                "type": "NUMC(10)",
+                "description": "Confirmation number"
+              },
+              {
+                "column": "RMZHL",
+                "type": "NUMC(4)",
+                "description": "Confirmation counter"
+              },
+              {
+                "column": "AUFNR",
+                "type": "CHAR(12)",
+                "description": "Order number"
+              },
+              {
+                "column": "VORNR",
+                "type": "CHAR(4)",
+                "description": "Operation number"
+              },
+              {
+                "column": "AUFPL",
+                "type": "NUMC(10)",
+                "description": "Routing number"
+              },
+              {
+                "column": "APLZL",
+                "type": "NUMC(8)",
+                "description": "General counter"
+              },
+              {
+                "column": "WERKS",
+                "type": "CHAR(4)",
+                "description": "Plant"
+              },
+              {
+                "column": "BUDAT",
+                "type": "DATE",
+                "description": "Posting date",
+                "nl_aliases": [
+                  "posting date"
+                ]
+              },
+              {
+                "column": "ISMNW",
+                "type": "DEC(7,1)",
+                "description": "Actual work (hours)",
+                "nl_aliases": [
+                  "actual work",
+                  "actual hours"
+                ]
+              },
+              {
+                "column": "ISMNE",
+                "type": "CHAR(3)",
+                "description": "Unit of work (H=Hours)"
+              },
+              {
+                "column": "PERNR",
+                "type": "NUMC(8)",
+                "description": "Personnel number",
+                "nl_aliases": [
+                  "employee"
+                ]
+              },
+              {
+                "column": "STOKZ",
+                "type": "CHAR(1)",
+                "description": "Reversal indicator (X=reversed)"
+              },
+              {
+                "column": "STZHL",
+                "type": "NUMC(4)",
+                "description": "Reversal counter"
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": []
+      },
+      "Equipment": {
+        "description": "Equipment master data - physical assets maintained by PM",
+        "nl_aliases": [
+          "equipment",
+          "asset",
+          "machine",
+          "device"
+        ],
+        "business_questions": [
+          "Show me all equipment in plant 1000",
+          "What maintenance orders are open for equipment 10000001?",
+          "List all equipment by functional location"
+        ],
+        "primary_table": "EQUI",
+        "tables": {
+          "EQUI": {
+            "schema": "SAP",
+            "description": "Equipment Master - physical asset register",
+            "primary_key": {
+              "column": "EQUNR",
+              "type": "PRIMARY"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "EQUNR",
+                "type": "CHAR(18)",
+                "description": "Equipment number",
+                "nl_aliases": [
+                  "equipment number",
+                  "equipment"
+                ]
+              },
+              {
+                "column": "EQTYP",
+                "type": "CHAR(1)",
+                "description": "Equipment category"
+              },
+              {
+                "column": "EQART",
+                "type": "CHAR(10)",
+                "description": "Object type",
+                "nl_aliases": [
+                  "equipment type"
+                ]
+              },
+              {
+                "column": "INBDT",
+                "type": "DATE",
+                "description": "Start-up date",
+                "nl_aliases": [
+                  "installation date"
+                ]
+              },
+              {
+                "column": "BUKRS",
+                "type": "CHAR(4)",
+                "description": "Company code"
+              },
+              {
+                "column": "WERKS",
+                "type": "CHAR(4)",
+                "description": "Plant"
+              },
+              {
+                "column": "STORT",
+                "type": "CHAR(10)",
+                "description": "Location",
+                "nl_aliases": [
+                  "room",
+                  "location"
+                ]
+              },
+              {
+                "column": "TPLNR",
+                "type": "CHAR(30)",
+                "description": "Functional location"
+              },
+              {
+                "column": "HERST",
+                "type": "CHAR(20)",
+                "description": "Manufacturer",
+                "nl_aliases": [
+                  "manufacturer"
+                ]
+              },
+              {
+                "column": "SERGE",
+                "type": "CHAR(30)",
+                "description": "Serial number",
+                "nl_aliases": [
+                  "serial number"
+                ]
+              },
+              {
+                "column": "INVNR",
+                "type": "CHAR(25)",
+                "description": "Inventory number"
+              },
+              {
+                "column": "GEWRK",
+                "type": "CHAR(4)",
+                "description": "Responsible work center"
+              },
+              {
+                "column": "LOESSION",
+                "type": "CHAR(1)",
+                "description": "Deletion indicator"
+              }
+            ]
+          },
+          "EQKT": {
+            "schema": "SAP",
+            "description": "Equipment Short Text - multilingual descriptions",
+            "primary_key": {
+              "column": "EQUNR, SPRAS",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [
+              {
+                "column": "EQUNR",
+                "references": "EQUI.EQUNR"
+              }
+            ],
+            "business_columns": [
+              {
+                "column": "EQUNR",
+                "type": "CHAR(18)",
+                "description": "Equipment number"
+              },
+              {
+                "column": "SPRAS",
+                "type": "CHAR(1)",
+                "description": "Language key"
+              },
+              {
+                "column": "EQKTX",
+                "type": "CHAR(40)",
+                "description": "Equipment description",
+                "nl_aliases": [
+                  "description",
+                  "equipment name"
+                ]
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": [
+          {
+            "from": "EQUI",
+            "to": "EQKT",
+            "join": "EQUI.EQUNR = EQKT.EQUNR",
+            "type": "one-to-many"
+          }
+        ]
+      },
+      "Functional_Location": {
+        "description": "Functional locations - hierarchical structure representing where equipment is installed",
+        "nl_aliases": [
+          "functional location",
+          "location",
+          "plant section",
+          "building"
+        ],
+        "business_questions": [
+          "Show me all functional locations in plant 1000",
+          "What equipment is installed at location PLANT1-BLDG1?",
+          "Show me the functional location hierarchy"
+        ],
+        "primary_table": "IFLOT",
+        "tables": {
+          "IFLOT": {
+            "schema": "SAP",
+            "description": "Functional Location - hierarchical structure",
+            "primary_key": {
+              "column": "TPLNR",
+              "type": "PRIMARY"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "TPLNR",
+                "type": "CHAR(30)",
+                "description": "Functional location",
+                "nl_aliases": [
+                  "location",
+                  "functional location"
+                ]
+              },
+              {
+                "column": "FLTYP",
+                "type": "CHAR(1)",
+                "description": "Functional location category"
+              },
+              {
+                "column": "IWERK",
+                "type": "CHAR(4)",
+                "description": "Maintenance plant"
+              },
+              {
+                "column": "BUKRS",
+                "type": "CHAR(4)",
+                "description": "Company code"
+              },
+              {
+                "column": "WERKS",
+                "type": "CHAR(4)",
+                "description": "Plant"
+              },
+              {
+                "column": "STORT",
+                "type": "CHAR(10)",
+                "description": "Location"
+              },
+              {
+                "column": "GEWRK",
+                "type": "CHAR(4)",
+                "description": "Responsible work center"
+              },
+              {
+                "column": "TPLMA",
+                "type": "CHAR(30)",
+                "description": "Superior functional location (parent)",
+                "nl_aliases": [
+                  "parent location"
+                ]
+              }
+            ]
+          },
+          "IFLOTX": {
+            "schema": "SAP",
+            "description": "Functional Location Short Texts",
+            "primary_key": {
+              "column": "TPLNR, SPRAS",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [
+              {
+                "column": "TPLNR",
+                "references": "IFLOT.TPLNR"
+              }
+            ],
+            "business_columns": [
+              {
+                "column": "TPLNR",
+                "type": "CHAR(30)",
+                "description": "Functional location"
+              },
+              {
+                "column": "SPRAS",
+                "type": "CHAR(1)",
+                "description": "Language key"
+              },
+              {
+                "column": "PLTXT",
+                "type": "CHAR(40)",
+                "description": "Functional location description",
+                "nl_aliases": [
+                  "description",
+                  "location name"
+                ]
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": [
+          {
+            "from": "IFLOT",
+            "to": "IFLOTX",
+            "join": "IFLOT.TPLNR = IFLOTX.TPLNR",
+            "type": "one-to-many"
+          }
+        ]
+      }
+    }
+  },
+  "module_key": "PM",
+  "module_name": "Plant Maintenance",
+  "description": "Maintenance planning and execution"
+}

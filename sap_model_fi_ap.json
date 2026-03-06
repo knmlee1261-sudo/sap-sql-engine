@@ -1,0 +1,970 @@
+{
+  "FI_AP": {
+    "module_name": "Accounts Payable",
+    "description": "SAP FI Accounts Payable - vendor master, invoices, payments, and open items",
+    "application_short_name": "FI-AP",
+    "business_objects": {
+      "Vendor": {
+        "description": "Vendor master data with company code specific details",
+        "nl_aliases": [
+          "vendor",
+          "supplier",
+          "vendor master",
+          "LFA1"
+        ],
+        "business_questions": [
+          "Show me all vendors in company code 1000",
+          "What is the payment terms for vendor 100000?",
+          "Which vendors are blocked from further orders?",
+          "Show me vendors by country"
+        ],
+        "primary_table": "LFA1",
+        "tables": {
+          "LFA1": {
+            "schema": "SAP",
+            "description": "Vendor Master - General data",
+            "primary_key": {
+              "column": "LIFNR",
+              "type": "PRIMARY"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "LIFNR",
+                "type": "CHAR(10)",
+                "description": "Vendor number",
+                "nl_aliases": [
+                  "vendor",
+                  "vendor number",
+                  "supplier"
+                ]
+              },
+              {
+                "column": "NAME1",
+                "type": "CHAR(35)",
+                "description": "Vendor name",
+                "nl_aliases": [
+                  "vendor name",
+                  "supplier name",
+                  "name"
+                ]
+              },
+              {
+                "column": "NAME2",
+                "type": "CHAR(35)",
+                "description": "Vendor name line 2"
+              },
+              {
+                "column": "LAND1",
+                "type": "CHAR(3)",
+                "description": "Country code",
+                "nl_aliases": [
+                  "country"
+                ]
+              },
+              {
+                "column": "ORT01",
+                "type": "CHAR(25)",
+                "description": "City",
+                "nl_aliases": [
+                  "city"
+                ]
+              },
+              {
+                "column": "PSTLZ",
+                "type": "CHAR(10)",
+                "description": "Postal code",
+                "nl_aliases": [
+                  "zip code",
+                  "postcode"
+                ]
+              },
+              {
+                "column": "STRAS",
+                "type": "CHAR(35)",
+                "description": "Street address",
+                "nl_aliases": [
+                  "address",
+                  "street"
+                ]
+              },
+              {
+                "column": "TELF1",
+                "type": "CHAR(16)",
+                "description": "Phone number",
+                "nl_aliases": [
+                  "phone",
+                  "telephone"
+                ]
+              },
+              {
+                "column": "STCD1",
+                "type": "CHAR(16)",
+                "description": "Tax identification number",
+                "nl_aliases": [
+                  "tax ID",
+                  "tax number"
+                ]
+              },
+              {
+                "column": "KTOKK",
+                "type": "CHAR(4)",
+                "description": "Vendor account group",
+                "nl_aliases": [
+                  "account group"
+                ]
+              },
+              {
+                "column": "LOEVM",
+                "type": "CHAR(1)",
+                "description": "Deletion indicator",
+                "nl_aliases": [
+                  "deleted"
+                ]
+              },
+              {
+                "column": "SPERR",
+                "type": "CHAR(1)",
+                "description": "Block indicator (X=Blocked)",
+                "nl_aliases": [
+                  "blocked",
+                  "block status"
+                ]
+              },
+              {
+                "column": "ERDAT",
+                "type": "DATE",
+                "description": "Date created",
+                "nl_aliases": [
+                  "created date"
+                ]
+              },
+              {
+                "column": "ERNAM",
+                "type": "CHAR(12)",
+                "description": "Created by user"
+              }
+            ]
+          },
+          "LFB1": {
+            "schema": "SAP",
+            "description": "Vendor Master - Company Code data",
+            "primary_key": {
+              "column": "LIFNR, BUKRS",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [
+              {
+                "column": "LIFNR",
+                "references": "LFA1.LIFNR"
+              }
+            ],
+            "business_columns": [
+              {
+                "column": "LIFNR",
+                "type": "CHAR(10)",
+                "description": "Vendor number"
+              },
+              {
+                "column": "BUKRS",
+                "type": "CHAR(4)",
+                "description": "Company code"
+              },
+              {
+                "column": "AKONT",
+                "type": "CHAR(10)",
+                "description": "Reconciliation GL account",
+                "nl_aliases": [
+                  "GL account",
+                  "reconciliation account"
+                ]
+              },
+              {
+                "column": "ZTERM",
+                "type": "CHAR(4)",
+                "description": "Payment terms",
+                "nl_aliases": [
+                  "payment terms",
+                  "terms"
+                ]
+              },
+              {
+                "column": "ZWELS",
+                "type": "CHAR(3)",
+                "description": "Payment method",
+                "nl_aliases": [
+                  "payment method"
+                ]
+              },
+              {
+                "column": "FDGRV",
+                "type": "CHAR(4)",
+                "description": "Responsible vendor group"
+              },
+              {
+                "column": "SPERR",
+                "type": "CHAR(1)",
+                "description": "Block indicator"
+              },
+              {
+                "column": "LOEVM",
+                "type": "CHAR(1)",
+                "description": "Deletion indicator"
+              },
+              {
+                "column": "ZUESSION",
+                "type": "CHAR(12)",
+                "description": "Account assignment group"
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": [
+          {
+            "from": "LFA1",
+            "to": "LFB1",
+            "join": "LFA1.LIFNR = LFB1.LIFNR",
+            "type": "one-to-many"
+          }
+        ]
+      },
+      "Vendor_Invoice": {
+        "description": "Vendor invoices received from suppliers",
+        "nl_aliases": [
+          "vendor invoice",
+          "purchase invoice",
+          "vendor bill",
+          "vendor invoice receipt"
+        ],
+        "business_questions": [
+          "Show me invoices received from vendor 100000",
+          "What invoices are pending for approval?",
+          "Show me invoices by date"
+        ],
+        "primary_table": "RBKP",
+        "tables": {
+          "RBKP": {
+            "schema": "SAP",
+            "description": "Vendor Invoice Header - IR/PO document header",
+            "primary_key": {
+              "column": "BELNR, GJAHR",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "BELNR",
+                "type": "CHAR(10)",
+                "description": "Vendor invoice number",
+                "nl_aliases": [
+                  "invoice number"
+                ]
+              },
+              {
+                "column": "GJAHR",
+                "type": "NUMC(4)",
+                "description": "Fiscal year"
+              },
+              {
+                "column": "BLART",
+                "type": "CHAR(2)",
+                "description": "Document type"
+              },
+              {
+                "column": "BLDAT",
+                "type": "DATE",
+                "description": "Invoice date",
+                "nl_aliases": [
+                  "invoice date"
+                ]
+              },
+              {
+                "column": "BUDAT",
+                "type": "DATE",
+                "description": "Posting date",
+                "nl_aliases": [
+                  "posting date"
+                ]
+              },
+              {
+                "column": "XBLNR",
+                "type": "CHAR(16)",
+                "description": "Vendor invoice reference number",
+                "nl_aliases": [
+                  "reference number"
+                ]
+              },
+              {
+                "column": "LIFNR",
+                "type": "CHAR(10)",
+                "description": "Vendor number"
+              },
+              {
+                "column": "WAERS",
+                "type": "CHAR(5)",
+                "description": "Invoice currency",
+                "nl_aliases": [
+                  "currency"
+                ]
+              },
+              {
+                "column": "RMWWR",
+                "type": "CURR(13,2)",
+                "description": "Gross invoice amount"
+              },
+              {
+                "column": "WMWST1",
+                "type": "CURR(13,2)",
+                "description": "Tax amount"
+              },
+              {
+                "column": "ZFBDT",
+                "type": "DATE",
+                "description": "Due date",
+                "nl_aliases": [
+                  "due date"
+                ]
+              },
+              {
+                "column": "ZTERM",
+                "type": "CHAR(4)",
+                "description": "Payment terms"
+              },
+              {
+                "column": "SGTXT",
+                "type": "CHAR(50)",
+                "description": "Invoice text",
+                "nl_aliases": [
+                  "text",
+                  "description"
+                ]
+              },
+              {
+                "column": "STBLG",
+                "type": "CHAR(10)",
+                "description": "Reference document"
+              },
+              {
+                "column": "BUKRS",
+                "type": "CHAR(4)",
+                "description": "Company code"
+              }
+            ]
+          },
+          "RSEG": {
+            "schema": "SAP",
+            "description": "Vendor Invoice Line Items - line items per invoice",
+            "primary_key": {
+              "column": "BELNR, GJAHR, BUZEI",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [
+              {
+                "column": "BELNR, GJAHR",
+                "references": "RBKP.BELNR, GJAHR"
+              }
+            ],
+            "business_columns": [
+              {
+                "column": "BELNR",
+                "type": "CHAR(10)",
+                "description": "Invoice number"
+              },
+              {
+                "column": "GJAHR",
+                "type": "NUMC(4)",
+                "description": "Fiscal year"
+              },
+              {
+                "column": "BUZEI",
+                "type": "NUMC(3)",
+                "description": "Line item number"
+              },
+              {
+                "column": "EBELN",
+                "type": "CHAR(10)",
+                "description": "Purchase order number",
+                "nl_aliases": [
+                  "PO",
+                  "PO number"
+                ]
+              },
+              {
+                "column": "EBELP",
+                "type": "NUMC(5)",
+                "description": "PO line item"
+              },
+              {
+                "column": "MATNR",
+                "type": "CHAR(18)",
+                "description": "Material number",
+                "nl_aliases": [
+                  "material",
+                  "SKU"
+                ]
+              },
+              {
+                "column": "MENGE",
+                "type": "QUAN(13,3)",
+                "description": "Quantity",
+                "nl_aliases": [
+                  "qty"
+                ]
+              },
+              {
+                "column": "BSTME",
+                "type": "CHAR(3)",
+                "description": "Unit of measure",
+                "nl_aliases": [
+                  "UOM"
+                ]
+              },
+              {
+                "column": "WRBTR",
+                "type": "CURR(13,2)",
+                "description": "Line amount in document currency"
+              },
+              {
+                "column": "DMBTR",
+                "type": "CURR(13,2)",
+                "description": "Line amount in local currency"
+              },
+              {
+                "column": "MWSKZ",
+                "type": "CHAR(2)",
+                "description": "Tax code"
+              },
+              {
+                "column": "BUKRS",
+                "type": "CHAR(4)",
+                "description": "Company code"
+              },
+              {
+                "column": "RETPO",
+                "type": "CHAR(1)",
+                "description": "Return item"
+              },
+              {
+                "column": "XBLNR",
+                "type": "CHAR(16)",
+                "description": "External reference"
+              },
+              {
+                "column": "LOEKZ",
+                "type": "VARCHAR(1)",
+                "description": "Deletion indicator",
+                "nl_aliases": [
+                  "deleted"
+                ],
+                "common_values": [
+                  "",
+                  "X"
+                ]
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": [
+          {
+            "from": "RBKP",
+            "to": "RSEG",
+            "join": "RBKP.BELNR = RSEG.BELNR AND RBKP.GJAHR = RSEG.GJAHR",
+            "type": "one-to-many"
+          }
+        ]
+      },
+      "Vendor_Payment": {
+        "description": "Vendor payment records",
+        "nl_aliases": [
+          "vendor payment",
+          "payment",
+          "vendor check",
+          "payment run"
+        ],
+        "business_questions": [
+          "Show me payments made to vendor 100000",
+          "What payments were processed in this cycle?"
+        ],
+        "primary_table": "REGUH",
+        "tables": {
+          "REGUH": {
+            "schema": "SAP",
+            "description": "Vendor Payment Header",
+            "primary_key": {
+              "column": "LAUFD, LAUFI",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "LAUFD",
+                "type": "CHAR(10)",
+                "description": "Payment run date",
+                "nl_aliases": [
+                  "payment date"
+                ]
+              },
+              {
+                "column": "LAUFI",
+                "type": "CHAR(10)",
+                "description": "Payment run identifier",
+                "nl_aliases": [
+                  "payment run"
+                ]
+              },
+              {
+                "column": "ZBUKR",
+                "type": "CHAR(4)",
+                "description": "Company code"
+              },
+              {
+                "column": "LIFNR",
+                "type": "CHAR(10)",
+                "description": "Vendor number"
+              },
+              {
+                "column": "VBLNR",
+                "type": "CHAR(10)",
+                "description": "Cheque/payment number",
+                "nl_aliases": [
+                  "check number"
+                ]
+              },
+              {
+                "column": "ZALDT",
+                "type": "DATE",
+                "description": "Payment date",
+                "nl_aliases": [
+                  "payment date"
+                ]
+              },
+              {
+                "column": "RWBTR",
+                "type": "CURR(13,2)",
+                "description": "Payment amount",
+                "nl_aliases": [
+                  "amount"
+                ]
+              },
+              {
+                "column": "WAERS",
+                "type": "CHAR(5)",
+                "description": "Payment currency"
+              },
+              {
+                "column": "RZAWE",
+                "type": "CHAR(10)",
+                "description": "Payment method"
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": []
+      },
+      "Vendor_Open_Items": {
+        "description": "Open (unpaid) vendor invoices",
+        "nl_aliases": [
+          "open AP items",
+          "outstanding invoices",
+          "unpaid invoices",
+          "open payables"
+        ],
+        "business_questions": [
+          "Show me open invoices from vendor 100000",
+          "What is our total open AP balance?",
+          "Show me overdue invoices"
+        ],
+        "primary_table": "BSIK",
+        "tables": {
+          "BSIK": {
+            "schema": "SAP",
+            "description": "Vendor Open Items - unpaid invoices",
+            "primary_key": {
+              "column": "BUKRS, LIFNR, BELNR, GJAHR, BUZEI",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "BUKRS",
+                "type": "CHAR(4)",
+                "description": "Company code"
+              },
+              {
+                "column": "LIFNR",
+                "type": "CHAR(10)",
+                "description": "Vendor number"
+              },
+              {
+                "column": "AUGDT",
+                "type": "DATE",
+                "description": "Clearing date",
+                "nl_aliases": [
+                  "cleared date"
+                ]
+              },
+              {
+                "column": "AUGBL",
+                "type": "CHAR(10)",
+                "description": "Clearing document"
+              },
+              {
+                "column": "GJAHR",
+                "type": "NUMC(4)",
+                "description": "Fiscal year"
+              },
+              {
+                "column": "BELNR",
+                "type": "CHAR(10)",
+                "description": "Document number"
+              },
+              {
+                "column": "BUZEI",
+                "type": "NUMC(3)",
+                "description": "Line item"
+              },
+              {
+                "column": "BUDAT",
+                "type": "DATE",
+                "description": "Posting date"
+              },
+              {
+                "column": "BLDAT",
+                "type": "DATE",
+                "description": "Document date"
+              },
+              {
+                "column": "SHKZG",
+                "type": "CHAR(1)",
+                "description": "Debit/Credit (S=Debit, H=Credit)"
+              },
+              {
+                "column": "DMBTR",
+                "type": "CURR(13,2)",
+                "description": "Amount in local currency"
+              },
+              {
+                "column": "WRBTR",
+                "type": "CURR(13,2)",
+                "description": "Amount in document currency"
+              },
+              {
+                "column": "WAERS",
+                "type": "CHAR(5)",
+                "description": "Currency"
+              },
+              {
+                "column": "BSCHL",
+                "type": "CHAR(2)",
+                "description": "Posting key"
+              },
+              {
+                "column": "ZFBDT",
+                "type": "DATE",
+                "description": "Due date"
+              },
+              {
+                "column": "ZBD1T",
+                "type": "NUMC(3)",
+                "description": "Days for cash discount"
+              },
+              {
+                "column": "SGTXT",
+                "type": "CHAR(50)",
+                "description": "Text"
+              },
+              {
+                "column": "HKONT",
+                "type": "CHAR(10)",
+                "description": "GL account"
+              },
+              {
+                "column": "ZUONR",
+                "type": "CHAR(18)",
+                "description": "Assignment"
+              },
+              {
+                "column": "LOEKZ",
+                "type": "VARCHAR(1)",
+                "description": "Deletion indicator",
+                "nl_aliases": [
+                  "deleted",
+                  "deletion flag"
+                ],
+                "common_values": [
+                  "",
+                  "X"
+                ]
+              },
+              {
+                "column": "BLART",
+                "type": "VARCHAR(2)",
+                "description": "Document type",
+                "nl_aliases": [
+                  "doc type",
+                  "document type"
+                ],
+                "common_values": [
+                  "KR",
+                  "KG",
+                  "KZ",
+                  "RE"
+                ]
+              },
+              {
+                "column": "KOART",
+                "type": "VARCHAR(1)",
+                "description": "Account type",
+                "nl_aliases": [
+                  "account type",
+                  "account category"
+                ],
+                "common_values": [
+                  "K"
+                ]
+              },
+              {
+                "column": "XBLNR",
+                "type": "VARCHAR(16)",
+                "description": "Reference document number",
+                "nl_aliases": [
+                  "reference",
+                  "invoice reference",
+                  "external reference"
+                ]
+              },
+              {
+                "column": "GSBER",
+                "type": "VARCHAR(4)",
+                "description": "Business area",
+                "nl_aliases": [
+                  "business area"
+                ]
+              },
+              {
+                "column": "MWSKZ",
+                "type": "VARCHAR(2)",
+                "description": "Tax code",
+                "nl_aliases": [
+                  "tax code",
+                  "tax indicator"
+                ]
+              },
+              {
+                "column": "NEBTR",
+                "type": "DECIMAL",
+                "description": "Net payment amount",
+                "nl_aliases": [
+                  "net payment",
+                  "payment amount"
+                ]
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": []
+      },
+      "Vendor_Cleared_Items": {
+        "description": "Cleared (paid) vendor invoices",
+        "nl_aliases": [
+          "cleared AP items",
+          "paid invoices",
+          "cleared invoices"
+        ],
+        "business_questions": [
+          "Show me cleared invoices for vendor 100000",
+          "What was paid on invoice 5000123456?"
+        ],
+        "primary_table": "BSAK",
+        "tables": {
+          "BSAK": {
+            "schema": "SAP",
+            "description": "Vendor Cleared Items - paid invoices archive",
+            "primary_key": {
+              "column": "BUKRS, LIFNR, BELNR, GJAHR, BUZEI, AUGBL",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "BUKRS",
+                "type": "CHAR(4)",
+                "description": "Company code"
+              },
+              {
+                "column": "LIFNR",
+                "type": "CHAR(10)",
+                "description": "Vendor number"
+              },
+              {
+                "column": "AUGDT",
+                "type": "DATE",
+                "description": "Clearing date"
+              },
+              {
+                "column": "AUGBL",
+                "type": "CHAR(10)",
+                "description": "Clearing document"
+              },
+              {
+                "column": "GJAHR",
+                "type": "NUMC(4)",
+                "description": "Fiscal year"
+              },
+              {
+                "column": "BELNR",
+                "type": "CHAR(10)",
+                "description": "Document number"
+              },
+              {
+                "column": "BUZEI",
+                "type": "NUMC(3)",
+                "description": "Line item"
+              },
+              {
+                "column": "BUDAT",
+                "type": "DATE",
+                "description": "Posting date"
+              },
+              {
+                "column": "BLDAT",
+                "type": "DATE",
+                "description": "Document date"
+              },
+              {
+                "column": "SHKZG",
+                "type": "CHAR(1)",
+                "description": "Debit/Credit"
+              },
+              {
+                "column": "DMBTR",
+                "type": "CURR(13,2)",
+                "description": "Amount in local currency"
+              },
+              {
+                "column": "WRBTR",
+                "type": "CURR(13,2)",
+                "description": "Amount in document currency"
+              },
+              {
+                "column": "WAERS",
+                "type": "CHAR(5)",
+                "description": "Currency"
+              },
+              {
+                "column": "BSCHL",
+                "type": "CHAR(2)",
+                "description": "Posting key"
+              },
+              {
+                "column": "ZFBDT",
+                "type": "DATE",
+                "description": "Due date"
+              },
+              {
+                "column": "ZBD1T",
+                "type": "NUMC(3)",
+                "description": "Days for cash discount"
+              },
+              {
+                "column": "SGTXT",
+                "type": "CHAR(50)",
+                "description": "Text"
+              },
+              {
+                "column": "HKONT",
+                "type": "CHAR(10)",
+                "description": "GL account"
+              },
+              {
+                "column": "ZUONR",
+                "type": "CHAR(18)",
+                "description": "Assignment"
+              },
+              {
+                "column": "LOEKZ",
+                "type": "VARCHAR(1)",
+                "description": "Deletion indicator",
+                "nl_aliases": [
+                  "deleted",
+                  "deletion flag"
+                ],
+                "common_values": [
+                  "",
+                  "X"
+                ]
+              },
+              {
+                "column": "BLART",
+                "type": "VARCHAR(2)",
+                "description": "Document type",
+                "nl_aliases": [
+                  "doc type",
+                  "document type"
+                ],
+                "common_values": [
+                  "KR",
+                  "KG",
+                  "KZ",
+                  "RE"
+                ]
+              },
+              {
+                "column": "KOART",
+                "type": "VARCHAR(1)",
+                "description": "Account type",
+                "nl_aliases": [
+                  "account type",
+                  "account category"
+                ],
+                "common_values": [
+                  "K"
+                ]
+              },
+              {
+                "column": "XBLNR",
+                "type": "VARCHAR(16)",
+                "description": "Reference document number",
+                "nl_aliases": [
+                  "reference",
+                  "invoice reference",
+                  "external reference"
+                ]
+              },
+              {
+                "column": "GSBER",
+                "type": "VARCHAR(4)",
+                "description": "Business area",
+                "nl_aliases": [
+                  "business area"
+                ]
+              },
+              {
+                "column": "MWSKZ",
+                "type": "VARCHAR(2)",
+                "description": "Tax code",
+                "nl_aliases": [
+                  "tax code",
+                  "tax indicator"
+                ]
+              },
+              {
+                "column": "NEBTR",
+                "type": "DECIMAL",
+                "description": "Net payment amount",
+                "nl_aliases": [
+                  "net payment",
+                  "payment amount"
+                ]
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": []
+      }
+    }
+  },
+  "module_key": "FI_AP",
+  "module_name": "Financial Accounting - Accounts Payable",
+  "description": "Accounts payable and vendor management"
+}

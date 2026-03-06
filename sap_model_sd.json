@@ -1,0 +1,682 @@
+{
+  "SD": {
+    "module_name": "Sales and Distribution",
+    "description": "SAP SD Sales and Distribution - sales orders, deliveries, and billing",
+    "application_short_name": "SD",
+    "business_objects": {
+      "Sales_Order": {
+        "description": "Sales orders for customer orders",
+        "nl_aliases": [
+          "sales order",
+          "sales order",
+          "customer order",
+          "SO"
+        ],
+        "business_questions": [
+          "Show me open sales orders",
+          "What is the status of order 123456?",
+          "Show me orders by customer"
+        ],
+        "primary_table": "VBAK",
+        "tables": {
+          "VBAK": {
+            "schema": "SAP",
+            "description": "Sales Order Header",
+            "primary_key": {
+              "column": "VBELN",
+              "type": "PRIMARY"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "VBELN",
+                "type": "CHAR(10)",
+                "description": "Sales order number",
+                "nl_aliases": [
+                  "order",
+                  "order number",
+                  "SO"
+                ]
+              },
+              {
+                "column": "ERDAT",
+                "type": "DATE",
+                "description": "Created date"
+              },
+              {
+                "column": "ERNAM",
+                "type": "CHAR(12)",
+                "description": "Created by user"
+              },
+              {
+                "column": "AUART",
+                "type": "CHAR(4)",
+                "description": "Order type",
+                "nl_aliases": [
+                  "type"
+                ]
+              },
+              {
+                "column": "VKORG",
+                "type": "CHAR(4)",
+                "description": "Sales organization"
+              },
+              {
+                "column": "VTWEG",
+                "type": "CHAR(2)",
+                "description": "Distribution channel"
+              },
+              {
+                "column": "SPART",
+                "type": "CHAR(2)",
+                "description": "Division"
+              },
+              {
+                "column": "VDATU",
+                "type": "DATE",
+                "description": "Requested delivery date"
+              },
+              {
+                "column": "KUNNR",
+                "type": "CHAR(10)",
+                "description": "Customer number",
+                "nl_aliases": [
+                  "customer"
+                ]
+              },
+              {
+                "column": "WAERK",
+                "type": "CHAR(5)",
+                "description": "Currency"
+              },
+              {
+                "column": "NETWR",
+                "type": "CURR(13,2)",
+                "description": "Net order value",
+                "nl_aliases": [
+                  "order total"
+                ]
+              },
+              {
+                "column": "BSTNK",
+                "type": "CHAR(35)",
+                "description": "Customer PO number"
+              },
+              {
+                "column": "LIFSK",
+                "type": "CHAR(2)",
+                "description": "Delivery status"
+              },
+              {
+                "column": "FAKSK",
+                "type": "CHAR(2)",
+                "description": "Billing status"
+              },
+              {
+                "column": "LOEKZ",
+                "type": "VARCHAR(1)",
+                "description": "Deletion indicator",
+                "nl_aliases": [
+                  "deleted"
+                ],
+                "common_values": [
+                  "",
+                  "X"
+                ]
+              },
+              {
+                "column": "AEDAT",
+                "type": "VARCHAR(8)",
+                "description": "Changed date",
+                "nl_aliases": [
+                  "changed on",
+                  "last changed"
+                ]
+              }
+            ]
+          },
+          "VBAP": {
+            "schema": "SAP",
+            "description": "Sales Order Line Items",
+            "primary_key": {
+              "column": "VBELN, POSNR",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [
+              {
+                "column": "VBELN",
+                "references": "VBAK.VBELN"
+              }
+            ],
+            "business_columns": [
+              {
+                "column": "VBELN",
+                "type": "CHAR(10)",
+                "description": "Sales order number"
+              },
+              {
+                "column": "POSNR",
+                "type": "NUMC(6)",
+                "description": "Line item"
+              },
+              {
+                "column": "MATNR",
+                "type": "CHAR(18)",
+                "description": "Material number",
+                "nl_aliases": [
+                  "material",
+                  "product"
+                ]
+              },
+              {
+                "column": "ARKTX",
+                "type": "CHAR(40)",
+                "description": "Line text"
+              },
+              {
+                "column": "KWMENG",
+                "type": "QUAN(13,3)",
+                "description": "Order quantity"
+              },
+              {
+                "column": "VRKME",
+                "type": "CHAR(3)",
+                "description": "Sales unit"
+              },
+              {
+                "column": "NETWR",
+                "type": "CURR(13,2)",
+                "description": "Line amount"
+              },
+              {
+                "column": "WAERK",
+                "type": "CHAR(5)",
+                "description": "Currency"
+              },
+              {
+                "column": "WERKS",
+                "type": "CHAR(4)",
+                "description": "Plant"
+              },
+              {
+                "column": "LGORT",
+                "type": "CHAR(4)",
+                "description": "Storage location"
+              },
+              {
+                "column": "PSTYV",
+                "type": "CHAR(4)",
+                "description": "Item category"
+              },
+              {
+                "column": "ABGRU",
+                "type": "CHAR(2)",
+                "description": "Rejection reason"
+              },
+              {
+                "column": "NETPR",
+                "type": "CURR(13,5)",
+                "description": "Net price"
+              },
+              {
+                "column": "KPEIN",
+                "type": "NUMC(3)",
+                "description": "Condition price unit"
+              },
+              {
+                "column": "LOEKZ",
+                "type": "VARCHAR(1)",
+                "description": "Deletion indicator",
+                "nl_aliases": [
+                  "deleted"
+                ],
+                "common_values": [
+                  "",
+                  "X"
+                ]
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": [
+          {
+            "from": "VBAK",
+            "to": "VBAP",
+            "join": "VBAK.VBELN = VBAP.VBELN",
+            "type": "one-to-many"
+          }
+        ]
+      },
+      "Delivery": {
+        "description": "Delivery documents for goods shipped to customers",
+        "nl_aliases": [
+          "delivery",
+          "shipment",
+          "outbound delivery",
+          "DN"
+        ],
+        "business_questions": [
+          "Show me pending deliveries",
+          "What was shipped for order 123456?",
+          "Show me deliveries by date"
+        ],
+        "primary_table": "LIKP",
+        "tables": {
+          "LIKP": {
+            "schema": "SAP",
+            "description": "Delivery Document Header",
+            "primary_key": {
+              "column": "VBELN",
+              "type": "PRIMARY"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "VBELN",
+                "type": "CHAR(10)",
+                "description": "Delivery number",
+                "nl_aliases": [
+                  "delivery",
+                  "DN"
+                ]
+              },
+              {
+                "column": "ERDAT",
+                "type": "DATE",
+                "description": "Created date"
+              },
+              {
+                "column": "ERNAM",
+                "type": "CHAR(12)",
+                "description": "Created by user"
+              },
+              {
+                "column": "LFART",
+                "type": "CHAR(4)",
+                "description": "Delivery type"
+              },
+              {
+                "column": "WADAT",
+                "type": "DATE",
+                "description": "Goods issue date"
+              },
+              {
+                "column": "KUNNR",
+                "type": "CHAR(10)",
+                "description": "Customer number"
+              },
+              {
+                "column": "VSTEL",
+                "type": "CHAR(4)",
+                "description": "Loading point"
+              },
+              {
+                "column": "BTGEW",
+                "type": "QUAN(13,3)",
+                "description": "Total weight"
+              },
+              {
+                "column": "GEWEI",
+                "type": "CHAR(3)",
+                "description": "Weight unit"
+              },
+              {
+                "column": "WADAT_IST",
+                "type": "DATE",
+                "description": "Actual goods issue date"
+              },
+              {
+                "column": "BLDAT",
+                "type": "DATE",
+                "description": "Document date"
+              }
+            ]
+          },
+          "LIPS": {
+            "schema": "SAP",
+            "description": "Delivery Line Items",
+            "primary_key": {
+              "column": "VBELN, POSNR",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [
+              {
+                "column": "VBELN",
+                "references": "LIKP.VBELN"
+              }
+            ],
+            "business_columns": [
+              {
+                "column": "VBELN",
+                "type": "CHAR(10)",
+                "description": "Delivery number"
+              },
+              {
+                "column": "POSNR",
+                "type": "NUMC(6)",
+                "description": "Line item"
+              },
+              {
+                "column": "MATNR",
+                "type": "CHAR(18)",
+                "description": "Material number"
+              },
+              {
+                "column": "ARKTX",
+                "type": "CHAR(40)",
+                "description": "Line text"
+              },
+              {
+                "column": "LFIMG",
+                "type": "QUAN(13,3)",
+                "description": "Delivery quantity"
+              },
+              {
+                "column": "VRKME",
+                "type": "CHAR(3)",
+                "description": "Sales unit"
+              },
+              {
+                "column": "NETWR",
+                "type": "CURR(13,2)",
+                "description": "Line amount"
+              },
+              {
+                "column": "WERKS",
+                "type": "CHAR(4)",
+                "description": "Plant"
+              },
+              {
+                "column": "LGORT",
+                "type": "CHAR(4)",
+                "description": "Storage location"
+              },
+              {
+                "column": "VGBEL",
+                "type": "CHAR(10)",
+                "description": "Reference document"
+              },
+              {
+                "column": "VGPOS",
+                "type": "NUMC(6)",
+                "description": "Reference line"
+              },
+              {
+                "column": "ERDAT",
+                "type": "DATE",
+                "description": "Created date"
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": [
+          {
+            "from": "LIKP",
+            "to": "LIPS",
+            "join": "LIKP.VBELN = LIPS.VBELN",
+            "type": "one-to-many"
+          }
+        ]
+      },
+      "Billing": {
+        "description": "Billing documents (invoices) for customer shipments",
+        "nl_aliases": [
+          "billing",
+          "invoice",
+          "customer invoice",
+          "sales invoice"
+        ],
+        "business_questions": [
+          "Show me invoices for customer C100000",
+          "What is the status of invoice 200001?"
+        ],
+        "primary_table": "VBRK",
+        "tables": {
+          "VBRK": {
+            "schema": "SAP",
+            "description": "Billing Document Header",
+            "primary_key": {
+              "column": "VBELN",
+              "type": "PRIMARY"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "VBELN",
+                "type": "CHAR(10)",
+                "description": "Invoice number",
+                "nl_aliases": [
+                  "invoice"
+                ]
+              },
+              {
+                "column": "FKART",
+                "type": "CHAR(4)",
+                "description": "Billing type"
+              },
+              {
+                "column": "FKDAT",
+                "type": "DATE",
+                "description": "Billing date"
+              },
+              {
+                "column": "ERDAT",
+                "type": "DATE",
+                "description": "Created date"
+              },
+              {
+                "column": "BUKRS",
+                "type": "CHAR(4)",
+                "description": "Company code"
+              },
+              {
+                "column": "WAERK",
+                "type": "CHAR(5)",
+                "description": "Currency"
+              },
+              {
+                "column": "NETWR",
+                "type": "CURR(13,2)",
+                "description": "Invoice amount"
+              },
+              {
+                "column": "MWSBK",
+                "type": "CURR(13,2)",
+                "description": "Tax amount"
+              },
+              {
+                "column": "KUNRG",
+                "type": "CHAR(10)",
+                "description": "Bill-to customer"
+              },
+              {
+                "column": "KUNAG",
+                "type": "CHAR(10)",
+                "description": "Sold-to customer"
+              },
+              {
+                "column": "VKORG",
+                "type": "CHAR(4)",
+                "description": "Sales organization"
+              },
+              {
+                "column": "VTWEG",
+                "type": "CHAR(2)",
+                "description": "Distribution channel"
+              },
+              {
+                "column": "SPART",
+                "type": "CHAR(2)",
+                "description": "Division"
+              },
+              {
+                "column": "XBLNR",
+                "type": "CHAR(16)",
+                "description": "Reference document"
+              }
+            ]
+          },
+          "VBRP": {
+            "schema": "SAP",
+            "description": "Billing Document Line Items",
+            "primary_key": {
+              "column": "VBELN, POSNR",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [
+              {
+                "column": "VBELN",
+                "references": "VBRK.VBELN"
+              }
+            ],
+            "business_columns": [
+              {
+                "column": "VBELN",
+                "type": "CHAR(10)",
+                "description": "Invoice number"
+              },
+              {
+                "column": "POSNR",
+                "type": "NUMC(6)",
+                "description": "Line item"
+              },
+              {
+                "column": "FKIMG",
+                "type": "QUAN(13,3)",
+                "description": "Billed quantity"
+              },
+              {
+                "column": "VRKME",
+                "type": "CHAR(3)",
+                "description": "Sales unit"
+              },
+              {
+                "column": "NETWR",
+                "type": "CURR(13,2)",
+                "description": "Line amount"
+              },
+              {
+                "column": "MATNR",
+                "type": "CHAR(18)",
+                "description": "Material number"
+              },
+              {
+                "column": "ARKTX",
+                "type": "CHAR(40)",
+                "description": "Line text"
+              },
+              {
+                "column": "WERKS",
+                "type": "CHAR(4)",
+                "description": "Plant"
+              },
+              {
+                "column": "AUBEL",
+                "type": "CHAR(10)",
+                "description": "Reference document (SO)"
+              },
+              {
+                "column": "AUPOS",
+                "type": "NUMC(6)",
+                "description": "Reference line"
+              },
+              {
+                "column": "VGBEL",
+                "type": "CHAR(10)",
+                "description": "Prior document (DN)"
+              },
+              {
+                "column": "VGPOS",
+                "type": "NUMC(6)",
+                "description": "Prior line"
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": [
+          {
+            "from": "VBRK",
+            "to": "VBRP",
+            "join": "VBRK.VBELN = VBRP.VBELN",
+            "type": "one-to-many"
+          }
+        ]
+      },
+      "Document_Flow": {
+        "description": "Document flow tracing relationships between sales, delivery, and billing",
+        "nl_aliases": [
+          "document flow",
+          "document reference",
+          "document link"
+        ],
+        "business_questions": [
+          "Show me the document flow for order 123456",
+          "What documents are related to this delivery?"
+        ],
+        "primary_table": "VBFA",
+        "tables": {
+          "VBFA": {
+            "schema": "SAP",
+            "description": "Document Flow",
+            "primary_key": {
+              "column": "VBELV, POSNV, VBELN, POSNN",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "VBELV",
+                "type": "CHAR(10)",
+                "description": "Prior document number"
+              },
+              {
+                "column": "POSNV",
+                "type": "NUMC(6)",
+                "description": "Prior line number"
+              },
+              {
+                "column": "VBELN",
+                "type": "CHAR(10)",
+                "description": "Subsequent document number"
+              },
+              {
+                "column": "POSNN",
+                "type": "NUMC(6)",
+                "description": "Subsequent line number"
+              },
+              {
+                "column": "VBTYP_N",
+                "type": "CHAR(1)",
+                "description": "Document type (Delivery, Invoice, etc.)"
+              },
+              {
+                "column": "VBTYP_V",
+                "type": "CHAR(1)",
+                "description": "Prior document type"
+              },
+              {
+                "column": "RFMNG",
+                "type": "QUAN(13,3)",
+                "description": "Referenced quantity"
+              },
+              {
+                "column": "RFWRT",
+                "type": "CURR(13,2)",
+                "description": "Referenced value"
+              },
+              {
+                "column": "ERDAT",
+                "type": "DATE",
+                "description": "Created date"
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": []
+      }
+    }
+  },
+  "module_key": "SD",
+  "module_name": "Sales and Distribution",
+  "description": "Sales order and delivery management"
+}

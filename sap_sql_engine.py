@@ -15,6 +15,7 @@ import sys
 import subprocess
 import argparse
 import textwrap
+import re as _re
 import webbrowser
 import threading
 import time
@@ -190,6 +191,366 @@ def detect_modules(question: str) -> list[str]:
 
 
 # ---------------------------------------------------------------------------
+# Conversational Disambiguation Pipeline
+# ---------------------------------------------------------------------------
+# This pipeline classifies user intent, identifies missing query "slots",
+# and surfaces BOKG-grounded suggestions before SQL generation begins.
+
+def extract_bokg_catalog(model: dict) -> dict:
+    """
+    Extract a catalog of all business questions, query patterns, and
+    slot-relevant metadata from the semantic model. This catalog is used
+    by the classification prompt to ground suggestions in actual BOKG content.
+    """
+    catalog = {
+        "modules": {},
+        "query_patterns": [],
+        "all_business_questions": [],
+    }
+
+    for mod_key, mod in model.get("modules", {}).items():
+        mod_info = {
+            "name": mod["module_name"],
+            "description": mod["description"],
+            "objects": {}
+        }
+        for obj_name, obj in mod.get("business_objects", {}).items():
+            bqs = obj.get("business_questions", [])
+            obj_info = {
+                "description": obj.get("description", ""),
+                "nl_aliases": obj.get("nl_aliases", []),
+                "business_questions": bqs,
+                "tables": list(obj.get("tables", {}).keys()),
+            }
+            mod_info["objects"][obj_name] = obj_info
+            for bq in bqs:
+                catalog["all_business_questions"].append({
+                    "question": bq,
+                    "module": mod_key,
+                    "object": obj_name,
+                })
+        catalog["modules"][mod_key] = mod_info
+
+    for p in model.get("nl_query_patterns", []):
+        catalog["query_patterns"].append({
+            "prompt": p["example_prompt"],
+            "module": p.get("primary_module", ""),
+            "objects": p.get("objects_used", []),
+            "tables": p.get("tables_used", []),
+        })
+
+    return catalog
+
+
+def build_classification_prompt(catalog: dict) -> str:
+    """
+    Build the system prompt for the intent classification / disambiguation step.
+    This is a focused prompt that teaches the classifier about available modules,
+    objects, business questions, and query patterns — NOT the full schema.
+    """
+    parts = []
+    parts.append(textwrap.dedent("""\
+    You are an intent classifier for an SAP ECC 6.0 natural language
+    query system called IDA (Intelligent Data Analyst). Your job is to analyze a
+    user's question and return a structured JSON assessment.
+
+    You have access to a Business Object Knowledge Graph (BOKG) that covers the
+    following modules and business objects. The BOKG contains validated SQL templates
+    for many common business questions.
+
+    YOUR TASK:
+    Given a user question, return a JSON object with this exact structure:
+    {
+      "confidence": "high" | "medium" | "low",
+      "modules": ["FI_GL", "FI_AP", ...],
+      "objects": ["Invoice", "Supplier", ...],
+      "slots": {
+        "metric": {"value": "...", "status": "filled" | "ambiguous" | "missing"},
+        "entity": {"value": "...", "status": "filled" | "ambiguous" | "missing"},
+        "time_period": {"value": "...", "status": "filled" | "ambiguous" | "missing"},
+        "scope": {"value": "...", "status": "filled" | "ambiguous" | "missing"},
+        "output_format": {"value": "...", "status": "filled" | "ambiguous" | "missing"}
+      },
+      "interpretation": "One sentence describing what you understand the user is asking",
+      "disambiguation_needed": true | false,
+      "disambiguation_reason": "Why disambiguation is needed (or empty if not needed)",
+      "suggestions": [
+        {
+          "prompt": "A specific, runnable question from the BOKG",
+          "module": "FI_AP",
+          "object": "Invoice",
+          "match_quality": "exact" | "close" | "related"
+        }
+      ],
+      "slot_questions": [
+        {
+          "slot": "time_period",
+          "question": "What time period are you interested in?",
+          "options": ["Last 30 days", "Last quarter", "Year to date", "Last 12 months"]
+        }
+      ]
+    }
+
+    RULES:
+    1. CONFIDENCE LEVELS:
+       - "high": Question maps clearly to one module/object, all required slots filled.
+         Set disambiguation_needed=false. Still include up to 2 suggestions as confirmation.
+       - "medium": Right module identified but some slots ambiguous or missing.
+         Set disambiguation_needed=true. Include suggestions AND slot_questions.
+       - "low": Vague, cross-module, or no clear mapping.
+         Set disambiguation_needed=true. Include broad suggestions.
+
+    2. SLOT DEFINITIONS:
+       - metric: What is being measured or retrieved (e.g., "total spend", "count of invoices",
+         "aging balance", "order value"). Status is "filled" if the user specified a clear
+         measurable, "ambiguous" if the metric could mean multiple things, "missing" if they
+         just said "show me data" or similar.
+       - entity: The main entity or filter subject (e.g., "vendor Acme", "customer ABC",
+         "department Engineering", "item X"). Status "filled" if named, "missing" if generic.
+       - time_period: The time range or period (e.g., "last quarter", "FY2025", "January 2026").
+         Status "filled" if explicit, "ambiguous" if vague ("recent", "lately"), "missing" if absent.
+       - scope: Organizational or structural scope (e.g., company code, plant, warehouse).
+         Status "filled" if specified, "missing" if not — but missing is OK for many queries.
+       - output_format: How results should be structured (e.g., "top 10", "by month", "summary",
+         "detail list"). Status "filled" if the user indicated grouping/sorting/limit, "missing"
+         if not — reasonable defaults exist for most queries.
+
+    3. SUGGESTIONS:
+       - ALWAYS pull suggestions from the BOKG business questions and query patterns listed below.
+       - Match quality "exact" = user's question matches a BOKG question almost word-for-word.
+       - Match quality "close" = same intent/metric with minor differences.
+       - Match quality "related" = same module/object, different specific question.
+       - Include 2-4 suggestions, ranked by relevance.
+
+    4. SLOT QUESTIONS:
+       - Only include for slots with status "ambiguous" or "missing" where the answer
+         would change which query is generated.
+       - Provide 3-4 concrete options grounded in what the BOKG can actually answer.
+       - Do NOT ask about scope or output_format unless the user's question specifically
+         implies those matter.
+
+    5. SPECIAL CASES:
+       - If the question asks about individual employees (names, salaries, PII), set
+         confidence="high" and include a note in interpretation that PII rules apply.
+         Suggest aggregate alternatives.
+       - If the question is completely out of scope (not about SAP data), set
+         confidence="low" and explain in disambiguation_reason.
+       - If the question is a follow-up to a previous conversation, note this in
+         interpretation and set confidence based on available context.
+
+    RESPOND WITH ONLY THE JSON OBJECT. No markdown, no explanation, no code fences.
+    """))
+
+    # List available modules and their objects with business questions
+    parts.append("\n=== AVAILABLE MODULES AND BUSINESS QUESTIONS ===\n")
+    for mod_key, mod_info in catalog["modules"].items():
+        parts.append(f"\n## {mod_key}: {mod_info['name']}")
+        parts.append(f"   {mod_info['description']}")
+        for obj_name, obj_info in mod_info["objects"].items():
+            aliases = f" (also: {', '.join(obj_info['nl_aliases'][:5])})" if obj_info.get('nl_aliases') else ""
+            parts.append(f"   - {obj_name}{aliases}: {obj_info['description'][:100]}")
+            if obj_info["business_questions"]:
+                for bq in obj_info["business_questions"]:
+                    parts.append(f"     Q: \"{bq}\"")
+
+    # List validated query patterns
+    parts.append("\n\n=== VALIDATED QUERY PATTERNS (highest-confidence suggestions) ===\n")
+    for p in catalog["query_patterns"]:
+        mod = f"[{p['module']}] " if p['module'] else ""
+        parts.append(f"  {mod}\"{p['prompt']}\"")
+
+    return "\n".join(parts)
+
+
+def classify_intent(question: str, api_key: str, catalog: dict,
+                    model_name: str = CLAUDE_MODEL,
+                    conversation_history: list = None) -> dict:
+    """
+    Run the intent classification / disambiguation pipeline.
+    Returns a structured dict with confidence, slots, suggestions, etc.
+    Uses a lightweight Claude call (~3-5K tokens vs ~20-40K for full generation).
+    """
+    import anthropic
+    import time as _time
+
+    client = anthropic.Anthropic(api_key=api_key)
+    classification_prompt = build_classification_prompt(catalog)
+
+    # Build messages — include conversation history for follow-up context
+    messages = []
+    if conversation_history:
+        # Include prior turns so the classifier understands follow-ups
+        if len(conversation_history) > 6:
+            conversation_history = conversation_history[-6:]
+        messages.extend(conversation_history)
+    messages.append({"role": "user", "content": question})
+
+    max_retries = 2
+    for attempt in range(max_retries):
+        try:
+            response = client.messages.create(
+                model=model_name,
+                max_tokens=1500,
+                system=[
+                    {
+                        "type": "text",
+                        "text": classification_prompt,
+                        "cache_control": {"type": "ephemeral"}
+                    }
+                ],
+                messages=messages
+            )
+            raw = response.content[0].text.strip()
+
+            # Parse JSON response — handle possible code fences
+            if raw.startswith("```"):
+                raw = raw.split("\n", 1)[1] if "\n" in raw else raw[3:]
+                if raw.endswith("```"):
+                    raw = raw[:-3]
+            result = json.loads(raw)
+
+            # Add token usage
+            usage = {
+                "input_tokens": response.usage.input_tokens,
+                "output_tokens": response.usage.output_tokens,
+            }
+            if hasattr(response.usage, "cache_creation_input_tokens"):
+                usage["cache_creation_input_tokens"] = response.usage.cache_creation_input_tokens or 0
+            if hasattr(response.usage, "cache_read_input_tokens"):
+                usage["cache_read_input_tokens"] = response.usage.cache_read_input_tokens or 0
+            result["_usage"] = usage
+
+            return result
+
+        except json.JSONDecodeError:
+            # If JSON parsing fails, return a fallback that passes through to generation
+            return {
+                "confidence": "high",
+                "modules": detect_modules(question),
+                "objects": [],
+                "slots": {},
+                "interpretation": question,
+                "disambiguation_needed": False,
+                "suggestions": [],
+                "slot_questions": [],
+                "_usage": {"input_tokens": 0, "output_tokens": 0},
+                "_parse_error": True,
+            }
+        except Exception as e:
+            if attempt < max_retries - 1:
+                _time.sleep(1)
+                continue
+            # On final failure, return passthrough
+            return {
+                "confidence": "high",
+                "modules": detect_modules(question),
+                "objects": [],
+                "slots": {},
+                "interpretation": question,
+                "disambiguation_needed": False,
+                "suggestions": [],
+                "slot_questions": [],
+                "_usage": {"input_tokens": 0, "output_tokens": 0},
+                "_error": str(e),
+            }
+
+
+def _clean_interpretation(raw: str) -> str:
+    """Strip classifier meta-language from interpretation text.
+    The LLM often returns things like 'User wants to see vendor data' or
+    'User is asking about purchase orders...' — we want natural phrasing."""
+    s = raw.strip()
+    # Strip leading "User wants to ...", "User is asking about ...", etc.
+    s = _re.sub(
+        r'^(?:The\s+)?[Uu]ser\s+(?:is\s+)?(?:asking\s+(?:about|for|to)|wants?\s+to\s+(?:see|view|know|get|find|show|list|retrieve))\s+',
+        '', s)
+    # Lowercase the first character if it's now starting mid-sentence
+    if s and s[0].isupper() and not s.startswith(('FI_GL ', 'FI_AP ', 'FI_AR ', 'CO ', 'MM ', 'SD ', 'PM ', 'HR ', 'PAY ', 'BEN ')):
+        s = s[0].lower() + s[1:]
+    return s
+
+
+def build_confirmation_prompt(classification: dict) -> str:
+    """
+    Build a human-readable confirmation message from a classification result.
+    Used when confidence is 'high' to let the user verify before SQL generation.
+    """
+    parts = []
+    interp = _clean_interpretation(classification.get("interpretation", ""))
+    if interp:
+        parts.append(f"**I understand you're asking about** {interp}")
+
+    # Show filled slots
+    slots = classification.get("slots", {})
+    slot_details = []
+    for slot_name, slot_info in slots.items():
+        if isinstance(slot_info, dict) and slot_info.get("status") == "filled":
+            val = slot_info.get("value", "")
+            if val:
+                label = slot_name.replace("_", " ").title()
+                slot_details.append(f"  - **{label}:** {val}")
+    if slot_details:
+        parts.append("\n**Query parameters:**")
+        parts.extend(slot_details)
+
+    # Show matched suggestions
+    suggestions = classification.get("suggestions", [])
+    if suggestions:
+        exact = [s for s in suggestions if s.get("match_quality") == "exact"]
+        close = [s for s in suggestions if s.get("match_quality") == "close"]
+        if exact:
+            parts.append(f"\nThis matches a validated BOKG query pattern. I can run this with high accuracy.")
+        elif close:
+            parts.append(f"\nThis is close to a validated pattern — I should be able to answer accurately.")
+
+    parts.append("\n**Ready to generate SQL?** Reply 'yes' to proceed, or refine your question.")
+
+    return "\n".join(parts)
+
+
+def build_disambiguation_message(classification: dict) -> str:
+    """
+    Build a conversational disambiguation message from a classification result.
+    Used when confidence is 'medium' or 'low' to help the user clarify.
+    """
+    parts = []
+    interp = _clean_interpretation(classification.get("interpretation", ""))
+    reason = classification.get("disambiguation_reason", "")
+
+    if interp:
+        parts.append(f"I think you're asking about **{interp}**")
+    if reason:
+        # Clean up reason text too — strip "The question is..." prefix
+        clean_reason = _re.sub(r'^(?:The\s+)?(?:question|request|query)\s+is\s+', '', reason.strip())
+        if clean_reason and clean_reason[0].isupper():
+            clean_reason = clean_reason[0].lower() + clean_reason[1:]
+        parts.append(f"\nHowever, {clean_reason}")
+
+    # Show slot questions
+    slot_questions = classification.get("slot_questions", [])
+    if slot_questions:
+        parts.append("\nTo give you the most accurate answer, I need a bit more detail:")
+        for sq in slot_questions:
+            parts.append(f"\n**{sq['question']}**")
+            if sq.get("options"):
+                for i, opt in enumerate(sq["options"]):
+                    parts.append(f"  ({chr(97+i)}) {opt}")
+
+    # Show BOKG-grounded suggestions
+    suggestions = classification.get("suggestions", [])
+    if suggestions:
+        parts.append("\n**Or, here are specific questions I can answer with high accuracy** (powered by the BOKG):")
+        for i, s in enumerate(suggestions[:4]):
+            mod_tag = f"[{s.get('module', '')}] " if s.get('module') else ""
+            quality_tag = " ✓ validated" if s.get("match_quality") == "exact" else ""
+            parts.append(f"  **{i+1}.** {mod_tag}*\"{s['prompt']}\"*{quality_tag}")
+
+    parts.append("\nYou can pick a number, answer the questions above, or rephrase your question.")
+
+    return "\n".join(parts)
+
+
+# ---------------------------------------------------------------------------
 # System prompt construction
 # ---------------------------------------------------------------------------
 def build_system_prompt(model: dict, modules: list[str] | None = None) -> str:
@@ -254,16 +615,6 @@ def build_system_prompt(model: dict, modules: list[str] | None = None) -> str:
        counts by plan type. Which would you like?"
     5. Even when filtering to a single org unit or cost center, the query must still
        aggregate — never return individual rows.
-
-    CRITICAL — QUERY TEMPLATE RULE (highest priority):
-    Before writing ANY SQL, scan the EXAMPLE QUERY PATTERNS section at the end of this
-    prompt. If the user's question matches or closely resembles an example prompt, you
-    MUST copy that example's SQL template VERBATIM as your query. Do not restructure,
-    rewrite, simplify, or "improve" the template — only adjust literal filter values
-    or parameters as needed. The templates have been tested and validated against the
-    actual database. Generating your own SQL when a matching template exists will
-    produce errors because the templates use specific subquery aliases and column
-    expressions that are required for correctness.
 
     CLARIFICATION BEHAVIOR (IMPORTANT — follow these rules strictly):
     Before generating SQL, first evaluate whether the user's question is specific
@@ -485,57 +836,72 @@ def build_system_prompt(model: dict, modules: list[str] | None = None) -> str:
 # ---------------------------------------------------------------------------
 def generate_sql_with_api(question: str, system_prompt: str, api_key: str,
                           model_name: str = CLAUDE_MODEL,
-                          conversation_history: list = None) -> str:
-    """Generate SQL using the Anthropic API. Supports conversation history for follow-ups."""
+                          conversation_history: list = None,
+                          max_history_turns: int = 10) -> dict:
+    """Generate SQL using the Anthropic API. Supports conversation history for follow-ups.
+    Includes retry logic for transient API errors (500, 529, etc.)."""
     import anthropic
-    try:
-        import httpx
-        http_client = httpx.Client(verify=False)
-        client = anthropic.Anthropic(api_key=api_key, http_client=http_client)
-    except ImportError:
-        client = anthropic.Anthropic(api_key=api_key)
+    import time as _time
+    client = anthropic.Anthropic(api_key=api_key)
 
     if conversation_history:
+        # Cap conversation history to prevent token overflow
+        if len(conversation_history) > max_history_turns * 2:
+            conversation_history = conversation_history[-(max_history_turns * 2):]
         messages = conversation_history + [{"role": "user", "content": question}]
     else:
         messages = [{"role": "user", "content": question}]
 
-    # Use prompt caching: the system prompt is identical on every call,
-    # so mark it with cache_control to avoid re-processing on subsequent requests.
-    # First call pays full price; subsequent calls reuse cached prompt at 90% discount
-    # and significantly faster time-to-first-token.
-    response = client.messages.create(
-        model=model_name,
-        max_tokens=MAX_TOKENS,
-        system=[
-            {
-                "type": "text",
-                "text": system_prompt,
-                "cache_control": {"type": "ephemeral"}
+    max_retries = 3
+    for attempt in range(max_retries):
+        try:
+            # Use prompt caching: the system prompt is identical on every call,
+            # so mark it with cache_control to avoid re-processing on subsequent requests.
+            # First call pays full price; subsequent calls reuse cached prompt at 90% discount
+            # and significantly faster time-to-first-token.
+            response = client.messages.create(
+                model=model_name,
+                max_tokens=MAX_TOKENS,
+                system=[
+                    {
+                        "type": "text",
+                        "text": system_prompt,
+                        "cache_control": {"type": "ephemeral"}
+                    }
+                ],
+                messages=messages
+            )
+            usage = {
+                "input_tokens": response.usage.input_tokens,
+                "output_tokens": response.usage.output_tokens,
             }
-        ],
-        messages=messages
-    )
-    usage = {
-        "input_tokens": response.usage.input_tokens,
-        "output_tokens": response.usage.output_tokens,
-    }
-    # Include cache stats when available
-    if hasattr(response.usage, "cache_creation_input_tokens"):
-        usage["cache_creation_input_tokens"] = response.usage.cache_creation_input_tokens or 0
-    if hasattr(response.usage, "cache_read_input_tokens"):
-        usage["cache_read_input_tokens"] = response.usage.cache_read_input_tokens or 0
-    return {
-        "text": response.content[0].text,
-        "usage": usage
-    }
+            # Include cache stats when available
+            if hasattr(response.usage, "cache_creation_input_tokens"):
+                usage["cache_creation_input_tokens"] = response.usage.cache_creation_input_tokens or 0
+            if hasattr(response.usage, "cache_read_input_tokens"):
+                usage["cache_read_input_tokens"] = response.usage.cache_read_input_tokens or 0
+            return {
+                "text": response.content[0].text,
+                "usage": usage
+            }
+        except anthropic.InternalServerError as e:
+            if attempt < max_retries - 1:
+                wait = 2 ** attempt  # 1s, 2s, 4s
+                _time.sleep(wait)
+                continue
+            raise
+        except anthropic.APIStatusError as e:
+            if e.status_code in (500, 502, 503, 529) and attempt < max_retries - 1:
+                wait = 2 ** attempt
+                _time.sleep(wait)
+                continue
+            raise
 
 
 # ---------------------------------------------------------------------------
 # SAP SQL to SQLite conversion
 # ---------------------------------------------------------------------------
 import sqlite3
-import re as _re
 
 
 def _find_balanced_args(s: str, start: int):
@@ -978,8 +1344,11 @@ def execute_on_test_db(sql: str, max_rows: int = 200) -> dict:
 class SAPHandler(BaseHTTPRequestHandler):
     """HTTP request handler for the SAP SQL Engine web UI."""
 
+    # These are set on the class before the server starts
     system_prompt = ""       # Full system prompt (fallback)
     semantic_model = None    # Raw model dict for per-request filtered prompts
+    bokg_catalog = None      # Extracted BOKG catalog for classification pipeline
+    knowledge_graph = None   # Knowledge graph (if available)
     config = {}
 
     def _send_json(self, data, status=200):
@@ -1009,8 +1378,52 @@ class SAPHandler(BaseHTTPRequestHandler):
                 "has_api": bool(api_key),
                 "model": self.config.get("model", CLAUDE_MODEL),
                 "key_preview": f"...{api_key[-6:]}" if len(api_key) > 6 else "",
-                "has_test_db": os.path.exists(TEST_DB_FILE)
+                "has_test_db": os.path.exists(TEST_DB_FILE),
+                "has_knowledge_graph": self.knowledge_graph is not None
             })
+
+        # ── Knowledge Graph API endpoints ──
+        elif self.path == "/api/kg/stats":
+            if not self.knowledge_graph:
+                self._send_json({"error": "Knowledge graph not available"})
+            else:
+                self._send_json(self.knowledge_graph.stats)
+
+        elif self.path == "/api/kg/graph":
+            if not self.knowledge_graph:
+                self._send_json({"nodes": [], "links": [], "stats": {}})
+            else:
+                self._send_json(self.knowledge_graph.to_d3_json())
+
+        elif self.path.startswith("/api/kg/concept/"):
+            concept_name = self.path.split("/api/kg/concept/")[1]
+            if not self.knowledge_graph:
+                self._send_json({"error": "Knowledge graph not available"})
+            else:
+                result = self.knowledge_graph.get_concept_schema(concept_name)
+                if result:
+                    self._send_json(result)
+                else:
+                    self._send_json({"error": f"Concept '{concept_name}' not found"})
+
+        elif self.path.startswith("/api/kg/table/"):
+            table_name = self.path.split("/api/kg/table/")[1]
+            if not self.knowledge_graph:
+                self._send_json({"error": "Knowledge graph not available"})
+            else:
+                result = self.knowledge_graph.get_table_context(table_name)
+                if result:
+                    self._send_json(result)
+                else:
+                    self._send_json({"error": f"Table '{table_name}' not found"})
+
+        elif self.path.startswith("/api/kg/module/"):
+            module_code = self.path.split("/api/kg/module/")[1].upper()
+            if not self.knowledge_graph:
+                self._send_json({"error": "Knowledge graph not available"})
+            else:
+                self._send_json(self.knowledge_graph.get_module_graph(module_code))
+
         else:
             self.send_error(404)
 
@@ -1018,7 +1431,50 @@ class SAPHandler(BaseHTTPRequestHandler):
         content_length = int(self.headers.get("Content-Length", 0))
         body = json.loads(self.rfile.read(content_length).decode()) if content_length else {}
 
-        if self.path == "/api/generate":
+        if self.path == "/api/classify":
+            # ── Conversational Disambiguation Pipeline ──
+            # Step 1: Classify intent, identify slots, surface BOKG suggestions
+            question = body.get("question", "")
+            conversation_history = body.get("history", [])
+            api_key = get_api_key(self.config)
+
+            if not api_key:
+                self._send_json({"status": "error",
+                                 "error": "No API key configured. Click the settings icon to add one."})
+                return
+
+            try:
+                if self.bokg_catalog:
+                    result = classify_intent(
+                        question, api_key, self.bokg_catalog,
+                        self.config.get("model", CLAUDE_MODEL),
+                        conversation_history=conversation_history
+                    )
+                else:
+                    # Fallback: no catalog, pass through
+                    result = {
+                        "confidence": "high",
+                        "disambiguation_needed": False,
+                        "modules": detect_modules(question),
+                    }
+
+                # Build the appropriate message based on confidence
+                if result.get("disambiguation_needed"):
+                    message = build_disambiguation_message(result)
+                else:
+                    message = build_confirmation_prompt(result)
+
+                self._send_json({
+                    "status": "ok",
+                    "classification": result,
+                    "message": message,
+                    "usage": result.pop("_usage", {}),
+                })
+            except Exception as e:
+                err_msg = str(e) or f"{type(e).__name__}: {repr(e)}"
+                self._send_json({"status": "error", "error": err_msg})
+
+        elif self.path == "/api/generate":
             question = body.get("question", "")
             conversation_history = body.get("history", [])
             api_key = get_api_key(self.config)
@@ -1032,8 +1488,12 @@ class SAPHandler(BaseHTTPRequestHandler):
                 # RAG-style module filtering: detect relevant modules and build
                 # a focused prompt containing only the schemas needed for this query.
                 # This simulates the production RAG pipeline and reduces token usage.
+                #
+                # If classification was done first and provided modules, use those.
+                # Otherwise fall back to keyword detection.
+                provided_modules = body.get("modules", None)
                 if self.semantic_model:
-                    detected = detect_modules(question)
+                    detected = provided_modules if provided_modules else detect_modules(question)
                     prompt = build_system_prompt(self.semantic_model, modules=detected)
                 else:
                     detected = []
@@ -1051,6 +1511,13 @@ class SAPHandler(BaseHTTPRequestHandler):
                 if detected:
                     response_data["modules_used"] = detected
                     response_data["prompt_chars"] = len(prompt)
+
+                # Pass through confidence metadata from classification step
+                confidence = body.get("confidence", None)
+                matched_pattern = body.get("matched_pattern", False)
+                if confidence:
+                    response_data["confidence"] = confidence
+                    response_data["matched_pattern"] = matched_pattern
                 self._send_json(response_data)
             except Exception as e:
                 err_msg = str(e) or f"{type(e).__name__}: {repr(e)}"
@@ -1119,9 +1586,104 @@ class SAPHandler(BaseHTTPRequestHandler):
                 return
             result = execute_on_test_db(sql)
             if "error" in result:
+                # Check if this is a governance/PII block
+                if "personally identifiable" in result.get("error", "").lower() or \
+                   "pii" in result.get("error", "").lower() or \
+                   "individual employee" in result.get("error", "").lower():
+                    result["governance_block"] = True
+                    result["governance_type"] = "PII Protection"
+                    result["governance_message"] = (
+                        "This query was blocked by the data governance policy. "
+                        "Queries that return personally identifiable employee "
+                        "information (names, individual salaries, benefits) are "
+                        "restricted. Aggregate queries (by department, grade, etc.) "
+                        "are permitted."
+                    )
                 self._send_json({"status": "error", **result})
             else:
                 self._send_json({"status": "ok", **result})
+
+        elif self.path == "/api/catalog":
+            # ── Query Catalog: return browsable BOKG questions and patterns ──
+            if not self.bokg_catalog:
+                self._send_json({"status": "error", "error": "No BOKG catalog loaded."})
+                return
+
+            catalog = self.bokg_catalog
+            catalog_data = {"modules": {}}
+
+            for mod_key, mod_info in catalog["modules"].items():
+                mod_entry = {
+                    "name": mod_info["name"],
+                    "description": mod_info["description"],
+                    "questions": [],
+                    "patterns": [],
+                }
+                for obj_name, obj_info in mod_info["objects"].items():
+                    for bq in obj_info.get("business_questions", []):
+                        mod_entry["questions"].append({
+                            "question": bq,
+                            "object": obj_name,
+                        })
+                catalog_data["modules"][mod_key] = mod_entry
+
+            # Add validated query patterns
+            for p in catalog.get("query_patterns", []):
+                mod = p.get("module", "")
+                if mod in catalog_data["modules"]:
+                    catalog_data["modules"][mod]["patterns"].append({
+                        "prompt": p["prompt"],
+                        "objects": p.get("objects", []),
+                        "validated": True,
+                    })
+
+            # Summary stats
+            total_q = sum(len(m["questions"]) for m in catalog_data["modules"].values())
+            total_p = sum(len(m["patterns"]) for m in catalog_data["modules"].values())
+            catalog_data["summary"] = {
+                "total_modules": len(catalog_data["modules"]),
+                "total_questions": total_q,
+                "total_patterns": total_p,
+            }
+
+            self._send_json({"status": "ok", "catalog": catalog_data})
+
+        # ── Knowledge Graph POST endpoints ──
+        elif self.path == "/api/kg/resolve":
+            if not self.knowledge_graph:
+                self._send_json({"error": "Knowledge graph not available"})
+                return
+            term = body.get("term", "")
+            if not term:
+                self._send_json({"error": "Missing 'term' parameter"})
+                return
+            results = self.knowledge_graph.resolve_nl_term(term)
+            self._send_json({"term": term, "results": results})
+
+        elif self.path == "/api/kg/resolve_question":
+            if not self.knowledge_graph:
+                self._send_json({"error": "Knowledge graph not available"})
+                return
+            question = body.get("question", "")
+            if not question:
+                self._send_json({"error": "Missing 'question' parameter"})
+                return
+            result = self.knowledge_graph.resolve_question(question)
+            self._send_json(result)
+
+        elif self.path == "/api/kg/join_path":
+            if not self.knowledge_graph:
+                self._send_json({"error": "Knowledge graph not available"})
+                return
+            table1 = body.get("table1", "")
+            table2 = body.get("table2", "")
+            if not table1 or not table2:
+                self._send_json({"error": "Missing 'table1' or 'table2'"})
+                return
+            path = self.knowledge_graph.find_join_path(table1, table2)
+            all_paths = self.knowledge_graph.find_all_join_paths(table1, table2)
+            self._send_json({"table1": table1, "table2": table2,
+                             "shortest_path": path, "all_paths": all_paths})
 
         else:
             self.send_error(404)
@@ -1139,7 +1701,7 @@ class SAPHandler(BaseHTTPRequestHandler):
 
 
 def run_server(system_prompt: str, config: dict, open_browser: bool = True,
-               semantic_model: dict = None):
+               semantic_model: dict = None, knowledge_graph=None):
     """Start the HTTP server and optionally open the browser."""
     port = int(os.environ.get("PORT", config.get("port", DEFAULT_PORT)))
     host = os.environ.get("HOST", "127.0.0.1")
@@ -1147,6 +1709,14 @@ def run_server(system_prompt: str, config: dict, open_browser: bool = True,
     SAPHandler.system_prompt = system_prompt
     SAPHandler.semantic_model = semantic_model
     SAPHandler.config = config
+    # Extract BOKG catalog for the classification pipeline
+    if semantic_model:
+        SAPHandler.bokg_catalog = extract_bokg_catalog(semantic_model)
+    else:
+        SAPHandler.bokg_catalog = None
+
+    # Knowledge graph
+    SAPHandler.knowledge_graph = knowledge_graph
 
     server = HTTPServer((host, port), SAPHandler)
     url = f"http://{host}:{port}"
@@ -1297,6 +1867,16 @@ def main():
 
     system_prompt = build_system_prompt(model)
 
+    # Try loading knowledge graph
+    knowledge_graph = None
+    try:
+        from sap_knowledge_graph import SAPKnowledgeGraph
+        kg_json_path = os.path.join(APP_DIR, "sap_knowledge_graph.json")
+        if os.path.exists(kg_json_path):
+            knowledge_graph = SAPKnowledgeGraph.load_from_json(kg_json_path)
+    except Exception:
+        pass
+
     if args.export_system_prompt:
         out = os.path.join(APP_DIR, "sap_system_prompt.txt")
         with open(out, "w") as f:
@@ -1322,7 +1902,7 @@ def main():
 
     elif args.server:
         run_server(system_prompt, config, open_browser=not args.no_browser,
-                   semantic_model=model)
+                   semantic_model=model, knowledge_graph=knowledge_graph)
 
     else:
         run_interactive(system_prompt, config, semantic_model=model)

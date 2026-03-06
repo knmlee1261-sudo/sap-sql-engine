@@ -1,0 +1,2129 @@
+{
+  "model_metadata": {
+    "version": "1.0.0",
+    "erp_system": "SAP ECC 6.0",
+    "description": "Semantic object model for SAP ECC 6.0 prompt-to-SQL generation",
+    "modules_covered": [
+      "BEN",
+      "CO",
+      "FI_AP",
+      "FI_AR",
+      "FI_GL",
+      "HR",
+      "MM",
+      "PAY",
+      "PM",
+      "SD"
+    ],
+    "last_updated": "2026-02-22"
+  },
+  "shared_reference_objects": {},
+  "cross_module_relationships": [
+    {
+      "from_module": "FI_GL",
+      "from_table": "BSEG",
+      "to_module": "FI_AP",
+      "to_table": "BSIK",
+      "description": "GL line items to AP open items by BUKRS,BELNR,GJAHR",
+      "join_condition": "BSEG.BUKRS=BSIK.BUKRS AND BSEG.BELNR=BSIK.BELNR AND BSEG.GJAHR=BSIK.GJAHR"
+    },
+    {
+      "from_module": "FI_GL",
+      "from_table": "BSEG",
+      "to_module": "FI_AR",
+      "to_table": "BSID",
+      "description": "GL line items to AR open items",
+      "join_condition": "BSEG.BUKRS=BSID.BUKRS AND BSEG.BELNR=BSID.BELNR AND BSEG.GJAHR=BSID.GJAHR"
+    },
+    {
+      "from_module": "FI_GL",
+      "from_table": "BSEG",
+      "to_module": "CO",
+      "to_table": "COEP",
+      "description": "GL postings to CO line items via cost object",
+      "join_condition": "BSEG.KOKRS=COEP.KOKRS AND BSEG.BELNR=COEP.BELNR"
+    },
+    {
+      "from_module": "FI_AP",
+      "from_table": "LFA1",
+      "to_module": "MM",
+      "to_table": "EKKO",
+      "description": "Vendors to Purchase Orders",
+      "join_condition": "LFA1.LIFNR=EKKO.LIFNR"
+    },
+    {
+      "from_module": "FI_AP",
+      "from_table": "RBKP",
+      "to_module": "MM",
+      "to_table": "EKPO",
+      "description": "Vendor invoices to PO line items",
+      "join_condition": "RBKP.LIFNR=EKKO.LIFNR AND RSEG.EBELN=EKPO.EBELN AND RSEG.EBELP=EKPO.EBELP"
+    },
+    {
+      "from_module": "FI_AP",
+      "from_table": "BSIK",
+      "to_module": "FI_GL",
+      "to_table": "SKB1",
+      "description": "AP open items to reconciliation GL accounts",
+      "join_condition": "BSIK.HKONT=SKB1.SAKNR AND BSIK.BUKRS=SKB1.BUKRS"
+    },
+    {
+      "from_module": "FI_AR",
+      "from_table": "KNA1",
+      "to_module": "SD",
+      "to_table": "VBAK",
+      "description": "Customers to Sales Orders",
+      "join_condition": "KNA1.KUNNR=VBAK.KUNNR"
+    },
+    {
+      "from_module": "FI_AR",
+      "from_table": "BSID",
+      "to_module": "FI_GL",
+      "to_table": "SKB1",
+      "description": "AR open items to reconciliation GL accounts",
+      "join_condition": "BSID.HKONT=SKB1.SAKNR AND BSID.BUKRS=SKB1.BUKRS"
+    },
+    {
+      "from_module": "CO",
+      "from_table": "CSKS",
+      "to_module": "HR",
+      "to_table": "PA0001",
+      "description": "Cost centers to Employee organizational assignments",
+      "join_condition": "CSKS.KOSTL=PA0001.KOSTL AND CSKS.BUKRS=PA0001.BUKRS"
+    },
+    {
+      "from_module": "CO",
+      "from_table": "COSP",
+      "to_module": "CO",
+      "to_table": "AUFK",
+      "description": "Cost totals to Internal Orders",
+      "join_condition": "COSP.OBJNR=AUFK.AUFNR"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "MARA",
+      "to_module": "SD",
+      "to_table": "VBAP",
+      "description": "Materials to Sales Order items",
+      "join_condition": "MARA.MATNR=VBAP.MATNR"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "MARA",
+      "to_module": "MM",
+      "to_table": "MARC",
+      "description": "Material master to plant data",
+      "join_condition": "MARA.MATNR=MARC.MATNR"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "EKKO",
+      "to_module": "MM",
+      "to_table": "EKBE",
+      "description": "PO headers to receipt history",
+      "join_condition": "EKKO.EBELN=EKBE.EBELN"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "EBAN",
+      "to_module": "MM",
+      "to_table": "EKKO",
+      "description": "Purchase requisitions to converted POs",
+      "join_condition": "EBAN.EBELN=EKKO.EBELN AND EBAN.EBELP=EKPO.EBELP"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "MARD",
+      "to_module": "SD",
+      "to_table": "VBAP",
+      "description": "Storage location stocks to sales order fulfillment",
+      "join_condition": "MARD.MATNR=VBAP.MATNR AND MARD.WERKS=VBAP.WERKS"
+    },
+    {
+      "from_module": "SD",
+      "from_table": "VBAK",
+      "to_module": "SD",
+      "to_table": "LIKP",
+      "description": "Sales orders to deliveries",
+      "join_condition": "VBAK.VBELN=LIKP.VBELN OR VBFA.VBELV=VBAK.VBELN AND VBFA.VBELN=LIKP.VBELN"
+    },
+    {
+      "from_module": "SD",
+      "from_table": "LIKP",
+      "to_module": "SD",
+      "to_table": "VBRK",
+      "description": "Deliveries to billing",
+      "join_condition": "LIKP.VBELN=VBFA.VBELV AND VBFA.VBELN=VBRK.VBELN"
+    },
+    {
+      "from_module": "SD",
+      "from_table": "VBAK",
+      "to_module": "FI_AR",
+      "to_table": "BSID",
+      "description": "Sales orders to AR invoices via billing",
+      "join_condition": "VBAK.KUNNR=BSID.KUNNR"
+    },
+    {
+      "from_module": "SD",
+      "from_table": "VBAP",
+      "to_module": "MM",
+      "to_table": "MARD",
+      "description": "Sales order items to storage location inventory",
+      "join_condition": "VBAP.MATNR=MARD.MATNR AND VBAP.WERKS=MARD.WERKS AND VBAP.LGORT=MARD.LGORT"
+    },
+    {
+      "from_module": "SD",
+      "from_table": "VBRK",
+      "to_module": "FI_GL",
+      "to_table": "BKPF",
+      "description": "Billing documents to GL documents",
+      "join_condition": "VBRK.XBLNR=BKPF.XBLNR"
+    },
+    {
+      "from_module": "FI_AP",
+      "from_table": "RBKP",
+      "to_module": "FI_GL",
+      "to_table": "BKPF",
+      "description": "AP invoices to GL documents",
+      "join_condition": "RBKP.XBLNR=BKPF.XBLNR"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "EKPO",
+      "to_module": "FI_AP",
+      "to_table": "RSEG",
+      "description": "PO items to invoice line items",
+      "join_condition": "EKPO.EBELN=RSEG.EBELN AND EKPO.EBELP=RSEG.EBELP"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "EKKO",
+      "to_module": "FI_GL",
+      "to_table": "BSEG",
+      "description": "PO reference to GL postings",
+      "join_condition": "EKKO.LIFNR=BSEG.LIFNR"
+    },
+    {
+      "from_module": "HR",
+      "from_table": "PA0001",
+      "to_module": "PAY",
+      "to_table": "HRPY_RGDIR",
+      "description": "Employees to payroll results",
+      "join_condition": "PA0001.PERNR=HRPY_RGDIR.PERNR"
+    },
+    {
+      "from_module": "HR",
+      "from_table": "PA0008",
+      "to_module": "HR",
+      "to_table": "PA0001",
+      "description": "Basic pay to organizational assignment",
+      "join_condition": "PA0008.PERNR=PA0001.PERNR"
+    },
+    {
+      "from_module": "HR",
+      "from_table": "PA0001",
+      "to_module": "CO",
+      "to_table": "CSKS",
+      "description": "Employee cost center to Cost Center master",
+      "join_condition": "PA0001.KOSTL=CSKS.KOSTL"
+    },
+    {
+      "from_module": "CO",
+      "from_table": "CSKS",
+      "to_module": "FI_GL",
+      "to_table": "BSEG",
+      "description": "Cost centers to GL line items",
+      "join_condition": "CSKS.KOSTL=BSEG.KOSTL"
+    },
+    {
+      "from_module": "HR",
+      "from_table": "PA0001",
+      "to_module": "BEN",
+      "to_table": "PA0167",
+      "description": "Employees to health plan enrollment",
+      "join_condition": "PA0001.PERNR=PA0167.PERNR"
+    },
+    {
+      "from_module": "HR",
+      "from_table": "PA0001",
+      "to_module": "BEN",
+      "to_table": "PA0168",
+      "description": "Employees to insurance plan enrollment",
+      "join_condition": "PA0001.PERNR=PA0168.PERNR"
+    },
+    {
+      "from_module": "HR",
+      "from_table": "PA0001",
+      "to_module": "BEN",
+      "to_table": "PA0169",
+      "description": "Employees to savings plan enrollment",
+      "join_condition": "PA0001.PERNR=PA0169.PERNR"
+    },
+    {
+      "from_module": "FI_AP",
+      "from_table": "REGUH",
+      "to_module": "FI_GL",
+      "to_table": "BSEG",
+      "description": "Vendor payments to GL postings",
+      "join_condition": "REGUH.LIFNR=BSEG.LIFNR"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "MARA",
+      "to_module": "MM",
+      "to_table": "MARD",
+      "description": "Materials to storage location inventory",
+      "join_condition": "MARA.MATNR=MARD.MATNR"
+    },
+    {
+      "from_module": "FI_AR",
+      "from_table": "KNB1",
+      "to_module": "FI_GL",
+      "to_table": "SKB1",
+      "description": "Customer company codes to GL reconciliation accounts",
+      "join_condition": "KNB1.AKONT=SKB1.SAKNR AND KNB1.BUKRS=SKB1.BUKRS"
+    },
+    {
+      "from_module": "PM",
+      "from_table": "AFIH",
+      "to_module": "PM",
+      "to_table": "EQUI",
+      "description": "Maintenance order to equipment master via equipment number",
+      "join_condition": "AFIH.EQUNR = EQUI.EQUNR"
+    },
+    {
+      "from_module": "PM",
+      "from_table": "AFIH",
+      "to_module": "PM",
+      "to_table": "IFLOT",
+      "description": "Maintenance order to functional location",
+      "join_condition": "AFIH.TPLNR = IFLOT.TPLNR"
+    },
+    {
+      "from_module": "PM",
+      "from_table": "EQUI",
+      "to_module": "PM",
+      "to_table": "IFLOT",
+      "description": "Equipment installed at functional location",
+      "join_condition": "EQUI.TPLNR = IFLOT.TPLNR"
+    },
+    {
+      "from_module": "PM",
+      "from_table": "AFKO",
+      "to_module": "PM",
+      "to_table": "AFVC",
+      "description": "Order routing header to operations via routing number",
+      "join_condition": "AFKO.AUFPL = AFVC.AUFPL"
+    },
+    {
+      "from_module": "PM",
+      "from_table": "AFRU",
+      "to_module": "HR",
+      "to_table": "PA0001",
+      "description": "Confirmation employee to HR master data",
+      "join_condition": "AFRU.PERNR = PA0001.PERNR"
+    },
+    {
+      "from_module": "PM",
+      "from_table": "AUFK",
+      "to_module": "CO",
+      "to_table": "CSKS",
+      "description": "PM order cost center to cost center master",
+      "join_condition": "AUFK.KOSTV = CSKS.KOSTL AND AUFK.KOKRS = CSKS.KOKRS"
+    },
+    {
+      "from_module": "PM",
+      "from_table": "AUFK",
+      "to_module": "CO",
+      "to_table": "COEP",
+      "description": "PM order actual costs in CO line items",
+      "join_condition": "AUFK.OBJNR = COEP.OBJNR"
+    },
+    {
+      "from_module": "HR",
+      "from_table": "PA0001",
+      "to_module": "HR",
+      "to_table": "HRP1000",
+      "description": "Employee position to position description",
+      "join_condition": "PA0001.STELL = HRP1000.OBJID AND HRP1000.OTYPE = 'S' AND HRP1000.LANGU = 'E'"
+    },
+    {
+      "from_module": "HR",
+      "from_table": "PA0001",
+      "to_module": "HR",
+      "to_table": "HRP1000",
+      "description": "Employee job to job description",
+      "join_condition": "PA0001.PLANS = HRP1000.OBJID AND HRP1000.OTYPE = 'C' AND HRP1000.LANGU = 'E'"
+    },
+    {
+      "from_module": "HR",
+      "from_table": "PA0001",
+      "to_module": "HR",
+      "to_table": "HRP1000",
+      "description": "Employee org unit to org unit description",
+      "join_condition": "PA0001.ORGEH = HRP1000.OBJID AND HRP1000.OTYPE = 'O' AND HRP1000.LANGU = 'E'"
+    },
+    {
+      "from_module": "FI_GL",
+      "from_table": "BSEG",
+      "to_module": "FI_GL",
+      "to_table": "SKAT",
+      "description": "BSEG to SKAT join from SAP view FB03",
+      "join_condition": "SKAT.SAKNR = BSEG.HKONT AND SKAT.MANDT = BSEG.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_AP",
+      "from_table": "BSAK",
+      "to_module": "FI_AP",
+      "to_table": "LFA1",
+      "description": "BSAK to LFA1 join from SAP view FBL1N",
+      "join_condition": "BSAK.LIFNR = LFA1.LIFNR",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_AP",
+      "from_table": "BSAK",
+      "to_module": "FI_GL",
+      "to_table": "T001",
+      "description": "BSAK to T001 join from SAP view FBL1N",
+      "join_condition": "BSAK.BUKRS = T001.BUKRS",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_AP",
+      "from_table": "BSIK",
+      "to_module": "FI_AP",
+      "to_table": "LFA1",
+      "description": "BSIK to LFA1 join from SAP view FBL1N",
+      "join_condition": "BSIK.LIFNR = LFA1.LIFNR",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_AP",
+      "from_table": "BSIK",
+      "to_module": "FI_GL",
+      "to_table": "T001",
+      "description": "BSIK to T001 join from SAP view FBL1N",
+      "join_condition": "BSIK.BUKRS = T001.BUKRS",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_AR",
+      "from_table": "BSID",
+      "to_module": "FI_AR",
+      "to_table": "KNA1",
+      "description": "BSID to KNA1 join from SAP view FBL5N",
+      "join_condition": "BSID.KUNNR = KNA1.KUNNR",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_AR",
+      "from_table": "BSAD",
+      "to_module": "FI_AR",
+      "to_table": "KNA1",
+      "description": "BSAD to KNA1 join from SAP view FBL5N",
+      "join_condition": "BSAD.KUNNR = KNA1.KUNNR",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_GL",
+      "from_table": "GLT0",
+      "to_module": "FI_GL",
+      "to_table": "SKAT",
+      "description": "GLT0 to SKAT join from SAP view S_ALR_87012277",
+      "join_condition": "SKAT.SAKNR = GLT0.RACCT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "MAKT",
+      "to_module": "MM",
+      "to_table": "MARA",
+      "description": "MAKT to MARA join from SAP view MM60",
+      "join_condition": "MARA.MATNR = MAKT.MATNR AND MAKT.MANDT = MARA.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "MARA",
+      "to_module": "MM",
+      "to_table": "MBEW",
+      "description": "MARA to MBEW join from SAP view MM60",
+      "join_condition": "MARA.MATNR = MBEW.MATNR AND MBEW.MANDT = MARA.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "EKKO",
+      "to_module": "MM",
+      "to_table": "EKPO",
+      "description": "EKKO to EKPO join from SAP view ME2M",
+      "join_condition": "EKKO.EBELN = EKPO.EBELN AND EKKO.MANDT = EKPO.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "EKET",
+      "to_module": "MM",
+      "to_table": "EKPO",
+      "description": "EKET to EKPO join from SAP view ME2M",
+      "join_condition": "EKPO.EBELN = EKET.EBELN AND EKPO.EBELP = EKET.EBELP AND EKPO.MANDT = EKET.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "EKBE",
+      "to_module": "MM",
+      "to_table": "EKPO",
+      "description": "EKBE to EKPO join from SAP view ME2M",
+      "join_condition": "EKPO.EBELN = EKBE.EBELN AND EKPO.EBELP = EKBE.EBELP AND EKPO.MANDT = EKBE.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_AR",
+      "from_table": "KNA1",
+      "to_module": "FI_AR",
+      "to_table": "KNBK",
+      "description": "KNA1 to KNBK join from SAP view FD03",
+      "join_condition": "KNA1.KUNNR = KNBK.KUNNR AND KNA1.MANDT = KNBK.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_AP",
+      "from_table": "LFA1",
+      "to_module": "FI_AP",
+      "to_table": "LFB1",
+      "description": "LFA1 to LFB1 join from SAP view FK03",
+      "join_condition": "LFA1.LIFNR = LFB1.LIFNR AND LFA1.MANDT = LFB1.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_AP",
+      "from_table": "LFB1",
+      "to_module": "FI_AP",
+      "to_table": "LFBK",
+      "description": "LFB1 to LFBK join from SAP view FK03",
+      "join_condition": "LFB1.LIFNR = LFBK.LIFNR AND LFBK.MANDT = LFB1.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_GL",
+      "from_table": "BNKA",
+      "to_module": "FI_AP",
+      "to_table": "LFBK",
+      "description": "BNKA to LFBK join from SAP view FK03",
+      "join_condition": "LFBK.BANKS = BNKA.BANKS AND LFBK.BANKL = BNKA.BANKL AND LFBK.MANDT = BNKA.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_AP",
+      "from_table": "LFA1",
+      "to_module": "FI_AP",
+      "to_table": "LFBW",
+      "description": "LFA1 to LFBW join from SAP view FK03",
+      "join_condition": "LFA1.LIFNR = LFBW.LIFNR AND LFBW.MANDT = LFA1.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "SD",
+      "from_table": "VBRK",
+      "to_module": "SD",
+      "to_table": "VBRP",
+      "description": "VBRK to VBRP join from SAP view VF05",
+      "join_condition": "VBRK.VBELN = VBRP.VBELN",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_AR",
+      "from_table": "KNA1",
+      "to_module": "SD",
+      "to_table": "VBRK",
+      "description": "KNA1 to VBRK join from SAP view VF05",
+      "join_condition": "KNA1.KUNNR = VBRK.KUNRG",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "T001W",
+      "to_module": "SD",
+      "to_table": "VBRP",
+      "description": "T001W to VBRP join from SAP view VF05",
+      "join_condition": "VBRP.WERKS = T001W.WERKS",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "SD",
+      "from_table": "VBRK",
+      "to_module": "SD",
+      "to_table": "VBUK",
+      "description": "VBRK to VBUK join from SAP view VF05",
+      "join_condition": "VBRK.VBELN = VBUK.VBELN",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_GL",
+      "from_table": "FAGLFLEXA",
+      "to_module": "FI_GL",
+      "to_table": "T001",
+      "description": "FAGLFLEXA to T001 join from SAP view \"F.01_VIEW1\"",
+      "join_condition": "T001.BUKRS = FAGLFLEXA.RBUKRS",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_GL",
+      "from_table": "FAGL_011ZC",
+      "to_module": "FI_GL",
+      "to_table": "T001",
+      "description": "FAGL_011ZC to T001 join from SAP view \"F.01_VIEW1\"",
+      "join_condition": "T001.KTOPL = FAGL_011ZC.KTOPL",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_GL",
+      "from_table": "FAGLFLEXA",
+      "to_module": "FI_GL",
+      "to_table": "SKAT",
+      "description": "FAGLFLEXA to SKAT join from SAP view \"F.01_VIEW1\"",
+      "join_condition": "FAGLFLEXA.RACCT = SKAT.SAKNR",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_GL",
+      "from_table": "SKAT",
+      "to_module": "FI_GL",
+      "to_table": "T001",
+      "description": "SKAT to T001 join from SAP view \"F.01_VIEW1\"",
+      "join_condition": "T001.KTOPL = SKAT.KTOPL",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "EINA",
+      "to_module": "FI_AP",
+      "to_table": "LFA1",
+      "description": "EINA to LFA1 join from SAP view ME1L",
+      "join_condition": "EINA.LIFNR = LFA1.LIFNR AND EINA.MANDT = LFA1.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "EINA",
+      "to_module": "MM",
+      "to_table": "EINE",
+      "description": "EINA to EINE join from SAP view ME1L",
+      "join_condition": "EINA.INFNR = EINE.INFNR AND EINE.MANDT = EINA.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "EINA",
+      "to_module": "MM",
+      "to_table": "MAKT",
+      "description": "EINA to MAKT join from SAP view ME1L",
+      "join_condition": "EINA.MATNR = MAKT.MATNR AND EINA.MANDT = MAKT.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_GL",
+      "from_table": "ADRC",
+      "to_module": "FI_AP",
+      "to_table": "LFA1",
+      "description": "ADRC to LFA1 join from SAP view MK03",
+      "join_condition": "LFA1.LIFNR = ADRC.ADDRNUMBER",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "EKPO",
+      "to_module": "MM",
+      "to_table": "MAKT",
+      "description": "EKPO to MAKT join from SAP view ME80FN",
+      "join_condition": "MAKT.MATNR = EKPO.MATNR AND MAKT.MANDT = EKPO.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "EKKO",
+      "to_module": "MM",
+      "to_table": "MAKT",
+      "description": "EKKO to MAKT join from SAP view ME80FN",
+      "join_condition": "MAKT.SPRAS = EKKO.SPRAS",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_AP",
+      "from_table": "LFB1",
+      "to_module": "FI_AP",
+      "to_table": "LFC1",
+      "description": "LFB1 to LFC1 join from SAP view S_ALR_87012082_VIEW1",
+      "join_condition": "LFC1.BUKRS = LFB1.BUKRS AND LFC1.LIFNR = LFB1.LIFNR AND LFC1.MANDT = LFB1.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_AP",
+      "from_table": "LFA1",
+      "to_module": "FI_AP",
+      "to_table": "LFC1",
+      "description": "LFA1 to LFC1 join from SAP view S_ALR_87012082_VIEW1",
+      "join_condition": "LFC1.LIFNR = LFA1.LIFNR AND LFC1.MANDT = LFA1.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_AR",
+      "from_table": "KNB1",
+      "to_module": "FI_AR",
+      "to_table": "KNC1",
+      "description": "KNB1 to KNC1 join from SAP view S_ALR_87012712",
+      "join_condition": "KNB1.KUNNR = KNC1.KUNNR AND KNC1.BUKRS = KNB1.BUKRS",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_AR",
+      "from_table": "KNA1",
+      "to_module": "FI_AR",
+      "to_table": "KNC1",
+      "description": "KNA1 to KNC1 join from SAP view S_ALR_87012712",
+      "join_condition": "KNA1.KUNNR = KNC1.KUNNR",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_AR",
+      "from_table": "KNB1",
+      "to_module": "FI_GL",
+      "to_table": "SKAT",
+      "description": "KNB1 to SKAT join from SAP view S_ALR_87012712",
+      "join_condition": "KNB1.AKONT = SKAT.SAKNR",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "SD",
+      "from_table": "LIKP",
+      "to_module": "SD",
+      "to_table": "LIPS",
+      "description": "LIKP to LIPS join from SAP view \"VL06O/I\"",
+      "join_condition": "LIKP.VBELN = LIPS.VBELN AND LIKP.MANDT = LIPS.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_AR",
+      "from_table": "KNA1",
+      "to_module": "SD",
+      "to_table": "LIKP",
+      "description": "KNA1 to LIKP join from SAP view \"VL06O/I\"",
+      "join_condition": "LIKP.KUNAG = KNA1.KUNNR AND LIKP.MANDT = KNA1.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "SD",
+      "from_table": "VBAK",
+      "to_module": "SD",
+      "to_table": "VBAP",
+      "description": "VBAK to VBAP join from SAP view VA35N_MVIEW",
+      "join_condition": "VBAK.MANDT = VBAP.MANDT AND VBAK.VBELN = VBAP.VBELN",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_AP",
+      "from_table": "BSAK",
+      "to_module": "FI_GL",
+      "to_table": "SKAT",
+      "description": "BSAK to SKAT join from SAP view S_ALR_87012284_VIEW1",
+      "join_condition": "SKAT.MANDT = BSAK.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "PM",
+      "from_table": "EQKT",
+      "to_module": "PM",
+      "to_table": "EQUI",
+      "description": "EQKT to EQUI join from SAP view IE03",
+      "join_condition": "EQUI.EQUNR = EQKT.EQUNR AND EQUI.MANDT = EQKT.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "PM",
+      "from_table": "IFLOT",
+      "to_module": "PM",
+      "to_table": "IFLOTX",
+      "description": "IFLOT to IFLOTX join from SAP view IE03",
+      "join_condition": "IFLOT.TPLNR = IFLOTX.TPLNR AND IFLOT.MANDT = IFLOTX.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "PM",
+      "from_table": "MPLA",
+      "to_module": "PM",
+      "to_table": "MPOS",
+      "description": "MPLA to MPOS join from SAP view IP03",
+      "join_condition": "MPLA.WARPL = MPOS.WARPL AND MPLA.MANDT = MPOS.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "PM",
+      "from_table": "MPOS",
+      "to_module": "PM",
+      "to_table": "PLKO",
+      "description": "MPOS to PLKO join from SAP view IP03",
+      "join_condition": "MPOS.PLNTY = PLKO.PLNTY AND MPOS.PLNNR = PLKO.PLNNR AND MPOS.PLNAL = PLKO.PLNAL",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "PM",
+      "from_table": "ILOA",
+      "to_module": "PM",
+      "to_table": "MPOS",
+      "description": "ILOA to MPOS join from SAP view IP03",
+      "join_condition": "MPOS.ILOAN = ILOA.ILOAN AND MPOS.MANDT = ILOA.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_GL",
+      "from_table": "ADRC",
+      "to_module": "FI_AR",
+      "to_table": "KNA1",
+      "description": "ADRC to KNA1 join from SAP view XD03",
+      "join_condition": "KNA1.ADRNR = ADRC.ADDRNUMBER",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_GL",
+      "from_table": "ADR6",
+      "to_module": "FI_AR",
+      "to_table": "KNA1",
+      "description": "ADR6 to KNA1 join from SAP view XD03",
+      "join_condition": "KNA1.ADRNR = ADR6.ADDRNUMBER",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_AR",
+      "from_table": "KNA1",
+      "to_module": "FI_AR",
+      "to_table": "KNVK",
+      "description": "KNA1 to KNVK join from SAP view XD03",
+      "join_condition": "KNA1.KUNNR = KNVK.KUNNR AND KNA1.MANDT = KNVK.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_GL",
+      "from_table": "BNKA",
+      "to_module": "FI_AR",
+      "to_table": "KNBK",
+      "description": "BNKA to KNBK join from SAP view XD03",
+      "join_condition": "KNBK.BANKS = BNKA.BANKS AND KNBK.BANKL = BNKA.BANKL",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "CO",
+      "from_table": "COEP",
+      "to_module": "CO",
+      "to_table": "TKA01",
+      "description": "COEP to TKA01 join from SAP view KSB1",
+      "join_condition": "COEP.KOKRS = TKA01.KOKRS",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "CO",
+      "from_table": "COBK",
+      "to_module": "CO",
+      "to_table": "COEP",
+      "description": "COBK to COEP join from SAP view KSB1",
+      "join_condition": "COEP.KOKRS = COBK.KOKRS AND COEP.BELNR = COBK.BELNR AND COEP.MANDT = COBK.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "CO",
+      "from_table": "COEP",
+      "to_module": "MM",
+      "to_table": "MAKT",
+      "description": "COEP to MAKT join from SAP view KSB1",
+      "join_condition": "COEP.MATNR = MAKT.MATNR",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_GL",
+      "from_table": "SKAT",
+      "to_module": "CO",
+      "to_table": "TKA01",
+      "description": "SKAT to TKA01 join from SAP view KSB1",
+      "join_condition": "SKAT.KTOPL = TKA01.KTOPL",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "CO",
+      "from_table": "COEP",
+      "to_module": "FI_GL",
+      "to_table": "SKAT",
+      "description": "COEP to SKAT join from SAP view KSB1",
+      "join_condition": "SKAT.SAKNR = COEP.GKONT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "MAKT",
+      "to_module": "MM",
+      "to_table": "MARD",
+      "description": "MAKT to MARD join from SAP view MMBE",
+      "join_condition": "MAKT.MATNR = MARD.MATNR",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "MARD",
+      "to_module": "MM",
+      "to_table": "T001W",
+      "description": "MARD to T001W join from SAP view MMBE",
+      "join_condition": "T001W.WERKS = MARD.WERKS",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "MARD",
+      "to_module": "MM",
+      "to_table": "T001L",
+      "description": "MARD to T001L join from SAP view MMBE",
+      "join_condition": "T001L.LGORT = MARD.LGORT AND T001L.WERKS = MARD.WERKS",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "EKPO",
+      "to_module": "MM",
+      "to_table": "MARA",
+      "description": "EKPO to MARA join from SAP view MMBE",
+      "join_condition": "EKPO.MATNR = MARA.MATNR",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "CATSDB",
+      "to_module": "HR",
+      "to_table": "PA0002",
+      "description": "CATSDB to PA0002 join from SAP view CADO",
+      "join_condition": "PA0002.PERNR = CATSDB.PERNR",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "CO",
+      "from_table": "CSKS",
+      "to_module": "CO",
+      "to_table": "CSKT",
+      "description": "CSKS to CSKT join from SAP view KS03",
+      "join_condition": "CSKS.KOKRS = CSKT.KOKRS AND CSKS.KOSTL = CSKT.KOSTL AND CSKS.MANDT = CSKT.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "SD",
+      "from_table": "VBAP",
+      "to_module": "SD",
+      "to_table": "VBEP",
+      "description": "VBAP to VBEP join from SAP view VA05",
+      "join_condition": "VBEP.VBELN = VBAP.VBELN AND VBEP.POSNR = VBAP.POSNR AND VBEP.MANDT = VBAP.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "SD",
+      "from_table": "VBAP",
+      "to_module": "SD",
+      "to_table": "VBKD",
+      "description": "VBAP to VBKD join from SAP view VA43_MVIEW_MAIN1",
+      "join_condition": "VBAP.MANDT = VBKD.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "SD",
+      "from_table": "VBAK",
+      "to_module": "SD",
+      "to_table": "VBKD",
+      "description": "VBAK to VBKD join from SAP view VA43_MVIEW_MAIN1",
+      "join_condition": "VBAK.VBELN = VBKD.VBELN",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_GL",
+      "from_table": "SKA1",
+      "to_module": "FI_GL",
+      "to_table": "SKAT",
+      "description": "SKA1 to SKAT join from SAP view \"F.10\"",
+      "join_condition": "SKAT.SAKNR = SKA1.SAKNR AND SKAT.KTOPL = SKA1.KTOPL AND SKAT.MANDT = SKA1.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "EBAN",
+      "to_module": "MM",
+      "to_table": "EBKN",
+      "description": "EBAN to EBKN join from SAP view ME5A_MVIEW",
+      "join_condition": "EBAN.BANFN = EBKN.BANFN AND EBAN.BNFPO = EBKN.BNFPO",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_GL",
+      "from_table": "SKB1",
+      "to_module": "FI_GL",
+      "to_table": "T001",
+      "description": "SKB1 to T001 join from SAP view \"FS03-4\"",
+      "join_condition": "T001.BUKRS = SKB1.BUKRS",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_GL",
+      "from_table": "SKAT",
+      "to_module": "FI_GL",
+      "to_table": "SKB1",
+      "description": "SKAT to SKB1 join from SAP view \"FS03-4\"",
+      "join_condition": "SKAT.SAKNR = SKB1.SAKNR",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_GL",
+      "from_table": "SKA1",
+      "to_module": "FI_GL",
+      "to_table": "SKB1",
+      "description": "SKA1 to SKB1 join from SAP view \"FS03-4\"",
+      "join_condition": "SKA1.SAKNR = SKB1.SAKNR",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_GL",
+      "from_table": "SKA1",
+      "to_module": "FI_GL",
+      "to_table": "T001",
+      "description": "SKA1 to T001 join from SAP view \"FS03-4\"",
+      "join_condition": "SKA1.KTOPL = T001.KTOPL",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_AP",
+      "from_table": "RBKP",
+      "to_module": "FI_GL",
+      "to_table": "T001",
+      "description": "RBKP to T001 join from SAP view MIR4_1",
+      "join_condition": "T001.BUKRS = RBKP.BUKRS",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_AP",
+      "from_table": "LFA1",
+      "to_module": "FI_AP",
+      "to_table": "RBKP",
+      "description": "LFA1 to RBKP join from SAP view MIR4_1",
+      "join_condition": "LFA1.LIFNR = RBKP.LIFNR",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "CO",
+      "from_table": "CSKB",
+      "to_module": "CO",
+      "to_table": "TKA01",
+      "description": "CSKB to TKA01 join from SAP view KA03_MVIEW",
+      "join_condition": "CSKB.MANDT = TKA01.MANDT AND TKA01.KOKRS = CSKB.KOKRS",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "PM",
+      "from_table": "QALS",
+      "to_module": "MM",
+      "to_table": "T001W",
+      "description": "QALS to T001W join from SAP view \"QA03/QA33-1\"",
+      "join_condition": "T001W.WERKS = QALS.WERK AND T001W.MANDT = QALS.MANDANT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "MAKT",
+      "to_module": "PM",
+      "to_table": "QALS",
+      "description": "MAKT to QALS join from SAP view \"QA03/QA33-1\"",
+      "join_condition": "MAKT.MATNR = QALS.SELMATNR AND MAKT.MANDT = QALS.MANDANT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_AP",
+      "from_table": "LFA1",
+      "to_module": "PM",
+      "to_table": "QALS",
+      "description": "LFA1 to QALS join from SAP view \"QA03/QA33-2\"",
+      "join_condition": "LFA1.LIFNR = QALS.LIFNR AND LFA1.MANDT = QALS.MANDANT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "MAST",
+      "to_module": "MM",
+      "to_table": "STPO",
+      "description": "MAST to STPO join from SAP view Cs03_Main",
+      "join_condition": "MAST.STLNR = STPO.STLNR",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "MAKT",
+      "to_module": "MM",
+      "to_table": "MAST",
+      "description": "MAKT to MAST join from SAP view Cs03_Main",
+      "join_condition": "MAST.MATNR = MAKT.MATNR",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "MAST",
+      "to_module": "MM",
+      "to_table": "STKO",
+      "description": "MAST to STKO join from SAP view Cs03_Main",
+      "join_condition": "MAST.STLNR = STKO.STLNR",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_GL",
+      "from_table": "BSAS",
+      "to_module": "FI_GL",
+      "to_table": "SKAT",
+      "description": "BSAS to SKAT join from SAP view FAGLL03_V2",
+      "join_condition": "BSAS.HKONT = SKAT.SAKNR",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "MAKT",
+      "to_module": "MM",
+      "to_table": "MSEG",
+      "description": "MAKT to MSEG join from SAP view FAGLL03_V2",
+      "join_condition": "MSEG.MATNR = MAKT.MATNR",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_GL",
+      "from_table": "SKB1",
+      "to_module": "CO",
+      "to_table": "TKA02",
+      "description": "SKB1 to TKA02 join from SAP view FS00_MVIEW",
+      "join_condition": "TKA02.BUKRS = SKB1.BUKRS AND TKA02.MANDT = SKB1.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "PM",
+      "from_table": "AFIH",
+      "to_module": "PM",
+      "to_table": "AUFK",
+      "description": "AFIH to AUFK join from SAP view IW33_2",
+      "join_condition": "AUFK.AUFNR = AFIH.AUFNR",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "PM",
+      "from_table": "AFKO",
+      "to_module": "PM",
+      "to_table": "AUFK",
+      "description": "AFKO to AUFK join from SAP view IW33_2",
+      "join_condition": "AUFK.AUFNR = AFKO.AUFNR",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "PM",
+      "from_table": "AFIH",
+      "to_module": "PM",
+      "to_table": "ILOA",
+      "description": "AFIH to ILOA join from SAP view IW33_2",
+      "join_condition": "AFIH.ILOAN = ILOA.ILOAN",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "PM",
+      "from_table": "AFVC",
+      "to_module": "PM",
+      "to_table": "AFVU",
+      "description": "AFVC to AFVU join from SAP view IW33_4",
+      "join_condition": "AFVU.AUFPL = AFVC.AUFPL AND AFVC.APLZL = AFVU.APLZL",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "PM",
+      "from_table": "AFVC",
+      "to_module": "PM",
+      "to_table": "AFVV",
+      "description": "AFVC to AFVV join from SAP view IW33_4",
+      "join_condition": "AFVV.AUFPL = AFVC.AUFPL AND AFVV.APLZL = AFVC.APLZL",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "CO",
+      "from_table": "CEPC",
+      "to_module": "CO",
+      "to_table": "TKA01",
+      "description": "CEPC to TKA01 join from SAP view \"KE53-1\"",
+      "join_condition": "TKA01.KOKRS = CEPC.KOKRS AND TKA01.MANDT = CEPC.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "CO",
+      "from_table": "CEPC",
+      "to_module": "CO",
+      "to_table": "CEPCT",
+      "description": "CEPC to CEPCT join from SAP view \"KE53-1\"",
+      "join_condition": "CEPCT.PRCTR = CEPC.PRCTR AND CEPCT.KOKRS = CEPC.KOKRS AND CEPCT.MANDT = CEPC.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "SD",
+      "from_table": "VBAK",
+      "to_module": "SD",
+      "to_table": "VBEP",
+      "description": "VBAK to VBEP join from SAP view VA23_HEADER",
+      "join_condition": "VBAK.VBELN = VBEP.VBELN AND VBAK.MANDT = VBEP.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "SD",
+      "from_table": "VBAK",
+      "to_module": "SD",
+      "to_table": "VBFA",
+      "description": "VBAK to VBFA join from SAP view VA23_HEADER",
+      "join_condition": "VBAK.VGBEL = VBFA.VBELN AND VBAK.VBTYP = VBFA.VBTYP_N AND VBAK.VBELN = VBFA.VBELV",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_GL",
+      "from_table": "ADR6",
+      "to_module": "FI_AP",
+      "to_table": "LFA1",
+      "description": "ADR6 to LFA1 join from SAP view XK03_V1",
+      "join_condition": "LFA1.ADRNR = ADR6.ADDRNUMBER",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_AP",
+      "from_table": "LFA1",
+      "to_module": "FI_AP",
+      "to_table": "LFM1",
+      "description": "LFA1 to LFM1 join from SAP view XK03_V1",
+      "join_condition": "LFA1.LIFNR = LFM1.LIFNR AND LFA1.MANDT = LFM1.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_AP",
+      "from_table": "LFA1",
+      "to_module": "FI_AP",
+      "to_table": "LFBK",
+      "description": "LFA1 to LFBK join from SAP view XK03_V3",
+      "join_condition": "LFA1.LIFNR = LFBK.LIFNR AND LFA1.MANDT = LFBK.MANDT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_GL",
+      "from_table": "FAGLFLEXT",
+      "to_module": "FI_GL",
+      "to_table": "SKB1",
+      "description": "FAGLFLEXT to SKB1 join from SAP view \"F.08\"",
+      "join_condition": "FAGLFLEXT.RACCT = SKB1.SAKNR",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_GL",
+      "from_table": "FAGLFLEXT",
+      "to_module": "FI_GL",
+      "to_table": "SKA1",
+      "description": "FAGLFLEXT to SKA1 join from SAP view \"F.08\"",
+      "join_condition": "SKA1.MANDT = FAGLFLEXT.RCLNT",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_GL",
+      "from_table": "BKPF",
+      "to_module": "FI_GL",
+      "to_table": "T001",
+      "description": "BKPF to T001 join from SAP view FBL1N_C1_VW1",
+      "join_condition": "BKPF.BUKRS = T001.BUKRS",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "FI_AP",
+      "from_table": "BSIK",
+      "to_module": "FI_GL",
+      "to_table": "SKAT",
+      "description": "BSIK to SKAT join from SAP view FBL1N_C1_VW1",
+      "join_condition": "BSIK.SAKNR = SKAT.SAKNR",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "EKKO",
+      "to_module": "MM",
+      "to_table": "T001W",
+      "description": "EKKO to T001W join from SAP view ME2N",
+      "join_condition": "T001W.WERKS = EKKO.RESWK",
+      "relationship_type": "many_to_one"
+    },
+    {
+      "from_module": "SD",
+      "from_table": "VBAK",
+      "to_module": "FI_AR",
+      "to_table": "BSID",
+      "description": "Sales orders to AR invoices by customer and document linkage",
+      "join_condition": "VBAK.KUNNR = BSID.KUNNR"
+    },
+    {
+      "from_module": "MM",
+      "from_table": "EKKO",
+      "to_module": "FI_AP",
+      "to_table": "BSIK",
+      "description": "Purchase orders to AP open items by vendor",
+      "join_condition": "EKKO.LIFNR = BSIK.LIFNR"
+    },
+    {
+      "from_module": "CO",
+      "from_table": "COEP",
+      "to_module": "FI_GL",
+      "to_table": "BSEG",
+      "description": "Cost postings to GL documents by document number",
+      "join_condition": "COEP.BELNR = BSEG.BELNR AND COEP.GJAHR = BSEG.GJAHR"
+    }
+  ],
+  "nl_query_patterns": [
+    {
+      "pattern_name": "trial_balance",
+      "description": "Balance sheet and trial balance queries",
+      "primary_module": "FI_GL",
+      "tables": [
+        "GLT0",
+        "SKB1"
+      ],
+      "business_context": "IMPORTANT: XBILK (balance sheet indicator) is on SKA1, NOT on SKAT or SKB1. TXT50/TXT20 (account descriptions) are on SKAT. WAERS (currency) is on SKB1. Always use the correct table alias.",
+      "example_sql_structure": "SELECT \n    g.RACCT AS gl_account,\n    t.TXT50 AS account_description,\n    t.TXT20 AS short_description,\n    a.XBILK AS balance_sheet_indicator,\n    g.DRCRK AS debit_credit_indicator,\n    g.HSLVT AS opening_balance,\n    COALESCE(g.HSL01, 0) + COALESCE(g.HSL02, 0) + COALESCE(g.HSL03, 0) + \n    COALESCE(g.HSL04, 0) + COALESCE(g.HSL05, 0) + COALESCE(g.HSL06, 0) + \n    COALESCE(g.HSL07, 0) + COALESCE(g.HSL08, 0) + COALESCE(g.HSL09, 0) + \n    COALESCE(g.HSL10, 0) + COALESCE(g.HSL11, 0) + COALESCE(g.HSL12, 0) AS period_activity,\n    COALESCE(g.HSLVT, 0) + COALESCE(g.HSL01, 0) + COALESCE(g.HSL02, 0) + \n    COALESCE(g.HSL03, 0) + COALESCE(g.HSL04, 0) + COALESCE(g.HSL05, 0) + \n    COALESCE(g.HSL06, 0) + COALESCE(g.HSL07, 0) + COALESCE(g.HSL08, 0) + \n    COALESCE(g.HSL09, 0) + COALESCE(g.HSL10, 0) + COALESCE(g.HSL11, 0) + \n    COALESCE(g.HSL12, 0) AS ending_balance,\n    b.WAERS AS currency\nFROM GLT0 g\nJOIN SKA1 a ON g.RACCT = a.SAKNR\nJOIN SKB1 b ON g.RACCT = b.SAKNR AND g.BUKRS = b.BUKRS\nLEFT JOIN SKAT t ON a.KTOPL = t.KTOPL AND a.SAKNR = t.SAKNR AND t.SPRAS = 'E'\nWHERE g.BUKRS = '1000'\n  AND g.RLDNR = '00'\nORDER BY g.RACCT, g.DRCRK"
+    },
+    {
+      "pattern_name": "vendor_spend_by_quarter",
+      "description": "Vendor spending by quarter",
+      "primary_module": "FI_AP",
+      "tables": [
+        "RBKP",
+        "RSEG",
+        "LFA1"
+      ],
+      "business_context": "Show me vendor spending by quarter",
+      "example_sql_structure": "SELECT vendor, SUM(amount) FROM RBKP JOIN RSEG WHERE quarter=Q4 GROUP BY vendor"
+    },
+    {
+      "pattern_name": "open_ap_items",
+      "description": "Open AP items and aging",
+      "primary_module": "FI_AP",
+      "tables": [
+        "BSIK",
+        "BSAK",
+        "LFA1"
+      ],
+      "business_context": "Show me open AP items over 30 days",
+      "example_sql_structure": "SELECT vendor, invoice, amount WHERE DATEDIFF(TODAY, due_date) > 30"
+    },
+    {
+      "pattern_name": "ap_aging",
+      "description": "AP aging report",
+      "primary_module": "FI_AP",
+      "tables": [
+        "BSIK",
+        "LFA1"
+      ],
+      "business_context": "Show AP aging by bucket",
+      "example_sql_structure": "SELECT vendor, SUM(amount) for each age bucket FROM BSIK"
+    },
+    {
+      "pattern_name": "open_ar_items",
+      "description": "Open AR items and collections",
+      "primary_module": "FI_AR",
+      "tables": [
+        "BSID",
+        "BSAD",
+        "KNA1"
+      ],
+      "business_context": "Show me open AR items",
+      "example_sql_structure": "SELECT customer, invoice, amount FROM BSID WHERE AUGDT IS NULL"
+    },
+    {
+      "pattern_name": "ar_aging",
+      "description": "AR aging report",
+      "primary_module": "FI_AR",
+      "tables": [
+        "BSID",
+        "KNA1"
+      ],
+      "business_context": "Show AR aging",
+      "example_sql_structure": "SELECT customer, amount for each age bucket FROM BSID"
+    },
+    {
+      "pattern_name": "customer_sales_summary",
+      "description": "Customer sales summary and trends",
+      "primary_module": "SD",
+      "tables": [
+        "VBAK",
+        "VBAP",
+        "KNA1"
+      ],
+      "business_context": "Show me sales by customer",
+      "example_sql_structure": "SELECT customer, SUM(sales) FROM VBAK JOIN VBAP GROUP BY customer"
+    },
+    {
+      "pattern_name": "purchase_order_status",
+      "description": "PO status and receipt tracking",
+      "primary_module": "MM",
+      "tables": [
+        "EKKO",
+        "EKPO",
+        "EKBE"
+      ],
+      "business_context": "Show me PO status",
+      "example_sql_structure": "SELECT po, status FROM EKKO WHERE delivery_complete=N"
+    },
+    {
+      "pattern_name": "three_way_match",
+      "description": "Three-way matching: PO-GR-Invoice",
+      "primary_module": "MM",
+      "tables": [
+        "EKPO",
+        "EKBE",
+        "RSEG"
+      ],
+      "business_context": "Show me three-way match discrepancies",
+      "example_sql_structure": "SELECT po, po_qty, gr_qty, invoice_qty FROM EKPO JOIN EKBE JOIN RSEG WHERE mismatch"
+    },
+    {
+      "pattern_name": "goods_receipt_history",
+      "description": "Goods receipt history and movements",
+      "primary_module": "MM",
+      "tables": [
+        "EKBE",
+        "MARA"
+      ],
+      "business_context": "Show me goods receipts",
+      "example_sql_structure": "SELECT material, qty, date FROM EKBE WHERE movement_type='101'"
+    },
+    {
+      "pattern_name": "sales_order_backlog",
+      "description": "Sales order backlog and fulfillment",
+      "primary_module": "SD",
+      "tables": [
+        "VBAK",
+        "VBAP"
+      ],
+      "business_context": "Show me backlog orders",
+      "example_sql_structure": "SELECT order, material, qty FROM VBAK JOIN VBAP WHERE delivery_status=incomplete"
+    },
+    {
+      "pattern_name": "delivery_status",
+      "description": "Delivery tracking and status",
+      "primary_module": "SD",
+      "tables": [
+        "LIKP",
+        "LIPS",
+        "VBAK"
+      ],
+      "business_context": "Show me delivery status",
+      "example_sql_structure": "SELECT delivery, status, ship_date FROM LIKP WHERE goods_issue_date IS NOT NULL"
+    },
+    {
+      "pattern_name": "billing_summary",
+      "description": "Billing and invoice tracking",
+      "primary_module": "SD",
+      "tables": [
+        "VBRK",
+        "VBRP",
+        "VBAK"
+      ],
+      "business_context": "Show me billing summary",
+      "example_sql_structure": "SELECT invoice, customer, amount FROM VBRK WHERE invoice_date >= '2024-01-01'"
+    },
+    {
+      "pattern_name": "cost_center_spend",
+      "description": "Cost center spending and allocation",
+      "primary_module": "CO",
+      "tables": [
+        "COSP",
+        "CSKS",
+        "BSEG"
+      ],
+      "business_context": "Show me CC spending",
+      "example_sql_structure": "SELECT cost_center, SUM(actual_cost) FROM COSP GROUP BY cost_center"
+    },
+    {
+      "pattern_name": "employee_headcount",
+      "description": "Employee headcount and turnover",
+      "primary_module": "HR",
+      "tables": [
+        "PA0001",
+        "PA0002",
+        "HRP1000"
+      ],
+      "business_context": "Employee listing with descriptive names for position, job, and org unit. PA0001 stores IDs (STELL=position, PLANS=job, ORGEH=org unit). HRP1000 stores the text descriptions. Join HRP1000 three times with different OTYPE filters: S for position, C for job, O for org unit. Always filter LANGU='E' for English text.",
+      "example_sql_structure": "SELECT \n    p1.PERNR AS employee_number,\n    p2.VORNA AS first_name,\n    p2.NACHN AS last_name,\n    pos.STEXT AS position,\n    job.STEXT AS job,\n    org.STEXT AS organizational_unit,\n    p1.KOSTL AS cost_center,\n    p1.WERKS AS plant,\n    p1.BUKRS AS company_code\nFROM PA0001 p1\nJOIN PA0002 p2 ON p1.PERNR = p2.PERNR AND p2.ENDDA = '9999-12-31'\nLEFT JOIN HRP1000 pos ON pos.OTYPE = 'S' AND pos.OBJID = p1.STELL AND pos.LANGU = 'E'\nLEFT JOIN HRP1000 job ON job.OTYPE = 'C' AND job.OBJID = p1.PLANS AND job.LANGU = 'E'\nLEFT JOIN HRP1000 org ON org.OTYPE = 'O' AND org.OBJID = p1.ORGEH AND org.LANGU = 'E'\nWHERE p1.ENDDA = '9999-12-31'\nORDER BY p2.NACHN, p2.VORNA"
+    },
+    {
+      "pattern_name": "payroll_by_department",
+      "description": "Payroll expenses by department",
+      "primary_module": "PAY",
+      "tables": [
+        "HRPY_RGDIR",
+        "PA0001",
+        "PA0008"
+      ],
+      "business_context": "Show me payroll by department",
+      "example_sql_structure": "SELECT department, SUM(salary) FROM HRPY_RGDIR JOIN PA0008 GROUP BY department"
+    },
+    {
+      "pattern_name": "inventory_on_hand",
+      "description": "Inventory on hand and valuation",
+      "primary_module": "MM",
+      "tables": [
+        "MARD",
+        "MARC",
+        "MARA"
+      ],
+      "business_context": "Show me inventory",
+      "example_sql_structure": "SELECT material, stock, value FROM MARD JOIN MARC JOIN MARA"
+    },
+    {
+      "pattern_name": "journal_entry_detail",
+      "description": "Detailed journal entry queries",
+      "primary_module": "FI_GL",
+      "tables": [
+        "BKPF",
+        "BSEG",
+        "SKB1"
+      ],
+      "business_context": "IMPORTANT: Currency (WAERS) is on BKPF (header), NOT on BSEG (line items). Always use h.WAERS from BKPF. Join BKPF (alias h) to BSEG (alias s) on BUKRS+BELNR+GJAHR.",
+      "example_sql_structure": "SELECT \n    h.BELNR AS document_number,\n    h.GJAHR AS fiscal_year,\n    h.BUDAT AS posting_date,\n    h.BLDAT AS document_date,\n    h.BLART AS document_type,\n    h.BKTXT AS header_text,\n    h.WAERS AS currency,\n    s.BUZEI AS line_item,\n    s.BSCHL AS posting_key,\n    s.HKONT AS gl_account,\n    CASE WHEN s.SHKZG = 'S' THEN s.DMBTR ELSE 0 END AS debit_amount,\n    CASE WHEN s.SHKZG = 'H' THEN s.DMBTR ELSE 0 END AS credit_amount,\n    s.SGTXT AS line_text\nFROM BKPF h\nJOIN BSEG s ON h.BUKRS = s.BUKRS AND h.BELNR = s.BELNR AND h.GJAHR = s.GJAHR\nWHERE h.BUKRS = '1000'\n  AND s.HKONT = '0000400000'\nORDER BY h.BUDAT DESC, h.BELNR, s.BUZEI"
+    },
+    {
+      "pattern_name": "order_to_cash_trace",
+      "description": "Order-to-cash process tracing",
+      "primary_module": "SD",
+      "tables": [
+        "VBAK",
+        "LIKP",
+        "VBRK",
+        "BSID"
+      ],
+      "business_context": "Trace order to cash",
+      "example_sql_structure": "SELECT order FROM VBAK JOIN LIKP JOIN VBRK JOIN BSID"
+    },
+    {
+      "pattern_name": "procure_to_pay_trace",
+      "description": "Procure-to-pay process tracing",
+      "primary_module": "FI_AP",
+      "tables": [
+        "EKKO",
+        "EKBE",
+        "RBKP",
+        "BSIK"
+      ],
+      "business_context": "Trace procure to pay",
+      "example_sql_structure": "SELECT po FROM EKKO JOIN EKBE JOIN RBKP JOIN BSIK"
+    },
+    {
+      "pattern_name": "open_maintenance_orders",
+      "description": "List open maintenance orders with equipment and priority",
+      "primary_module": "PM",
+      "tables": [
+        "AUFK",
+        "AFIH",
+        "EQUI",
+        "EQKT"
+      ],
+      "business_context": "IW39N-style listing of maintenance orders",
+      "example_sql_structure": "SELECT a.AUFNR, a.AUART, a.KTEXT, h.PRIOK, h.EQUNR, e.EQKTX AS equipment_desc, h.TPLNR, h.GSTRP, h.GLTRP\nFROM AUFK a\nJOIN AFIH h ON a.AUFNR = h.AUFNR\nLEFT JOIN EQKT e ON h.EQUNR = e.EQUNR AND e.SPRAS = 'E'\nWHERE a.AUTYP = '30' AND a.LOEKZ = ''\nORDER BY h.PRIOK, h.GLTRP"
+    },
+    {
+      "pattern_name": "order_operations_iw49n",
+      "description": "Display orders and operations (IW49N equivalent)",
+      "primary_module": "PM",
+      "tables": [
+        "AUFK",
+        "AFIH",
+        "AFKO",
+        "AFVC",
+        "EQKT"
+      ],
+      "business_context": "IW49N report showing orders with their operations, status, and work centers",
+      "example_sql_structure": "SELECT a.AUFNR, a.KTEXT AS order_text, h.EQUNR, ek.EQKTX AS equipment_desc, h.PRIOK,\n       v.VORNR AS operation, v.LTXA1 AS operation_text, v.ARBPL AS work_center, v.LOEKZ AS cancelled\nFROM AUFK a\nJOIN AFIH h ON a.AUFNR = h.AUFNR\nJOIN AFKO k ON a.AUFNR = k.AUFNR\nJOIN AFVC v ON k.AUFPL = v.AUFPL\nLEFT JOIN EQKT ek ON h.EQUNR = ek.EQUNR AND ek.SPRAS = 'E'\nWHERE a.AUTYP = '30'\nORDER BY a.AUFNR, v.VORNR"
+    },
+    {
+      "pattern_name": "cancelled_operations_iw49n",
+      "description": "Show cancelled operations from IW49N",
+      "primary_module": "PM",
+      "tables": [
+        "AUFK",
+        "AFIH",
+        "AFKO",
+        "AFVC"
+      ],
+      "business_context": "Filter IW49N for cancelled operations. Cancelled = AFVC.LOEKZ = 'X'",
+      "example_sql_structure": "SELECT a.AUFNR, a.KTEXT, h.EQUNR, h.TPLNR,\n       v.VORNR, v.LTXA1 AS operation_text, v.ARBPL AS work_center\nFROM AUFK a\nJOIN AFIH h ON a.AUFNR = h.AUFNR\nJOIN AFKO k ON a.AUFNR = k.AUFNR\nJOIN AFVC v ON k.AUFPL = v.AUFPL\nWHERE v.LOEKZ = 'X'\nORDER BY a.AUFNR, v.VORNR"
+    },
+    {
+      "pattern_name": "equipment_maintenance_history",
+      "description": "Maintenance history for a piece of equipment",
+      "primary_module": "PM",
+      "tables": [
+        "AUFK",
+        "AFIH",
+        "AFRU",
+        "EQUI",
+        "EQKT"
+      ],
+      "business_context": "Show all maintenance orders and confirmations for equipment",
+      "example_sql_structure": "SELECT a.AUFNR, a.KTEXT, h.ILART, h.PRIOK,\n       r.VORNR, r.BUDAT, r.ISMNW AS actual_hours, r.PERNR\nFROM AUFK a\nJOIN AFIH h ON a.AUFNR = h.AUFNR\nLEFT JOIN AFRU r ON a.AUFNR = r.AUFNR AND r.STOKZ = ''\nWHERE h.EQUNR = :equipment_number\nORDER BY a.ERDAT DESC"
+    },
+    {
+      "pattern_name": "Unpaid vendor invoices by vendor name",
+      "description": "Show open/unpaid vendor invoices filtered by vendor name, joining BSIK to LFA1 for name resolution",
+      "primary_module": "FI_AP",
+      "tables": [
+        "BSIK",
+        "LFA1"
+      ],
+      "business_context": "Users often ask about unpaid invoices using the vendor's name rather than number. BSIK contains open vendor items but only stores LIFNR. Must join LFA1 to filter by NAME1.",
+      "example_sql_structure": "SELECT \n    v.LIFNR AS vendor_number,\n    v.NAME1 AS vendor_name,\n    b.BELNR AS document_number,\n    b.GJAHR AS fiscal_year,\n    b.BUDAT AS posting_date,\n    b.BLDAT AS document_date,\n    b.ZFBDT AS due_date,\n    CASE WHEN b.SHKZG = 'H' THEN -b.DMBTR ELSE b.DMBTR END AS amount,\n    b.WAERS AS currency,\n    b.SGTXT AS description\nFROM BSIK b\nJOIN LFA1 v ON b.LIFNR = v.LIFNR\nWHERE UPPER(v.NAME1) LIKE '%ACME%'\nORDER BY b.BUDAT DESC"
+    },
+    {
+      "pattern_name": "Purchase orders over threshold value",
+      "description": "Show purchase orders where total PO value exceeds a specified amount, with vendor details",
+      "primary_module": "MM",
+      "tables": [
+        "EKKO",
+        "EKPO",
+        "LFA1"
+      ],
+      "business_context": "Users ask about high-value POs. EKPO.NETWR is always positive (no SHKZG needed). Join LFA1 for vendor names. Group by PO to sum line items.",
+      "example_sql_structure": "SELECT \n    k.EBELN AS po_number,\n    v.LIFNR AS vendor_number,\n    v.NAME1 AS vendor_name,\n    k.BEDAT AS po_date,\n    k.WAERS AS currency,\n    COUNT(p.EBELP) AS line_items,\n    SUM(p.NETWR) AS total_po_value\nFROM EKKO k\nJOIN EKPO p ON k.EBELN = p.EBELN\nJOIN LFA1 v ON k.LIFNR = v.LIFNR\nWHERE k.LOEKZ = ''\n  AND p.LOEKZ = ''\nGROUP BY k.EBELN, v.LIFNR, v.NAME1, k.BEDAT, k.WAERS\nHAVING SUM(p.NETWR) > 50000\nORDER BY total_po_value DESC"
+    },
+    {
+      "pattern_name": "top_vendors_by_spend",
+      "description": "Top N vendors ranked by total spend amount",
+      "primary_module": "FI_AP",
+      "tables": [
+        "BSIK",
+        "BSAK",
+        "LFA1"
+      ],
+      "business_context": "Combines open (BSIK) and cleared (BSAK) vendor items for total spend. Uses DMBTR with SHKZG sign conversion. Joins LFA1 for vendor names. Defaults to company code 1000 if not specified.",
+      "example_sql_structure": "SELECT \n    v.LIFNR AS vendor_number,\n    v.NAME1 AS vendor_name,\n    SUM(CASE WHEN i.SHKZG = 'S' THEN i.DMBTR ELSE -i.DMBTR END) AS total_spend\nFROM (\n    SELECT BUKRS, LIFNR, SHKZG, DMBTR FROM BSIK WHERE BUKRS = '1000'\n    UNION ALL\n    SELECT BUKRS, LIFNR, SHKZG, DMBTR FROM BSAK WHERE BUKRS = '1000'\n) i\nJOIN LFA1 v ON i.LIFNR = v.LIFNR\nGROUP BY v.LIFNR, v.NAME1\nORDER BY total_spend DESC\nLIMIT 10"
+    },
+    {
+      "pattern_name": "cost_center_actual_vs_plan",
+      "description": "Cost center actual versus planned spending comparison",
+      "primary_module": "CO",
+      "tables": [
+        "COSP",
+        "CSKS"
+      ],
+      "business_context": "COSP stores external postings. WRTTP='04' for actual, WRTTP='01' for plan. WKG001-WKG012 are monthly amounts. OBJNR format 'KSkkkkkkkkk' where kkkkk is 10-char cost center. CSKS table has KTEXT for cost center name. Defaults to 2025, version 000. Use SUBSTR() not SUBSTRING() - this is SQLite!",
+      "example_sql_structure": "SELECT \n    SUBSTR(c.OBJNR, 7) AS cost_center,\n    c.KSTAR AS cost_element,\n    SUM(CASE WHEN c.WRTTP = '04' THEN COALESCE(c.WKG001,0)+COALESCE(c.WKG002,0)+COALESCE(c.WKG003,0)+COALESCE(c.WKG004,0)+COALESCE(c.WKG005,0)+COALESCE(c.WKG006,0)+COALESCE(c.WKG007,0)+COALESCE(c.WKG008,0)+COALESCE(c.WKG009,0)+COALESCE(c.WKG010,0)+COALESCE(c.WKG011,0)+COALESCE(c.WKG012,0) ELSE 0 END) AS actual_amount,\n    SUM(CASE WHEN c.WRTTP = '01' THEN COALESCE(c.WKG001,0)+COALESCE(c.WKG002,0)+COALESCE(c.WKG003,0)+COALESCE(c.WKG004,0)+COALESCE(c.WKG005,0)+COALESCE(c.WKG006,0)+COALESCE(c.WKG007,0)+COALESCE(c.WKG008,0)+COALESCE(c.WKG009,0)+COALESCE(c.WKG010,0)+COALESCE(c.WKG011,0)+COALESCE(c.WKG012,0) ELSE 0 END) AS plan_amount\nFROM COSP c\nWHERE c.GJAHR = '2025'\n  AND c.VERSN = '000'\nGROUP BY SUBSTR(c.OBJNR, 7), c.KSTAR\nORDER BY cost_center, c.KSTAR"
+    },
+    {
+      "pattern_name": "sales_orders_by_period",
+      "description": "Sales orders created in a specific time period",
+      "primary_module": "SD",
+      "tables": [
+        "VBAK",
+        "VBAP",
+        "KNA1"
+      ],
+      "business_context": "VBAK.ERDAT is the creation date (YYYY-MM-DD ISO format). IMPORTANT: VBAK uses WAERK for currency (NOT WAERS). Join KNA1 for customer names. AUART is the order type.",
+      "example_sql_structure": "SELECT \n    v.VBELN AS sales_order,\n    v.ERDAT AS created_on,\n    v.AUART AS order_type,\n    v.KUNNR AS customer_number,\n    k.NAME1 AS customer_name,\n    v.NETWR AS order_value,\n    v.WAERK AS currency\nFROM VBAK v\nJOIN KNA1 k ON v.KUNNR = k.KUNNR\nWHERE v.ERDAT >= '2025-01-01' AND v.ERDAT <= '2025-03-31'\n  AND v.LOEKZ = ''\nORDER BY v.ERDAT DESC"
+    },
+    {
+      "pattern_name": "tcode_fb03",
+      "description": "Display Financial Document - joins BKPF, BSEG, SKAT for document header and line items with account descriptions",
+      "primary_module": "FI_GL",
+      "tables": [],
+      "business_context": "SAP Transaction FB03: Display Financial Document - joins BKPF, BSEG, SKAT for document header and line items with account descriptions",
+      "example_sql_structure": ""
+    },
+    {
+      "pattern_name": "tcode_fbl1n",
+      "description": "Vendor Line Items - UNION of BSAK (cleared) and BSIK (open) joined with LFA1 and T001",
+      "primary_module": "FI_GL",
+      "tables": [],
+      "business_context": "SAP Transaction FBL1N: Vendor Line Items - UNION of BSAK (cleared) and BSIK (open) joined with LFA1 and T001",
+      "example_sql_structure": ""
+    },
+    {
+      "pattern_name": "tcode_fbl3n",
+      "description": "GL Line Items - UNION of BSIS (open) and BSAS (cleared) GL line items",
+      "primary_module": "FI_GL",
+      "tables": [],
+      "business_context": "SAP Transaction FBL3N: GL Line Items - UNION of BSIS (open) and BSAS (cleared) GL line items",
+      "example_sql_structure": ""
+    },
+    {
+      "pattern_name": "tcode_fbl5n",
+      "description": "Customer Line Items - UNION of BSID (open) and BSAD (cleared) joined with KNA1",
+      "primary_module": "FI_GL",
+      "tables": [],
+      "business_context": "SAP Transaction FBL5N: Customer Line Items - UNION of BSID (open) and BSAD (cleared) joined with KNA1",
+      "example_sql_structure": ""
+    },
+    {
+      "pattern_name": "tcode_me23n",
+      "description": "Display Purchase Order - joins EKKO, EKPO, LFA1, MAKT, T001W, T001L, EKET, EKBE",
+      "primary_module": "FI_GL",
+      "tables": [],
+      "business_context": "SAP Transaction ME23N: Display Purchase Order - joins EKKO, EKPO, LFA1, MAKT, T001W, T001L, EKET, EKBE",
+      "example_sql_structure": ""
+    },
+    {
+      "pattern_name": "tcode_me2m",
+      "description": "PO by Material - joins EKKO, EKPO, MAKT, EKBE, LFA1",
+      "primary_module": "FI_GL",
+      "tables": [],
+      "business_context": "SAP Transaction ME2M: PO by Material - joins EKKO, EKPO, MAKT, EKBE, LFA1",
+      "example_sql_structure": ""
+    },
+    {
+      "pattern_name": "tcode_va03",
+      "description": "Display Sales Order - joins VBAK, VBAP, VBPA, KNA1, MAKT",
+      "primary_module": "FI_GL",
+      "tables": [],
+      "business_context": "SAP Transaction VA03: Display Sales Order - joins VBAK, VBAP, VBPA, KNA1, MAKT",
+      "example_sql_structure": ""
+    },
+    {
+      "pattern_name": "tcode_vf03",
+      "description": "Display Billing Document - joins VBRK, VBRP",
+      "primary_module": "FI_GL",
+      "tables": [],
+      "business_context": "SAP Transaction VF03: Display Billing Document - joins VBRK, VBRP",
+      "example_sql_structure": ""
+    },
+    {
+      "pattern_name": "tcode_fbl5n_customer_open_items",
+      "description": "Customer Open Items (FBL5N) - Show all customer open invoices with aging",
+      "primary_module": "FI_AR",
+      "tables": [
+        "BSID",
+        "KNA1"
+      ],
+      "business_context": "SAP Transaction FBL5N equivalent. Shows open AR items with customer details and aging buckets",
+      "example_sql_structure": "SELECT \n    k.KUNNR AS customer_number,\n    k.NAME1 AS customer_name,\n    b.BELNR AS invoice_number,\n    b.GJAHR AS fiscal_year,\n    b.BUDAT AS posting_date,\n    b.BLDAT AS document_date,\n    b.ZFBDT AS due_date,\n    CASE \n        WHEN CAST((julianday('now') - julianday(b.ZFBDT)) AS INTEGER) <= 0 THEN 'Not yet due'\n        WHEN CAST((julianday('now') - julianday(b.ZFBDT)) AS INTEGER) BETWEEN 1 AND 30 THEN '0-30 days'\n        WHEN CAST((julianday('now') - julianday(b.ZFBDT)) AS INTEGER) BETWEEN 31 AND 60 THEN '31-60 days'\n        WHEN CAST((julianday('now') - julianday(b.ZFBDT)) AS INTEGER) BETWEEN 61 AND 90 THEN '61-90 days'\n        ELSE '90+ days'\n    END AS aging_bucket,\n    CAST((julianday('now') - julianday(b.ZFBDT)) AS INTEGER) AS days_overdue,\n    CASE WHEN b.SHKZG = 'S' THEN b.DMBTR ELSE -b.DMBTR END AS open_amount,\n    b.WAERS AS currency\nFROM BSID b\nJOIN KNA1 k ON b.KUNNR = k.KUNNR\nWHERE b.AUGDT IS NULL\nORDER BY k.KUNNR, b.ZFBDT"
+    },
+    {
+      "pattern_name": "tcode_fbl5n_customer_aging_bucket",
+      "description": "Customer Aging Report by Bucket (FBL5N) - Summarized aging analysis",
+      "primary_module": "FI_AR",
+      "tables": [
+        "BSID",
+        "KNA1"
+      ],
+      "business_context": "Summarized customer aging showing totals by bucket (0-30, 31-60, 61-90, 90+)",
+      "example_sql_structure": "SELECT \n    CASE \n        WHEN CAST((julianday('now') - julianday(b.ZFBDT)) AS INTEGER) <= 0 THEN 'Not yet due'\n        WHEN CAST((julianday('now') - julianday(b.ZFBDT)) AS INTEGER) BETWEEN 1 AND 30 THEN '0-30 days'\n        WHEN CAST((julianday('now') - julianday(b.ZFBDT)) AS INTEGER) BETWEEN 31 AND 60 THEN '31-60 days'\n        WHEN CAST((julianday('now') - julianday(b.ZFBDT)) AS INTEGER) BETWEEN 61 AND 90 THEN '61-90 days'\n        ELSE '90+ days'\n    END AS aging_bucket,\n    COUNT(DISTINCT b.BELNR) AS invoice_count,\n    SUM(CASE WHEN b.SHKZG = 'S' THEN b.DMBTR ELSE -b.DMBTR END) AS total_amount,\n    b.WAERS AS currency\nFROM BSID b\nWHERE b.AUGDT IS NULL\nGROUP BY aging_bucket, b.WAERS\nORDER BY CASE aging_bucket WHEN 'Not yet due' THEN 0 WHEN '0-30 days' THEN 1 WHEN '31-60 days' THEN 2 WHEN '61-90 days' THEN 3 ELSE 4 END"
+    },
+    {
+      "pattern_name": "tcode_fbl5n_customer_overdue",
+      "description": "Overdue Customer Invoices (FBL5N Filter) - Customers with overdue items",
+      "primary_module": "FI_AR",
+      "tables": [
+        "BSID",
+        "KNA1"
+      ],
+      "business_context": "Show customers with overdue invoices (due date < today)",
+      "example_sql_structure": "SELECT \n    k.KUNNR AS customer_number,\n    k.NAME1 AS customer_name,\n    COUNT(DISTINCT b.BELNR) AS overdue_invoice_count,\n    SUM(CASE WHEN b.SHKZG = 'S' THEN b.DMBTR ELSE -b.DMBTR END) AS total_overdue_amount,\n    MIN(b.ZFBDT) AS oldest_due_date,\n    b.WAERS AS currency\nFROM BSID b\nJOIN KNA1 k ON b.KUNNR = k.KUNNR\nWHERE b.AUGDT IS NULL AND b.ZFBDT < date('now')\nGROUP BY k.KUNNR, k.NAME1, b.WAERS\nORDER BY total_overdue_amount DESC"
+    },
+    {
+      "pattern_name": "tcode_fbl5n_customer_outstanding_receivables",
+      "description": "Total Outstanding Receivables by Customer (FBL5N) - Sum by customer",
+      "primary_module": "FI_AR",
+      "tables": [
+        "BSID",
+        "KNA1"
+      ],
+      "business_context": "Show total outstanding receivables grouped by customer",
+      "example_sql_structure": "SELECT \n    k.KUNNR AS customer_number,\n    k.NAME1 AS customer_name,\n    COUNT(DISTINCT b.BELNR) AS open_invoice_count,\n    SUM(CASE WHEN b.SHKZG = 'S' THEN b.DMBTR ELSE -b.DMBTR END) AS total_outstanding,\n    b.WAERS AS currency\nFROM BSID b\nJOIN KNA1 k ON b.KUNNR = k.KUNNR\nWHERE b.AUGDT IS NULL\nGROUP BY k.KUNNR, k.NAME1, b.WAERS\nORDER BY total_outstanding DESC"
+    },
+    {
+      "pattern_name": "tcode_fbl5n_open_items_by_customer",
+      "description": "Open Items for Specific Customer (FBL5N) - Detail view for selected customer",
+      "primary_module": "FI_AR",
+      "tables": [
+        "BSID",
+        "KNA1"
+      ],
+      "business_context": "Show all open items for a selected customer with full details",
+      "example_sql_structure": "SELECT \n    b.BELNR AS invoice_number,\n    b.GJAHR AS fiscal_year,\n    b.BUDAT AS posting_date,\n    b.ZFBDT AS due_date,\n    b.DMBTR AS amount,\n    b.WAERS AS currency,\n    CAST((julianday('now') - julianday(b.ZFBDT)) AS INTEGER) AS days_overdue,\n    b.TEXT AS line_text\nFROM BSID b\nJOIN KNA1 k ON b.KUNNR = k.KUNNR\nWHERE k.KUNNR = :customer_number AND b.AUGDT IS NULL\nORDER BY b.ZFBDT, b.BELNR"
+    },
+    {
+      "pattern_name": "tcode_ksb1_cost_center_actual_line_items",
+      "description": "Cost Center Actual Line Items (KSB1) - Detail view of cost center postings",
+      "primary_module": "CO",
+      "tables": [
+        "COEP",
+        "COBK",
+        "CSKS"
+      ],
+      "business_context": "SAP Transaction KSB1 equivalent. Shows actual postings to cost centers with details",
+      "example_sql_structure": "SELECT \n    c.KOSTL AS cost_center,\n    s.KTEXT AS cost_center_name,\n    e.GJAHR AS fiscal_year,\n    e.PERIO AS period,\n    e.BELNR AS document_number,\n    e.BUZEI AS line_item,\n    e.KOELT AS cost_element,\n    e.HKONT AS gl_account,\n    CASE WHEN e.WRKCT = 'S' THEN e.BEAMG ELSE -e.BEAMG END AS amount,\n    e.WAERS AS currency\nFROM COEP e\nJOIN COBK b ON e.KOKRS = b.KOKRS AND e.BELNR = b.BELNR AND e.GJAHR = b.GJAHR\nJOIN CSKS s ON e.KOSTL = s.KOSTL\nWHERE e.KOSTT = 'C' AND e.OBJNR LIKE SUBSTR(s.OBJNR, 1, 8) || '%'\nORDER BY e.GJAHR, e.PERIO, e.KOSTL, e.BELNR"
+    },
+    {
+      "pattern_name": "tcode_ksb1_cost_center_postings_by_year",
+      "description": "Cost Center Actual Postings This Year (KSB1) - Annual view",
+      "primary_module": "CO",
+      "tables": [
+        "COEP",
+        "COBK"
+      ],
+      "business_context": "Show actual postings to a cost center for the current fiscal year",
+      "example_sql_structure": "SELECT \n    e.KOSTL AS cost_center,\n    e.GJAHR AS fiscal_year,\n    e.PERIO AS period,\n    e.KOELT AS cost_element,\n    COUNT(DISTINCT e.BELNR) AS posting_count,\n    SUM(CASE WHEN e.WRKCT = 'S' THEN e.BEAMG ELSE -e.BEAMG END) AS total_amount\nFROM COEP e\nWHERE e.KOSTL = :cost_center_id AND e.GJAHR = :fiscal_year AND e.KOSTT = 'C'\nGROUP BY e.KOSTL, e.GJAHR, e.PERIO, e.KOELT\nORDER BY e.GJAHR, e.PERIO, e.KOELT"
+    },
+    {
+      "pattern_name": "tcode_ksb1_cost_center_by_cost_element",
+      "description": "Cost Center Spending by Cost Element (KSB1) - Breakdown by cost element",
+      "primary_module": "CO",
+      "tables": [
+        "COEP",
+        "CSKB"
+      ],
+      "business_context": "Show cost center spending broken down by cost element type",
+      "example_sql_structure": "SELECT \n    e.KOSTL AS cost_center,\n    e.KOELT AS cost_element,\n    b.BETXT AS cost_element_text,\n    SUM(CASE WHEN e.WRKCT = 'S' THEN e.BEAMG ELSE -e.BEAMG END) AS actual_amount,\n    COUNT(DISTINCT e.BELNR) AS transaction_count\nFROM COEP e\nLEFT JOIN CSKB b ON e.KOELT = b.KOELT\nWHERE e.KOSTL = :cost_center_id AND e.KOSTT = 'C'\nGROUP BY e.KOSTL, e.KOELT, b.BETXT\nORDER BY actual_amount DESC"
+    },
+    {
+      "pattern_name": "tcode_ksb1_actual_vs_plan_variance",
+      "description": "Cost Center Actual vs Plan Variance (KSB1) - Plan comparison",
+      "primary_module": "CO",
+      "tables": [
+        "COEP",
+        "COSP",
+        "CSKS"
+      ],
+      "business_context": "Compare actual postings to plan values and calculate variance",
+      "example_sql_structure": "SELECT \n    e.KOSTL AS cost_center,\n    s.KTEXT AS cost_center_name,\n    e.GJAHR AS fiscal_year,\n    e.KOELT AS cost_element,\n    SUM(CASE WHEN e.WRKCT = 'S' THEN e.BEAMG ELSE -e.BEAMG END) AS actual_amount,\n    SUM(p.WERT01 + p.WERT02 + p.WERT03 + p.WERT04 + p.WERT05 + p.WERT06 + \n        p.WERT07 + p.WERT08 + p.WERT09 + p.WERT10 + p.WERT11 + p.WERT12) AS plan_amount,\n    SUM(CASE WHEN e.WRKCT = 'S' THEN e.BEAMG ELSE -e.BEAMG END) - \n    SUM(p.WERT01 + p.WERT02 + p.WERT03 + p.WERT04 + p.WERT05 + p.WERT06 + \n        p.WERT07 + p.WERT08 + p.WERT09 + p.WERT10 + p.WERT11 + p.WERT12) AS variance\nFROM COEP e\nJOIN CSKS s ON e.KOSTL = s.KOSTL\nLEFT JOIN COSP p ON e.KOSTL = p.KOSTL AND e.GJAHR = p.GJAHR AND e.KOELT = p.KOELT\nWHERE e.KOSTL = :cost_center_id AND e.KOSTT = 'C'\nGROUP BY e.KOSTL, s.KTEXT, e.GJAHR, e.KOELT\nORDER BY variance DESC"
+    },
+    {
+      "pattern_name": "tcode_iw49n_cancelled_operations",
+      "description": "Cancelled Operations Report (IW49N) - Show all cancelled maintenance operations",
+      "primary_module": "PM",
+      "tables": [
+        "AFVC",
+        "AFRU",
+        "AUFK"
+      ],
+      "business_context": "SAP Transaction IW49N filtered for cancelled operations. AFVC.LOEKZ='X' indicates cancelled",
+      "example_sql_structure": "SELECT \n    a.AUFNR AS order_number,\n    a.KTEXT AS order_text,\n    h.EQUNR AS equipment_number,\n    h.TPLNR AS functional_location,\n    v.VORNR AS operation_number,\n    v.LTXA1 AS operation_text,\n    v.ARBPL AS work_center,\n    v.LOEKZ AS cancelled_indicator,\n    COUNT(DISTINCT r.MFGNR) AS confirmation_count\nFROM AUFK a\nJOIN AFIH h ON a.AUFNR = h.AUFNR\nJOIN AFKO k ON a.AUFNR = k.AUFNR\nJOIN AFVC v ON k.AUFPL = v.AUFPL\nLEFT JOIN AFRU r ON a.AUFNR = r.AUFNR AND v.VORNR = r.VORNR\nWHERE v.LOEKZ = 'X' AND a.AUTYP = '30'\nGROUP BY a.AUFNR, a.KTEXT, h.EQUNR, h.TPLNR, v.VORNR, v.LTXA1, v.ARBPL, v.LOEKZ\nORDER BY a.AUFNR, v.VORNR"
+    },
+    {
+      "pattern_name": "tcode_iw49n_orders_with_cancelled_operations",
+      "description": "Work Orders with Cancelled Operations (IW49N) - Orders containing cancellations",
+      "primary_module": "PM",
+      "tables": [
+        "AFVC",
+        "AUFK"
+      ],
+      "business_context": "Show work orders that have at least one cancelled operation",
+      "example_sql_structure": "SELECT \n    a.AUFNR AS order_number,\n    a.KTEXT AS order_text,\n    a.AUART AS order_type,\n    COUNT(DISTINCT v.VORNR) AS cancelled_operation_count,\n    a.GSTRP AS scheduled_start,\n    a.GLTRP AS scheduled_finish\nFROM AUFK a\nJOIN AFIH h ON a.AUFNR = h.AUFNR\nJOIN AFKO k ON a.AUFNR = k.AUFNR\nJOIN AFVC v ON k.AUFPL = v.AUFPL\nWHERE v.LOEKZ = 'X' AND a.AUTYP = '30'\nGROUP BY a.AUFNR, a.KTEXT, a.AUART, a.GSTRP, a.GLTRP\nORDER BY a.AUFNR"
+    },
+    {
+      "pattern_name": "tcode_iw49n_cancelled_by_equipment",
+      "description": "Cancelled Operations by Equipment (IW49N) - Equipment-centric cancellation view",
+      "primary_module": "PM",
+      "tables": [
+        "AFVC",
+        "EQUI",
+        "EQKT"
+      ],
+      "business_context": "Show cancelled operations grouped by equipment",
+      "example_sql_structure": "SELECT \n    h.EQUNR AS equipment_number,\n    e.EQKTX AS equipment_description,\n    COUNT(DISTINCT a.AUFNR) AS order_count,\n    COUNT(DISTINCT v.VORNR) AS cancelled_operation_count,\n    MAX(a.GLTRP) AS most_recent_date\nFROM AFVC v\nJOIN AFKO k ON v.AUFPL = k.AUFPL\nJOIN AUFK a ON k.AUFNR = a.AUFNR\nJOIN AFIH h ON a.AUFNR = h.AUFNR\nLEFT JOIN EQKT e ON h.EQUNR = e.EQUNR AND e.SPRAS = 'E'\nWHERE v.LOEKZ = 'X' AND a.AUTYP = '30'\nGROUP BY h.EQUNR, e.EQKTX\nORDER BY cancelled_operation_count DESC"
+    },
+    {
+      "pattern_name": "value_chain_order_to_cash_trace",
+      "description": "Order-to-Cash (O2C) Cycle Trace - End-to-end SO tracking to AR",
+      "primary_module": "SD",
+      "tables": [
+        "VBAK",
+        "LIKP",
+        "VBRK",
+        "BSID",
+        "KNA1"
+      ],
+      "business_context": "Trace complete O2C cycle: Sales Order \u2192 Delivery \u2192 Billing \u2192 AR Invoice. Shows each stage of order progression",
+      "example_sql_structure": "SELECT \n    v.VBELN AS sales_order,\n    v.ERDAT AS order_date,\n    k.KUNNR AS customer_number,\n    k.NAME1 AS customer_name,\n    COUNT(DISTINCT l.VBELN) AS delivery_count,\n    COUNT(DISTINCT b.VBELN) AS billing_count,\n    COUNT(DISTINCT ar.BELNR) AS ar_invoice_count,\n    MAX(ar.BUDAT) AS latest_ar_posting,\n    SUM(CASE WHEN ar.SHKZG = 'S' THEN ar.DMBTR ELSE -ar.DMBTR END) AS total_ar_amount\nFROM VBAK v\nJOIN KNA1 k ON v.KUNNR = k.KUNNR\nLEFT JOIN LIKP l ON v.VBELN = l.VBELN OR EXISTS (SELECT 1 FROM VBFA f WHERE f.VBELV = v.VBELN AND f.VBELN = l.VBELN)\nLEFT JOIN VBRK b ON EXISTS (SELECT 1 FROM VBFA f WHERE f.VBELV = l.VBELN AND f.VBELN = b.VBELN)\nLEFT JOIN BSID ar ON v.KUNNR = ar.KUNNR AND ar.AUGDT IS NULL\nGROUP BY v.VBELN, v.ERDAT, k.KUNNR, k.NAME1\nORDER BY v.ERDAT DESC"
+    },
+    {
+      "pattern_name": "value_chain_o2c_pipeline_summary",
+      "description": "O2C Pipeline Summary - View open orders through AR",
+      "primary_module": "SD",
+      "tables": [
+        "VBAK",
+        "LIKP",
+        "VBRK",
+        "BSID"
+      ],
+      "business_context": "Show O2C pipeline: open orders \u2192 pending deliveries \u2192 unbilled deliveries \u2192 open AR",
+      "example_sql_structure": "SELECT \n    'Open Orders' AS pipeline_stage,\n    COUNT(DISTINCT CASE WHEN v.VBTYP = 'C' THEN v.VBELN END) AS count,\n    SUM(CASE WHEN v.VBTYP = 'C' THEN v.NETWR ELSE 0 END) AS total_value\nFROM VBAK v\nWHERE v.VBTYP = 'C' AND v.VBELN NOT IN (SELECT DISTINCT l.VBELN FROM LIKP l)\nUNION ALL\nSELECT \n    'Pending Deliveries' AS pipeline_stage,\n    COUNT(DISTINCT l.VBELN) AS count,\n    SUM(l.GEWEI) AS total_value\nFROM LIKP l\nWHERE l.VBELN NOT IN (SELECT DISTINCT VBELN FROM VBRK)\nUNION ALL\nSELECT \n    'Unbilled Deliveries' AS pipeline_stage,\n    COUNT(DISTINCT VBELN) AS count,\n    0 AS total_value\nFROM VBRK\nWHERE VBELN NOT IN (SELECT DISTINCT BELNR FROM BSID)\nUNION ALL\nSELECT \n    'Open AR Invoices' AS pipeline_stage,\n    COUNT(DISTINCT BELNR) AS count,\n    SUM(CASE WHEN SHKZG = 'S' THEN DMBTR ELSE -DMBTR END) AS total_value\nFROM BSID\nWHERE AUGDT IS NULL"
+    },
+    {
+      "pattern_name": "value_chain_o2c_cycle_time",
+      "description": "Order-to-Cash Cycle Time Analysis - Days from order to AR posting",
+      "primary_module": "SD",
+      "tables": [
+        "VBAK",
+        "LIKP",
+        "VBRK",
+        "BSID"
+      ],
+      "business_context": "Calculate O2C cycle time metrics: order to delivery, delivery to invoice, invoice to AR posting",
+      "example_sql_structure": "SELECT \n    v.VBELN AS sales_order,\n    v.ERDAT AS order_date,\n    MIN(l.WADAT) AS delivery_date,\n    CAST((julianday(MIN(l.WADAT)) - julianday(v.ERDAT)) AS INTEGER) AS order_to_delivery_days,\n    MAX(b.FKDAT) AS billing_date,\n    CAST((julianday(MAX(b.FKDAT)) - julianday(MIN(l.WADAT))) AS INTEGER) AS delivery_to_billing_days,\n    MAX(ar.BUDAT) AS ar_posting_date,\n    CAST((julianday(MAX(ar.BUDAT)) - julianday(MAX(b.FKDAT))) AS INTEGER) AS billing_to_ar_days,\n    CAST((julianday(MAX(ar.BUDAT)) - julianday(v.ERDAT)) AS INTEGER) AS total_o2c_days\nFROM VBAK v\nLEFT JOIN LIKP l ON v.VBELN = l.VBELN\nLEFT JOIN VBRK b ON EXISTS (SELECT 1 FROM VBFA f WHERE f.VBELV = l.VBELN AND f.VBELN = b.VBELN)\nLEFT JOIN BSID ar ON v.KUNNR = ar.KUNNR\nGROUP BY v.VBELN, v.ERDAT\nORDER BY v.ERDAT DESC"
+    },
+    {
+      "pattern_name": "value_chain_procure_to_pay_trace",
+      "description": "Procure-to-Pay (P2P) Cycle Trace - End-to-end PO tracking to AP",
+      "primary_module": "MM",
+      "tables": [
+        "EKKO",
+        "EKBE",
+        "RBKP",
+        "BSIK",
+        "LFA1"
+      ],
+      "business_context": "Trace complete P2P cycle: PO \u2192 Goods Receipt \u2192 Invoice \u2192 AP Payment. Shows each stage from procurement to payment",
+      "example_sql_structure": "SELECT \n    e.EBELN AS purchase_order,\n    e.BEDAT AS order_date,\n    v.LIFNR AS vendor_number,\n    v.NAME1 AS vendor_name,\n    COUNT(DISTINCT r.MBLNR) AS receipt_count,\n    COUNT(DISTINCT b.MIRO_BELNR) AS invoice_count,\n    COUNT(DISTINCT ap.BELNR) AS ap_posting_count,\n    MAX(ap.BUDAT) AS latest_ap_posting,\n    SUM(CASE WHEN ap.SHKZG = 'S' THEN ap.DMBTR ELSE -ap.DMBTR END) AS total_ap_amount\nFROM EKKO e\nJOIN LFA1 v ON e.LIFNR = v.LIFNR\nLEFT JOIN EKBE r ON e.EBELN = r.EBELN\nLEFT JOIN RBKP b ON e.LIFNR = b.LIFNR AND r.MBLNR = b.MBLNR\nLEFT JOIN BSIK ap ON e.LIFNR = ap.LIFNR AND ap.AUGDT IS NULL\nGROUP BY e.EBELN, e.BEDAT, v.LIFNR, v.NAME1\nORDER BY e.BEDAT DESC"
+    },
+    {
+      "pattern_name": "value_chain_p2p_pipeline_summary",
+      "description": "P2P Pipeline Summary - View open requisitions through AP",
+      "primary_module": "MM",
+      "tables": [
+        "EBAN",
+        "EKKO",
+        "EKBE",
+        "RBKP",
+        "BSIK"
+      ],
+      "business_context": "Show P2P pipeline: open requisitions \u2192 pending POs \u2192 goods receipted but not invoiced \u2192 open payables",
+      "example_sql_structure": "SELECT \n    'Open Requisitions' AS pipeline_stage,\n    COUNT(DISTINCT CASE WHEN e.EBELN IS NULL THEN b.BANFN END) AS count,\n    SUM(CASE WHEN e.EBELN IS NULL THEN b.MENGE * b.NETPR ELSE 0 END) AS total_value\nFROM EBAN b\nLEFT JOIN EKKO e ON b.EBELN = e.EBELN\nWHERE e.EBELN IS NULL\nUNION ALL\nSELECT \n    'Pending POs (Not Yet Received)' AS pipeline_stage,\n    COUNT(DISTINCT CASE WHEN r.MBLNR IS NULL THEN e.EBELN END) AS count,\n    SUM(CASE WHEN r.MBLNR IS NULL THEN e.NETWR ELSE 0 END) AS total_value\nFROM EKKO e\nLEFT JOIN EKBE r ON e.EBELN = r.EBELN AND r.BWART IN ('101', '161')\nWHERE r.MBLNR IS NULL\nUNION ALL\nSELECT \n    'GR/IR (Goods Receipted, Not Invoiced)' AS pipeline_stage,\n    COUNT(DISTINCT CASE WHEN r.MBLNR IS NOT NULL AND b.MIRO_BELNR IS NULL THEN r.EBELN END) AS count,\n    0 AS total_value\nFROM EKBE r\nLEFT JOIN RBKP b ON r.EBELN = b.EBELN\nWHERE r.BWART IN ('101', '161') AND b.MIRO_BELNR IS NULL\nUNION ALL\nSELECT \n    'Open AP Invoices' AS pipeline_stage,\n    COUNT(DISTINCT BELNR) AS count,\n    SUM(CASE WHEN SHKZG = 'S' THEN DMBTR ELSE -DMBTR END) AS total_value\nFROM BSIK\nWHERE AUGDT IS NULL"
+    },
+    {
+      "pattern_name": "value_chain_p2p_cycle_time",
+      "description": "Procure-to-Pay Cycle Time Analysis - Days from PO to AP payment",
+      "primary_module": "MM",
+      "tables": [
+        "EKKO",
+        "EKBE",
+        "RBKP",
+        "BSIK"
+      ],
+      "business_context": "Calculate P2P cycle time: PO to GR, GR to invoice, invoice to AP posting",
+      "example_sql_structure": "SELECT \n    e.EBELN AS purchase_order,\n    e.BEDAT AS po_date,\n    MIN(r.BUDAT) AS first_receipt_date,\n    CAST((julianday(MIN(r.BUDAT)) - julianday(e.BEDAT)) AS INTEGER) AS po_to_gr_days,\n    MAX(b.BUDAT) AS invoice_date,\n    CAST((julianday(MAX(b.BUDAT)) - julianday(MIN(r.BUDAT))) AS INTEGER) AS gr_to_invoice_days,\n    MAX(ap.BUDAT) AS ap_posting_date,\n    CAST((julianday(MAX(ap.BUDAT)) - julianday(MAX(b.BUDAT))) AS INTEGER) AS invoice_to_ap_days,\n    CAST((julianday(MAX(ap.BUDAT)) - julianday(e.BEDAT)) AS INTEGER) AS total_p2p_days\nFROM EKKO e\nLEFT JOIN EKBE r ON e.EBELN = r.EBELN AND r.BWART IN ('101', '161')\nLEFT JOIN RBKP b ON r.MBLNR = b.MBLNR\nLEFT JOIN BSIK ap ON e.LIFNR = ap.LIFNR\nGROUP BY e.EBELN, e.BEDAT\nORDER BY e.BEDAT DESC"
+    },
+    {
+      "pattern_name": "value_chain_record_to_report_close_status",
+      "description": "Record-to-Report (R2R) Month-End Close Status",
+      "primary_module": "FI_GL",
+      "tables": [
+        "BKPF",
+        "BSEG",
+        "GLT0",
+        "COEP",
+        "COBK"
+      ],
+      "business_context": "Show month-end close status: GL postings by date, unposted CO items, reconciliation status",
+      "example_sql_structure": "SELECT \n    'GL Postings' AS close_component,\n    COUNT(DISTINCT h.BELNR) AS count,\n    MAX(h.BUDAT) AS latest_date\nFROM BKPF h\nWHERE h.GJAHR = CAST(strftime('%Y', 'now') AS INTEGER) \n  AND h.MONAT = CAST(strftime('%m', 'now') AS INTEGER)\nUNION ALL\nSELECT \n    'CO Postings' AS close_component,\n    COUNT(DISTINCT c.BELNR) AS count,\n    MAX(c.BUDAT) AS latest_date\nFROM COBK c\nWHERE c.GJAHR = CAST(strftime('%Y', 'now') AS INTEGER)\n  AND c.PERIO = CAST(strftime('%m', 'now') AS INTEGER)\nUNION ALL\nSELECT \n    'GL to AR Reconciliation' AS close_component,\n    COUNT(DISTINCT b.BELNR) AS count,\n    MAX(b.BUDAT) AS latest_date\nFROM BSID b\nWHERE b.GJAHR = CAST(strftime('%Y', 'now') AS INTEGER)\n  AND b.AUGDT IS NULL"
+    },
+    {
+      "pattern_name": "value_chain_trial_balance",
+      "description": "Record-to-Report (R2R) Trial Balance - Company code GL summary",
+      "primary_module": "FI_GL",
+      "tables": [
+        "GLT0",
+        "SKAT",
+        "SKB1",
+        "SKA1"
+      ],
+      "business_context": "Generate trial balance showing GL account balances by company code. XBILK indicator on SKA1 shows balance sheet accounts",
+      "example_sql_structure": "SELECT \n    g.RACCT AS gl_account,\n    COALESCE(t.TXT50, a.SAKNR) AS account_description,\n    a.XBILK AS balance_sheet_indicator,\n    g.DRCRK AS debit_credit_indicator,\n    COALESCE(g.HSLVT, 0) AS opening_balance,\n    SUM(COALESCE(g.HSL01, 0) + COALESCE(g.HSL02, 0) + COALESCE(g.HSL03, 0) + \n        COALESCE(g.HSL04, 0) + COALESCE(g.HSL05, 0) + COALESCE(g.HSL06, 0) + \n        COALESCE(g.HSL07, 0) + COALESCE(g.HSL08, 0) + COALESCE(g.HSL09, 0) + \n        COALESCE(g.HSL10, 0) + COALESCE(g.HSL11, 0) + COALESCE(g.HSL12, 0)) AS period_activity,\n    COALESCE(g.HSLVT, 0) + SUM(COALESCE(g.HSL01, 0) + COALESCE(g.HSL02, 0) + COALESCE(g.HSL03, 0) + \n        COALESCE(g.HSL04, 0) + COALESCE(g.HSL05, 0) + COALESCE(g.HSL06, 0) + \n        COALESCE(g.HSL07, 0) + COALESCE(g.HSL08, 0) + COALESCE(g.HSL09, 0) + \n        COALESCE(g.HSL10, 0) + COALESCE(g.HSL11, 0) + COALESCE(g.HSL12, 0)) AS ending_balance,\n    b.WAERS AS currency\nFROM GLT0 g\nJOIN SKA1 a ON g.RACCT = a.SAKNR\nJOIN SKB1 b ON g.RACCT = b.SAKNR AND g.BUKRS = b.BUKRS\nLEFT JOIN SKAT t ON a.SAKNR = t.SAKNR AND t.SPRAS = 'E'\nWHERE g.BUKRS = :company_code AND g.GJAHR = :fiscal_year AND g.RLDNR = '00'\nGROUP BY g.RACCT, a.SAKNR, a.XBILK, g.DRCRK, g.HSLVT, b.WAERS, t.TXT50\nORDER BY g.RACCT"
+    },
+    {
+      "pattern_name": "value_chain_r2r_co_reconciliation",
+      "description": "Record-to-Report (R2R) CO to GL Reconciliation - Cost postings to GL",
+      "primary_module": "CO",
+      "tables": [
+        "COEP",
+        "BSEG",
+        "CSKS"
+      ],
+      "business_context": "Reconcile CO actual postings to GL cost postings to verify cost accounting completion",
+      "example_sql_structure": "SELECT \n    c.KOSTL AS cost_center,\n    k.KTEXT AS cost_center_text,\n    c.GJAHR AS fiscal_year,\n    c.PERIO AS period,\n    COUNT(DISTINCT c.BELNR) AS co_posting_count,\n    SUM(CASE WHEN c.WRKCT = 'S' THEN c.BEAMG ELSE -c.BEAMG END) AS co_total,\n    (SELECT SUM(CASE WHEN g.SHKZG = 'S' THEN g.DMBTR ELSE -g.DMBTR END)\n     FROM BSEG g WHERE g.KOSTL = c.KOSTL AND g.GJAHR = c.GJAHR) AS gl_total,\n    SUM(CASE WHEN c.WRKCT = 'S' THEN c.BEAMG ELSE -c.BEAMG END) - \n    (SELECT COALESCE(SUM(CASE WHEN g.SHKZG = 'S' THEN g.DMBTR ELSE -g.DMBTR END), 0)\n     FROM BSEG g WHERE g.KOSTL = c.KOSTL AND g.GJAHR = c.GJAHR) AS reconciliation_variance\nFROM COEP c\nJOIN CSKS k ON c.KOSTL = k.KOSTL\nGROUP BY c.KOSTL, k.KTEXT, c.GJAHR, c.PERIO\nORDER BY c.GJAHR DESC, c.PERIO DESC, c.KOSTL"
+    }
+  ],
+  "sql_generation_guidelines": [
+    {
+      "guideline": "SQLite SQL dialect requirements",
+      "description": "CRITICAL: All generated SQL must be valid SQLite syntax. Key requirements:\n\n1. Use SUBSTR(string, position) instead of SUBSTRING(string FROM position)\n2. Use CAST(value AS type) for type conversions\n3. String concatenation: use || operator, not CONCAT()\n4. Date functions: use DATE(), not DATE_ADD() or similar\n5. No CTE (WITH clauses) unless absolutely necessary\n6. Table aliases required for joins\n7. Test database uses ONLY these exact tables - do NOT reference tables like CSKT, T001L, etc. that don't exist\n8. For Cost Center names, use CSKS.KTEXT directly (NOT CSKT)\n9. For GL account descriptions, use SKA1.TXT50 (NOT SKAT which may not be loaded)\n10. Always use exact existing table names from the semantic model\n\nCommon mistakes to avoid:\n- SUBSTRING() instead of SUBSTR()\n- Joining to non-existent tables (CSKT, SKAT, TCIOB, etc.)\n- Using <> instead of != for inequality (both work but != is preferred)\n- Not aliasing tables when joining",
+      "module": "GENERAL",
+      "example": "CORRECT: SUBSTR(OBJNR, 7, 10) in SQLite. INCORRECT: SUBSTRING(OBJNR FROM 7). Also: Check table exists before joining. For cost center names, join CSKS directly, not CSKT."
+    },
+    {
+      "guideline": "Currency column differences across modules",
+      "description": "Different SAP modules use different currency column names. FI tables (BKPF, BSIK, BSAK, BSID, BSAD, SKB1) use WAERS. SD tables (VBAK, VBAP, VBRK, VBRP) use WAERK. MM tables (EKKO, EKPO) use WAERS. CRITICAL: BSEG does NOT have a WAERS column - to get currency for journal entries, join BKPF and use BKPF.WAERS. When joining BKPF (alias h) to BSEG (alias s), use h.WAERS for currency, never s.WAERS.",
+      "module": "GENERAL",
+      "example": "FI journal entries: use h.WAERS from BKPF. SD sales orders: use v.WAERK from VBAK. MM purchase orders: use k.WAERS from EKKO."
+    },
+    {
+      "guideline": "Top vendors by total spend",
+      "description": "CRITICAL RULE: When asked 'top vendors by spend' or similar, ALWAYS generate SQL immediately using BSIK + BSAK UNION. NEVER ask for clarification about which table or filter to use. The rule is:\n\n1. Combine BSIK (open items) and BSAK (cleared items) using UNION ALL\n2. Calculate total spend using SUM(CASE WHEN SHKZG='S' THEN DMBTR ELSE -DMBTR END)\n3. Join to LFA1 for vendor names\n4. Use company code 1000 as default\n5. Group by LIFNR and NAME1, order by total_spend DESC\n6. LIMIT 10 for top 10 vendors\n\nExample: SELECT v.LIFNR, v.NAME1, SUM(CASE WHEN i.SHKZG='S' THEN i.DMBTR ELSE -i.DMBTR END) AS total_spend FROM (SELECT BUKRS, LIFNR, SHKZG, DMBTR FROM BSIK WHERE BUKRS='1000' UNION ALL SELECT BUKRS, LIFNR, SHKZG, DMBTR FROM BSAK WHERE BUKRS='1000') i JOIN LFA1 v ON i.LIFNR=v.LIFNR GROUP BY v.LIFNR, v.NAME1 ORDER BY total_spend DESC LIMIT 10",
+      "module": "FI_AP",
+      "example": "SELECT v.LIFNR, v.NAME1, SUM(CASE WHEN i.SHKZG='S' THEN i.DMBTR ELSE -i.DMBTR END) AS total_spend FROM (SELECT BUKRS, LIFNR, SHKZG, DMBTR FROM BSIK UNION ALL SELECT BUKRS, LIFNR, SHKZG, DMBTR FROM BSAK) i JOIN LFA1 v ON i.LIFNR=v.LIFNR GROUP BY v.LIFNR, v.NAME1 ORDER BY total_spend DESC LIMIT 10"
+    },
+    {
+      "guideline": "Default assumptions for common queries",
+      "description": "CRITICAL: When users ask common business questions without specifying filters, DO NOT ask for clarification. Generate SQL directly using sensible defaults:\n\n- Company code (BUKRS): '1000' (default SAP company)\n- Fiscal year (GJAHR): '2025' (current year)\n- Currency: Use DMBTR (local currency) and WAERS for FI, WAERK for SD\n- Ledger (RLDNR): '00' (operational ledger)\n- CO version (VERSN): '000' (actual/operative)\n- Account ranges: Common ranges like 400000 for specific queries\n\nExamples where defaults apply:\n1. 'Top vendors by spend' -> Use BSIK+BSAK, company 1000, no date filter needed\n2. 'Q1 2025 sales orders' -> Use VBAK.ERDAT, dates 20250101-20250331\n3. 'Cost center plan vs actual' -> Use COSP/COSS, GJAHR=2025, VERSN=000\n4. 'Journal entries to account X' -> Use BKPF/BSEG, that account\n\nGenerating SQL with defaults is ALWAYS better than asking for clarification.",
+      "module": "GENERAL",
+      "example": "User asks 'top 10 vendors by spend' -> generate SQL with WHERE BUKRS='1000', do not ask which company code"
+    },
+    {
+      "guideline": "SHKZG field handling",
+      "description": "SHKZG (Debit/Credit indicator) is S for Debit, H for Credit. Always apply sign based on SHKZG, as DMBTR is stored as positive",
+      "module": "FI",
+      "example": "CASE WHEN SHKZG='S' THEN DMBTR ELSE -DMBTR END AS signed_amount"
+    },
+    {
+      "guideline": "DMBTR vs WRBTR",
+      "description": "DMBTR is always in company local currency, WRBTR is in document currency. Use DMBTR for consolidated reporting",
+      "module": "FI",
+      "example": "Use DMBTR for financial statements, WRBTR for transaction audit trail"
+    },
+    {
+      "guideline": "BUKRS filtering",
+      "description": "Always filter by BUKRS (company code) for correct consolidation and security",
+      "module": "FI",
+      "example": "WHERE BUKRS IN ('1000', '1010')"
+    },
+    {
+      "guideline": "Date format handling",
+      "description": "SAP dates are stored in YYYY-MM-DD ISO format in this database. Compare using BETWEEN or >= operators. Date functions like JULIANDAY() and DATE() work directly on these values.",
+      "module": "All",
+      "example": "WHERE BUDAT >= '2024-01-01' AND BUDAT <= '2024-12-31'"
+    },
+    {
+      "guideline": "BSIK/BSAK split",
+      "description": "BSIK contains open AP items (AUGDT is NULL), BSAK contains cleared items (AUGDT is populated). Use correct table based on requirement",
+      "module": "FI_AP",
+      "example": "Open items: SELECT FROM BSIK WHERE AUGDT IS NULL; Cleared: SELECT FROM BSAK"
+    },
+    {
+      "guideline": "KOART account type",
+      "description": "KOART field indicates account type: S=GL, D=Customer, K=Vendor, M=Material, A=Asset. Filter for specific account types as needed",
+      "module": "FI",
+      "example": "WHERE KOART='K' for vendor accounts"
+    },
+    {
+      "guideline": "FI_GL period balances",
+      "description": "GLT0 contains period balances HSL01-HSL16 (16 periods). Always specify which periods to sum for closing procedures",
+      "module": "FI_GL",
+      "example": "HSL01+HSL02+HSL03+HSL04 = Q1 balance"
+    },
+    {
+      "guideline": "Cost center hierarchies",
+      "description": "Cost centers have parent-child relationships via OBJNR in COSP. Use hierarchical queries for consolidation",
+      "module": "CO",
+      "example": "WITH RECURSIVE cc_tree AS ..."
+    },
+    {
+      "guideline": "Material valuation",
+      "description": "MARD.LABST is valuated stock. Multiply by price to get inventory value. Watch for different price types (moving avg, standard, etc.)",
+      "module": "MM",
+      "example": "SUM(LABST * standard_price)"
+    },
+    {
+      "guideline": "Open item logic",
+      "description": "Open items identified by NULL AUGDT (clearing date). Aging calculated as TODAY() - ZFBDT (due date)",
+      "module": "FI",
+      "example": "WHERE AUGDT IS NULL AND ZFBDT < CURRENT_DATE - 30"
+    },
+    {
+      "guideline": "Fiscal year handling",
+      "description": "GJAHR is fiscal year. Combine with period MONAT to identify posting period. MONAT can exceed 12 for special periods",
+      "module": "FI",
+      "example": "WHERE GJAHR=2024 AND MONAT BETWEEN 1 AND 12"
+    },
+    {
+      "guideline": "Multi-currency consolidation",
+      "description": "For multi-currency reporting, always use local currency (DMBTR) and convert using standard rates, not document rates",
+      "module": "FI",
+      "example": "SUM(DMBTR) for company consolidated; use rate tables for corporate consolidation"
+    },
+    {
+      "guideline": "Customer vs Vendor split",
+      "description": "BSEG.KOART identifies customer (D) vs vendor (K) line items. BSID for customers, BSIK for vendors",
+      "module": "FI",
+      "example": "WHERE KOART='K' for vendor items, use BSIK table"
+    },
+    {
+      "guideline": "Three-way match logic",
+      "description": "PO quantity (EKPO.MENGE), GR quantity (EKBE with VGABE=1), Invoice quantity (RSEG.MENGE). Compare for discrepancies",
+      "module": "MM",
+      "example": "Match EKPO-EKBE-RSEG on EBELN and EBELP"
+    },
+    {
+      "guideline": "Sales order to delivery tracing",
+      "description": "Use VBFA (document flow) table to link VBAK->LIKP->VBRK. VBFA.VBELV is prior, VBFA.VBELN is subsequent",
+      "module": "SD",
+      "example": "JOIN VBFA ON VBAK.VBELN=VBFA.VBELV AND LIKP.VBELN=VBFA.VBELN"
+    },
+    {
+      "guideline": "PM Order join path",
+      "description": "For PM orders: AUFK -> AFIH -> AFKO -> AFVC (operations) -> AFRU (confirmations). Join through AUFNR for order-level and AUFPL for operation-level",
+      "module": "PM",
+      "example": "AUFK.AUFNR = AFIH.AUFNR, AFKO.AUFPL = AFVC.AUFPL"
+    },
+    {
+      "guideline": "PM cancelled operations",
+      "description": "To find cancelled operations (IW49N), check AFVC.LOEKZ = 'X'. For reversed confirmations, check AFRU.STOKZ = 'X'",
+      "module": "PM",
+      "example": "WHERE AFVC.LOEKZ = 'X'"
+    },
+    {
+      "guideline": "Vendor name lookup via LFA1",
+      "description": "Vendor invoice tables (BSIK, BSAK, RBKP, BSEG) store only the vendor number (LIFNR), not the vendor name. When a user references a vendor by name (e.g., 'Acme Corp'), you MUST join to LFA1 on LIFNR to resolve the name. Use LFA1.NAME1 for the vendor name. Apply the filter as: UPPER(v.NAME1) LIKE UPPER('%search_term%'). Similarly, always include LFA1.NAME1 in SELECT output for vendor-related queries so results are human-readable.",
+      "module": "FI_AP",
+      "example": "SELECT b.*, v.NAME1 AS vendor_name FROM BSIK b JOIN LFA1 v ON b.LIFNR = v.LIFNR WHERE UPPER(v.NAME1) LIKE '%ACME%'"
+    },
+    {
+      "guideline": "Customer name lookup via KNA1",
+      "description": "Customer item tables (BSID, BSAD, BSEG) store only the customer number (KUNNR), not the customer name. When a user references a customer by name, you MUST join to KNA1 on KUNNR to resolve the name. Use KNA1.NAME1 for the customer name. Apply the filter as: UPPER(k.NAME1) LIKE UPPER('%search_term%'). Always include KNA1.NAME1 in SELECT output for customer-related queries.",
+      "module": "FI_AR",
+      "example": "SELECT b.*, k.NAME1 AS customer_name FROM BSID b JOIN KNA1 k ON b.KUNNR = k.KUNNR WHERE UPPER(k.NAME1) LIKE '%GLOBAL%'"
+    },
+    {
+      "guideline": "SHKZG only applies to FI line item tables",
+      "description": "The SHKZG (debit/credit indicator) column exists ONLY on FI line item tables: BSIK, BSAK, BSID, BSAD, BSEG, and EKBE. Do NOT use SHKZG on MM tables (EKKO, EKPO, RSEG), SD tables (VBAK, VBAP, VBRK, VBRP), or any other tables. For purchase orders (EKPO), the NETWR column is always a positive net value \u2014 no sign conversion is needed. For sales orders (VBAP/VBAK), NETWR is also always positive.",
+      "module": "GENERAL",
+      "example": "EKPO.NETWR is always positive. Do NOT write: CASE WHEN p.SHKZG = 'H' THEN -p.NETWR ELSE p.NETWR END. Simply use: p.NETWR"
+    },
+    {
+      "guideline": "PO total value calculation",
+      "description": "To calculate total PO value, SUM the NETWR column from EKPO grouped by EBELN. EKPO.NETWR is the net value per line item in document currency. Do NOT apply SHKZG logic to PO amounts. Filter with EKPO.LOEKZ = '' to exclude deleted line items and EKKO.LOEKZ = '' to exclude deleted POs. Use EKPO.ELIKZ = '' for items not yet fully invoiced (open POs).",
+      "module": "MM",
+      "example": "SELECT k.EBELN, SUM(p.NETWR) AS total_value FROM EKKO k JOIN EKPO p ON k.EBELN = p.EBELN WHERE k.LOEKZ = '' AND p.LOEKZ = '' GROUP BY k.EBELN HAVING SUM(p.NETWR) > 50000"
+    },
+    {
+      "guideline": "Sales order value calculation",
+      "description": "For sales order totals, use VBAK.NETWR for header-level net value or SUM(VBAP.NETWR) for line-item totals. These are always positive values in document currency (WAERK). Do NOT apply SHKZG sign logic. Filter with VBAK.LOEKZ = '' and VBAP.LOEKZ = '' to exclude deleted items.",
+      "module": "SD",
+      "example": "SELECT v.VBELN, v.NETWR AS order_value FROM VBAK v WHERE v.LOEKZ = '' AND v.AUART IN ('OR', 'SO') ORDER BY v.NETWR DESC"
+    },
+    {
+      "guideline": "GL account master table column ownership",
+      "description": "The GL account master data is split across 3 tables. Columns are on SPECIFIC tables only \u2014 do not mix them up: SKA1 has XBILK (balance sheet indicator), KTOKS (account group), KTOPL (chart of accounts). SKAT has TXT20 (short text), TXT50 (long text), SPRAS (language). SKB1 has WAERS (currency), MITKZ (reconciliation account type), XOPVW (open item management). GLT0 has RACCT (account), BUKRS (company), GJAHR (year), RLDNR (ledger), DRCRK (debit/credit), HSLVT (carry forward), HSL01-HSL16 (period balances).",
+      "module": "FI_GL",
+      "example": "XBILK is on SKA1 (use alias a.XBILK). TXT50 is on SKAT (use alias t.TXT50). WAERS is on SKB1 (use alias b.WAERS). Never reference s.XBILK or b.XBILK."
+    },
+    {
+      "guideline": "Strict column-to-table mapping",
+      "description": "CRITICAL: Before using any column, verify it exists on the specific table you are referencing. Related tables often have different columns. Common mistakes to avoid: XBILK is on SKA1 not SKAT/SKB1. SHKZG is only on BSIK/BSAK/BSID/BSAD/BSEG/EKBE, never on EKPO/EKKO/VBAK/VBAP. KOART is on BSIK/BSAK/BSID/BSAD/BSEG, not on BKPF. LIFNR is on LFA1/LFB1/EKKO/BSIK/BSAK/BSEG/RBKP, not on EKPO. KUNNR is on KNA1/KNB1/VBAK/BSID/BSAD/BSEG, not on VBAP. NAME1 is only on LFA1 (vendors) and KNA1 (customers), not on any transaction tables.",
+      "module": "GENERAL",
+      "example": "Always check: which table has this column? Use the exact table alias for that table."
+    },
+    {
+      "guideline": "HR position, job, and org unit descriptions via HRP1000",
+      "description": "PA0001 stores only IDs for position (STELL), job (PLANS), and org unit (ORGEH). To get human-readable descriptions, join to HRP1000 table three times with different OTYPE filters: OTYPE='S' for position text, OTYPE='C' for job text, OTYPE='O' for org unit text. Always filter HRP1000.LANGU='E' for English. Use LEFT JOIN since not all IDs may have descriptions. Use STEXT column for the short text description.",
+      "module": "HR",
+      "example": "LEFT JOIN HRP1000 pos ON pos.OTYPE='S' AND pos.OBJID=p1.STELL AND pos.LANGU='E' -- gives pos.STEXT as position description"
+    }
+  ]
+}

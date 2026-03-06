@@ -1,0 +1,440 @@
+{
+  "HR": {
+    "module_name": "Human Resources",
+    "description": "SAP HR Human Resources - employees, assignments, and compensation",
+    "application_short_name": "HR",
+    "business_objects": {
+      "Employee": {
+        "description": "Employee master data with personal and organizational information",
+        "nl_aliases": [
+          "employee",
+          "worker",
+          "staff",
+          "personnel"
+        ],
+        "business_questions": [
+          "Show me all employees in cost center 1000",
+          "What is the organizational assignment for employee 100001?",
+          "Show me employees by department"
+        ],
+        "primary_table": "PA0001",
+        "tables": {
+          "PA0001": {
+            "schema": "SAP",
+            "description": "Organizational Assignment",
+            "primary_key": {
+              "column": "PERNR, BEGDA",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [],
+            "business_columns": [
+              {
+                "column": "PERNR",
+                "type": "NUMC(8)",
+                "description": "Employee number",
+                "nl_aliases": [
+                  "employee",
+                  "employee ID"
+                ]
+              },
+              {
+                "column": "BEGDA",
+                "type": "DATE",
+                "description": "Valid from date"
+              },
+              {
+                "column": "ENDDA",
+                "type": "DATE",
+                "description": "Valid to date"
+              },
+              {
+                "column": "BUKRS",
+                "type": "CHAR(4)",
+                "description": "Company code"
+              },
+              {
+                "column": "WERKS",
+                "type": "CHAR(4)",
+                "description": "Plant"
+              },
+              {
+                "column": "BTRTL",
+                "type": "CHAR(2)",
+                "description": "Personnel sub-area"
+              },
+              {
+                "column": "PERSG",
+                "type": "CHAR(1)",
+                "description": "Employee group"
+              },
+              {
+                "column": "PERSK",
+                "type": "CHAR(2)",
+                "description": "Employee subgroup"
+              },
+              {
+                "column": "ORGEH",
+                "type": "CHAR(8)",
+                "description": "Organizational unit"
+              },
+              {
+                "column": "STELL",
+                "type": "CHAR(8)",
+                "description": "Position"
+              },
+              {
+                "column": "PLANS",
+                "type": "CHAR(8)",
+                "description": "Job"
+              },
+              {
+                "column": "KOSTL",
+                "type": "CHAR(10)",
+                "description": "Cost center"
+              },
+              {
+                "column": "ABKRS",
+                "type": "CHAR(2)",
+                "description": "Payroll area"
+              }
+            ]
+          },
+          "PA0002": {
+            "schema": "SAP",
+            "description": "Personal Data",
+            "primary_key": {
+              "column": "PERNR, BEGDA",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [
+              {
+                "column": "PERNR",
+                "references": "PA0001.PERNR"
+              }
+            ],
+            "business_columns": [
+              {
+                "column": "PERNR",
+                "type": "NUMC(8)",
+                "description": "Employee number"
+              },
+              {
+                "column": "BEGDA",
+                "type": "DATE",
+                "description": "Valid from date"
+              },
+              {
+                "column": "ENDDA",
+                "type": "DATE",
+                "description": "Valid to date"
+              },
+              {
+                "column": "NACHN",
+                "type": "CHAR(40)",
+                "description": "Last name",
+                "nl_aliases": [
+                  "surname",
+                  "family name"
+                ]
+              },
+              {
+                "column": "VORNA",
+                "type": "CHAR(40)",
+                "description": "First name",
+                "nl_aliases": [
+                  "first name"
+                ]
+              },
+              {
+                "column": "GBDAT",
+                "type": "DATE",
+                "description": "Birth date",
+                "nl_aliases": [
+                  "DOB"
+                ]
+              },
+              {
+                "column": "GESCH",
+                "type": "CHAR(1)",
+                "description": "Gender"
+              },
+              {
+                "column": "FAMST",
+                "type": "CHAR(1)",
+                "description": "Marital status"
+              },
+              {
+                "column": "NATIO",
+                "type": "CHAR(3)",
+                "description": "Nationality"
+              },
+              {
+                "column": "SPRSL",
+                "type": "CHAR(1)",
+                "description": "Language"
+              }
+            ]
+          },
+          "PA0006": {
+            "schema": "SAP",
+            "description": "Address",
+            "primary_key": {
+              "column": "PERNR, BEGDA",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [
+              {
+                "column": "PERNR",
+                "references": "PA0001.PERNR"
+              }
+            ],
+            "business_columns": [
+              {
+                "column": "PERNR",
+                "type": "NUMC(8)",
+                "description": "Employee number"
+              },
+              {
+                "column": "BEGDA",
+                "type": "DATE",
+                "description": "Valid from date"
+              },
+              {
+                "column": "ENDDA",
+                "type": "DATE",
+                "description": "Valid to date"
+              },
+              {
+                "column": "ANSSA",
+                "type": "CHAR(1)",
+                "description": "Address type"
+              },
+              {
+                "column": "STRAS",
+                "type": "CHAR(40)",
+                "description": "Street address",
+                "nl_aliases": [
+                  "street"
+                ]
+              },
+              {
+                "column": "ORT01",
+                "type": "CHAR(40)",
+                "description": "City"
+              },
+              {
+                "column": "PSTLZ",
+                "type": "CHAR(10)",
+                "description": "Postal code"
+              },
+              {
+                "column": "LAND1",
+                "type": "CHAR(3)",
+                "description": "Country"
+              },
+              {
+                "column": "TELF1",
+                "type": "CHAR(30)",
+                "description": "Phone number"
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": [
+          {
+            "from": "PA0001",
+            "to": "PA0002",
+            "join": "PA0001.PERNR = PA0002.PERNR",
+            "type": "one-to-many"
+          },
+          {
+            "from": "PA0001",
+            "to": "PA0006",
+            "join": "PA0001.PERNR = PA0006.PERNR",
+            "type": "one-to-many"
+          }
+        ]
+      },
+      "Basic_Pay": {
+        "description": "Basic salary and compensation information",
+        "nl_aliases": [
+          "basic pay",
+          "salary",
+          "compensation",
+          "wage"
+        ],
+        "business_questions": [
+          "Show me salary information for employee 100001",
+          "What is the gross salary by employee?"
+        ],
+        "primary_table": "PA0008",
+        "tables": {
+          "PA0008": {
+            "schema": "SAP",
+            "description": "Basic Pay",
+            "primary_key": {
+              "column": "PERNR, BEGDA",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [
+              {
+                "column": "PERNR",
+                "references": "PA0001.PERNR"
+              }
+            ],
+            "business_columns": [
+              {
+                "column": "PERNR",
+                "type": "NUMC(8)",
+                "description": "Employee number"
+              },
+              {
+                "column": "BEGDA",
+                "type": "DATE",
+                "description": "Valid from date"
+              },
+              {
+                "column": "ENDDA",
+                "type": "DATE",
+                "description": "Valid to date"
+              },
+              {
+                "column": "TRFAR",
+                "type": "CHAR(10)",
+                "description": "Salary group",
+                "nl_aliases": [
+                  "salary level"
+                ]
+              },
+              {
+                "column": "TRFGB",
+                "type": "CHAR(3)",
+                "description": "Salary area"
+              },
+              {
+                "column": "TRFGR",
+                "type": "CHAR(3)",
+                "description": "Salary grade"
+              },
+              {
+                "column": "TRFST",
+                "type": "NUMC(2)",
+                "description": "Salary step"
+              },
+              {
+                "column": "ANSAL",
+                "type": "CURR(13,2)",
+                "description": "Annual salary",
+                "nl_aliases": [
+                  "annual salary"
+                ]
+              },
+              {
+                "column": "WAERS",
+                "type": "CHAR(5)",
+                "description": "Currency"
+              },
+              {
+                "column": "LGA01",
+                "type": "CHAR(4)",
+                "description": "Salary component 1"
+              },
+              {
+                "column": "BET01",
+                "type": "CURR(13,2)",
+                "description": "Amount component 1"
+              },
+              {
+                "column": "LGA02",
+                "type": "CHAR(4)",
+                "description": "Salary component 2"
+              },
+              {
+                "column": "BET02",
+                "type": "CURR(13,2)",
+                "description": "Amount component 2"
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": []
+      },
+      "Recurring_Deductions": {
+        "description": "Recurring deductions and deduction records",
+        "nl_aliases": [
+          "deductions",
+          "recurring deductions",
+          "allowances"
+        ],
+        "business_questions": [
+          "Show me deductions for employee 100001",
+          "What recurring deductions are in place?"
+        ],
+        "primary_table": "PA0014",
+        "tables": {
+          "PA0014": {
+            "schema": "SAP",
+            "description": "Recurring Deductions and Allowances",
+            "primary_key": {
+              "column": "PERNR, BEGDA, LGART",
+              "type": "COMPOSITE"
+            },
+            "foreign_keys": [
+              {
+                "column": "PERNR",
+                "references": "PA0001.PERNR"
+              }
+            ],
+            "business_columns": [
+              {
+                "column": "PERNR",
+                "type": "NUMC(8)",
+                "description": "Employee number"
+              },
+              {
+                "column": "BEGDA",
+                "type": "DATE",
+                "description": "Valid from date"
+              },
+              {
+                "column": "ENDDA",
+                "type": "DATE",
+                "description": "Valid to date"
+              },
+              {
+                "column": "LGART",
+                "type": "CHAR(4)",
+                "description": "Wage type",
+                "nl_aliases": [
+                  "deduction type"
+                ]
+              },
+              {
+                "column": "BETRG",
+                "type": "CURR(13,2)",
+                "description": "Amount",
+                "nl_aliases": [
+                  "deduction amount"
+                ]
+              },
+              {
+                "column": "WAERS",
+                "type": "CHAR(5)",
+                "description": "Currency"
+              },
+              {
+                "column": "ANZHL",
+                "type": "NUMC(2)",
+                "description": "Number of periods"
+              }
+            ]
+          }
+        },
+        "intra_object_relationships": []
+      }
+    }
+  },
+  "module_key": "HR",
+  "module_name": "Human Resources",
+  "description": "Personnel management and organizational structure"
+}
