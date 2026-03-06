@@ -1870,12 +1870,14 @@ def main():
     # Try loading knowledge graph
     knowledge_graph = None
     try:
-        from sap_knowledge_graph import SAPKnowledgeGraph
-        kg_json_path = os.path.join(APP_DIR, "sap_knowledge_graph.json")
-        if os.path.exists(kg_json_path):
-            knowledge_graph = SAPKnowledgeGraph.load_from_json(kg_json_path)
-    except Exception:
-        pass
+        from sap_knowledge_graph import KnowledgeGraph
+        kg_model_path = os.path.join(APP_DIR, "sap_semantic_model.json")
+        if os.path.exists(kg_model_path):
+            knowledge_graph = KnowledgeGraph(kg_model_path)
+            print(f"Knowledge graph loaded: {knowledge_graph.stats.get('total_nodes', 0)} nodes, "
+                  f"{knowledge_graph.stats.get('total_edges', 0)} edges")
+    except Exception as e:
+        print(f"Warning: Could not load knowledge graph: {e}")
 
     if args.export_system_prompt:
         out = os.path.join(APP_DIR, "sap_system_prompt.txt")
