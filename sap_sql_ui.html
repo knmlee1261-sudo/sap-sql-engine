@@ -2398,15 +2398,21 @@ const CURRENCY_TOKENS = new Set(['amount','balance','cash','surplus','shortfall'
 // Weak currency tokens: only indicate money when NOT combined with a non-currency token
 const WEAK_CURRENCY_TOKENS = new Set(['total','paid','outstanding','overdue','remaining','payment']);
 // Non-currency tokens: words that indicate counts, IDs, quantities, etc.
-const NON_CURRENCY_TOKENS = new Set(['number','num','line','id','code','flag','status','date','name','count','qty','quantity','percent','pct','ratio','rate','org','seq','rank','row','period','type','class','category','method','description','vendor','customer','supplier','order','header','ordered','shipped','billed','received','cancelled','approved','lines','orders','items','records','transactions','days','months','years','pending','open','closed']);
+const NON_CURRENCY_TOKENS = new Set(['number','num','line','id','code','flag','status','date','name','count','qty','quantity','percent','pct','ratio','rate','org','seq','rank','row','period','type','class','category','method','description','vendor','customer','supplier','order','header','ordered','shipped','billed','received','cancelled','approved','lines','orders','items','records','transactions','days','months','years','pending','open','closed','center','element','object','group','unit','area','text','plant','material','document','posting','company','profit','controlling']);
+// SAP column names that should never be treated as currency
+const SAP_ID_COLUMNS = new Set(['kostl','kstar','bukrs','kokrs','prctr','objnr','aufnr','kostl','ktext','belnr','gjahr','perio','mandt','werks','waers','twaer','matnr','lifnr','kunnr','vbeln','ebeln','hkont','saknr','koart','gsber','fkber','grant_nbr','lednr','versn','wrttp','beknz','vrgng','gkoar','gkont','meinh','meinb','beltp']);
 function colTokens(name) { return name.toLowerCase().split(/[_\s]+/); }
 function detectColFormat(name) {
+  // Check if the raw column name (case-insensitive) is a known SAP ID/code column
+  if (SAP_ID_COLUMNS.has(name.toLowerCase())) return 'none';
   const tokens = colTokens(name);
+  const hasNon  = tokens.some(t => NON_CURRENCY_TOKENS.has(t));
+  // If column has ANY non-currency token, don't treat as currency (e.g. "cost_center", "cost_element")
+  if (hasNon) return 'none';
   const hasStrong = tokens.some(t => CURRENCY_TOKENS.has(t));
   if (hasStrong) return 'currency';
   const hasWeak = tokens.some(t => WEAK_CURRENCY_TOKENS.has(t));
-  const hasNon  = tokens.some(t => NON_CURRENCY_TOKENS.has(t));
-  if (hasWeak && !hasNon) return 'currency';
+  if (hasWeak) return 'currency';
   return 'none'; // no currency signal
 }
 
