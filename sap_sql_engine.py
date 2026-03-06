@@ -233,10 +233,10 @@ def extract_bokg_catalog(model: dict) -> dict:
 
     for p in model.get("nl_query_patterns", []):
         catalog["query_patterns"].append({
-            "prompt": p["example_prompt"],
+            "prompt": p.get("example_prompt", p.get("pattern_name", p.get("description", ""))),
             "module": p.get("primary_module", ""),
             "objects": p.get("objects_used", []),
-            "tables": p.get("tables_used", []),
+            "tables": p.get("tables_used", p.get("tables", [])),
         })
 
     return catalog
